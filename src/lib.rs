@@ -1,6 +1,4 @@
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-    }
-}
+//! Useful stuff for working with a bunch of hexagons
+
+pub mod point;
+
