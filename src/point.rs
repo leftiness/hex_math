@@ -220,6 +220,35 @@ impl Point {
     Point::new(self.q, self.r, self.t - units)
   }
 
+  /// Calculate the distance measured in hexes between two points
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// # use hex_math::point::Point;
+  ///
+  /// let spot: Point = Point::new_2d(1, 2);
+  /// let other: Point = Point::new_2d(3, 4);
+  ///
+  /// assert_eq!(4, spot.distance_to(other));
+  /// ```
+  ///
+  /// ```
+  /// # use hex_math::point::Point;
+  ///
+  /// let spot: Point = Point::new(1, 2, 5);
+  /// let other: Point = Point::new(3, 4, 10);
+  ///
+  /// assert_eq!(9, spot.distance_to(other));
+  /// ```
+  pub fn distance_to(self, other: Point) -> i32 {
+    let diff: Point = self - other;
+    let distance_2d = (diff.q.abs() + diff.r.abs() + diff.s.abs()) / 2;
+    let distance_height = diff.t.abs();
+
+    distance_2d + distance_height
+  }
+
 }
 
 impl Add for Point {
