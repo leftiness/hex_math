@@ -222,6 +222,8 @@ impl Point {
 
   /// Calculate the distance measured in hexes between two points
   ///
+  /// Distance is rounded up to the next integer.
+  ///
   /// # Examples
   ///
   /// ```
@@ -239,14 +241,20 @@ impl Point {
   /// let spot: Point = Point::new(1, 2, 5);
   /// let other: Point = Point::new(3, 4, 10);
   ///
-  /// assert_eq!(9, spot.distance_to(other));
+  /// assert_eq!(7, spot.distance_to(other));
   /// ```
   pub fn distance_to(self, other: Point) -> i32 {
     let diff: Point = self - other;
-    let distance_2d = (diff.q.abs() + diff.r.abs() + diff.s.abs()) / 2;
-    let distance_height = diff.t.abs();
+    let base = (diff.q.abs() + diff.r.abs() + diff.s.abs()) / 2;
+    let height = diff.t.abs();
 
-    distance_2d + distance_height
+    if height == 0 {
+      return base;
+    }
+
+    let hypot: f64 = (base.pow(2) + height.pow(2)) as f64;
+
+    hypot.sqrt().ceil() as i32
   }
 
 }
