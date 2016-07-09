@@ -1,4 +1,17 @@
 //! Basic point on a coordinate plane
+//!
+//! # Examples
+//!
+//! Direction functions are chainable.
+//!
+//! ```
+//! # use hex_math::point::Point;
+//!
+//! let spot: Point = Point::new(1, 2, 5);
+//! let other: Point = spot.northwest(5).west(2).down(2);
+//!
+//! assert_eq!((-1, -3, 3), other.values());
+//! ```
 
 use std::ops::{Add, Sub};
 
@@ -40,8 +53,6 @@ impl Point {
 
   /// Convenient getter for the point's axial coordinate values
   ///
-  /// Those using two-dimensional points may simply ignore a value.
-  ///
   /// # Examples
   ///
   /// ```
@@ -51,6 +62,8 @@ impl Point {
   ///
   /// assert_eq!((1, 2, 5), spot.values());
   /// ```
+  ///
+  /// Those using two-dimensional points may simply ignore a value.
   ///
   /// ```
   /// # use hex_math::point::Point;
@@ -77,6 +90,134 @@ impl Point {
   /// ```
   pub fn values_cuboid(&self) -> (i32, i32, i32, i32) {
     (self.q, self.r, self.s, self.t)
+  }
+
+  /// Create a point which is relatively northwest a specified number of units
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// # use hex_math::point::Point;
+  ///
+  /// let spot: Point = Point::new(1, 2, 5);
+  /// let other: Point = spot.northwest(2);
+  ///
+  /// assert_eq!((1, 0, 5), other.values());
+  /// ```
+  pub fn northwest(&self, units: i32) -> Point {
+    Point::new(self.q, self.r - units, self.t)
+  }
+
+  /// Create a point which is relatively west a specified number of units
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// # use hex_math::point::Point;
+  ///
+  /// let spot: Point = Point::new(1, 2, 5);
+  /// let other: Point = spot.west(2);
+  ///
+  /// assert_eq!((-1, 2, 5), other.values());
+  /// ```
+  pub fn west(&self, units: i32) -> Point {
+    Point::new(self.q - units, self.r, self.t)
+  }
+
+  /// Create a point which is relatively southwest a specified number of units
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// # use hex_math::point::Point;
+  ///
+  /// let spot: Point = Point::new(1, 2, 5);
+  /// let other: Point = spot.southwest(2);
+  ///
+  /// assert_eq!((-1, 4, 5), other.values());
+  /// ```
+  pub fn southwest(&self, units: i32) -> Point {
+    Point::new(self.q - units, self.r + units, self.t)
+  }
+
+  /// Create a point which is relatively southeast a specified number of units
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// # use hex_math::point::Point;
+  ///
+  /// let spot: Point = Point::new(1, 2, 5);
+  /// let other: Point = spot.southeast(2);
+  ///
+  /// assert_eq!((1, 4, 5), other.values());
+  /// ```
+  pub fn southeast(&self, units: i32) -> Point {
+    Point::new(self.q, self.r + units, self.t)
+  }
+
+  /// Create a point which is relatively east a specified number of units
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// # use hex_math::point::Point;
+  ///
+  /// let spot: Point = Point::new(1, 2, 5);
+  /// let other: Point = spot.east(2);
+  ///
+  /// assert_eq!((3, 2, 5), other.values());
+  /// ```
+  pub fn east(&self, units: i32) -> Point {
+    Point::new(self.q + units, self.r, self.t)
+  }
+
+  /// Create a point which is relatively northeast a specified number of units
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// # use hex_math::point::Point;
+  ///
+  /// let spot: Point = Point::new(1, 2, 5);
+  /// let other: Point = spot.northeast(2);
+  ///
+  /// assert_eq!((3, 0, 5), other.values());
+  /// ```
+  pub fn northeast(&self, units: i32) -> Point {
+    Point::new(self.q + units, self.r - units, self.t)
+  }
+
+  /// Create a point which is relatively up a specified number of units
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// # use hex_math::point::Point;
+  ///
+  /// let spot: Point = Point::new(1, 2, 5);
+  /// let other: Point = spot.up(2);
+  ///
+  /// assert_eq!((1, 2, 7), other.values());
+  /// ```
+  pub fn up(&self, units: i32) -> Point {
+    Point::new(self.q, self.r, self.t + units)
+  }
+
+  /// Create a point which is relatively down a specified number of units
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// # use hex_math::point::Point;
+  ///
+  /// let spot: Point = Point::new(1, 2, 5);
+  /// let other: Point = spot.down(2);
+  ///
+  /// assert_eq!((1, 2, 3), other.values());
+  /// ```
+  pub fn down(&self, units: i32) -> Point {
+    Point::new(self.q, self.r, self.t - units)
   }
 
 }
