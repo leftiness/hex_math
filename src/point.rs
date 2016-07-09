@@ -14,8 +14,9 @@
 //! ```
 
 use std::ops::{Add, Sub};
+use std::collections::HashSet;
 
-#[derive(Copy, Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, Hash, PartialEq)]
 pub struct Point {
   pub q: i32,
   pub r: i32,
@@ -252,9 +253,57 @@ impl Point {
       return base;
     }
 
-    let hypot: f64 = (base.pow(2) + height.pow(2)) as f64;
+    let hypot: f32 = (base.pow(2) + height.pow(2)) as f32;
 
     hypot.sqrt().ceil() as i32
+  }
+
+  /// Determine the points in a line between two provided points
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// # use hex_math::point::Point;
+  /// # use std::collections::HashSet;
+  ///
+  /// let spot: Point = Point::new(1, 2, 5);
+  /// let other: Point = Point::new(3, 4, 10);
+  /// let set: HashSet<Point> = spot.line_to(other);
+  ///
+  /// assert!(set.contains(&Point::new(1, 2, 5)));
+  /// assert!(set.contains(&Point::new(1, 2, 6)));
+  /// assert!(set.contains(&Point::new(2, 2, 6)));
+  /// assert!(set.contains(&Point::new(2, 3, 7)));
+  /// assert!(set.contains(&Point::new(2, 3, 8)));
+  /// assert!(set.contains(&Point::new(2, 4, 9)));
+  /// assert!(set.contains(&Point::new(3, 4, 9)));
+  /// assert!(set.contains(&Point::new(3, 4, 10)));
+  /// ```
+  ///
+  /// ```
+  /// # use hex_math::point::Point;
+  /// # use std::collections::HashSet;
+  ///
+  /// let spot: Point = Point::new_2d(1, 2);
+  /// let other: Point = Point::new_2d(3, 4);
+  /// let set: HashSet<Point> = spot.line_to(other);
+  ///
+  /// assert!(set.contains(&Point::new_2d(1, 2)));
+  /// assert!(set.contains(&Point::new_2d(2, 2)));
+  /// assert!(set.contains(&Point::new_2d(2, 3)));
+  /// assert!(set.contains(&Point::new_2d(3, 3)));
+  /// assert!(set.contains(&Point::new_2d(3, 4)));
+  /// ```
+  pub fn line_to(self, other: Point) -> HashSet<Point> {
+    let distance: i32 = self.distance_to(other);
+    let mut set: HashSet<Point> = HashSet::new();
+
+    for index in 0..distance + 1 {
+      let t: f32 = index as f32 / distance as f32;
+      set.insert(point_round(point_lerp(self, other, t)));
+    }
+
+    set
   }
 
 }
@@ -303,5 +352,45 @@ impl Sub for Point {
     Point::new(self.q - rhs.q, self.r - rhs.r, self.t - rhs.t)
   }
 
+}
+
+/// Linear interpolation of floats with specified offset
+fn lerp(a: i32, b: i32, t: f32, o: f32) -> f32 {
+  let a = a as f32 + o;
+  let b = b as f32 + o;
+
+  a + ((b - a) * t)
+}
+
+/// Linear interpolation of points with small offset
+///
+/// The offset is used to prevent the interpolation from falling exactly
+/// on a border between two points. It is eliminated with rounding later.
+fn point_lerp(a: Point, b: Point, t: f32) -> (f32, f32, f32, f32) { (
+  lerp(a.q, b.q, t, 1e-6),
+  lerp(a.r, b.r, t, 1e-6),
+  lerp(a.s, b.s, t, -2e-6),
+  lerp(a.t, b.t, t, 1e-6),
+) }
+
+/// Round a float point back to a standard point
+fn point_round((q, r, s, t): (f32, f32, f32, f32)) -> Point {
+  let mut rq = q.round();
+  let mut rr = r.round();
+
+  let rs = s.round();
+  let rt = t.round();
+
+  let dq = (rq - q).abs();
+  let dr = (rr - r).abs();
+  let ds = (rs - s).abs();
+
+  if (dq > ds) && (dq > dr) {
+    rq = -rs - rr;
+  } else if ds < dr {
+    rr = -rq - rs;
+  }
+
+  Point::new(rq as i32, rr as i32, rt as i32)
 }
 
