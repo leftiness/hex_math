@@ -1,0 +1,6 @@
+[package]
+name = "hex_math"
+version = "1.0.0"
+authors = ["Brandon Parmenter <leftiness@gmail.com>"]
+
+[dependencies]
