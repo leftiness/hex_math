@@ -490,3 +490,34 @@ fn point_round((q, r, s, t): (f32, f32, f32, f32)) -> Point {
   spot
 }
 
+#[cfg(test)]
+mod tests {
+  #[allow(unused)]
+  use super::*;
+
+  #[test]
+  fn lerp() {
+    let result = super::lerp(1, 2, 0.5, 1e-6);
+
+    assert_eq!(result, 1.5 + 1e-6);
+  }
+
+  #[test]
+  fn point_lerp() {
+    let spot: Point = Point::new(1, 2, 5);
+    let other: Point = Point::new(3, 4, 10);
+    let result = super::point_lerp(spot, other, 0.5);
+    let expect = (2f32 + 1e-6, 3f32 + 1e-6, -5f32 - 2e-6, 7.5f32 + 1e-6);
+
+    assert_eq!(result, expect);
+  }
+
+  #[test]
+  fn point_round() {
+    let coordinates = (1.6, 1.6, -3.2, 2.5);
+    let spot: Point = super::point_round(coordinates);
+
+    assert_eq!(spot, Point::new(2, 1, 3));
+  }
+
+}
