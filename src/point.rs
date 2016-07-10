@@ -15,6 +15,7 @@
 
 use std::ops::{Add, Sub};
 use std::collections::HashSet;
+use std::cmp::{max, min};
 
 #[derive(Copy, Clone, Debug, Eq, Hash, PartialEq)]
 pub struct Point {
@@ -301,6 +302,82 @@ impl Point {
     for index in 0..distance + 1 {
       let t: f32 = index as f32 / distance as f32;
       set.insert(point_round(point_lerp(self, other, t)));
+    }
+
+    set
+  }
+
+  /// Determines the points within a specified three-dimensional range
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// # use hex_math::point::Point;
+  /// # use std::collections::HashSet;
+  ///
+  /// let spot: Point = Point::new(1, 2, 5);
+  /// let set: HashSet<Point> = spot.range_of(1);
+  ///
+  /// assert_eq!(set.len(), 9);
+  /// assert!(set.contains(&Point::new(1, 2, 5)));
+  /// assert!(set.contains(&Point::new(2, 2, 5)));
+  /// assert!(set.contains(&Point::new(1, 3, 5)));
+  /// assert!(set.contains(&Point::new(0, 3, 5)));
+  /// assert!(set.contains(&Point::new(0, 2, 5)));
+  /// assert!(set.contains(&Point::new(1, 1, 5)));
+  /// assert!(set.contains(&Point::new(2, 1, 5)));
+  /// assert!(set.contains(&Point::new(1, 2, 4)));
+  /// assert!(set.contains(&Point::new(1, 2, 6)));
+  /// ```
+  pub fn range_of(self, range: i32) -> HashSet<Point> {
+    let mut set: HashSet<Point> = self.range_of_2d(range);
+
+    for index in 1..range + 1 {
+      let diff = range - index;
+      let down: HashSet<Point> = self.up(index).range_of_2d(diff);
+      let up: HashSet<Point> = self.down(index).range_of_2d(diff);
+
+      set.extend(down);
+      set.extend(up);
+    }
+
+    set
+  }
+
+  /// Determine the points within a specified two-dimensional range
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// # use hex_math::point::Point;
+  /// # use std::collections::HashSet;
+  ///
+  /// let spot: Point = Point::new(1, 2, 5);
+  /// let set: HashSet<Point> = spot.range_of_2d(1);
+  ///
+  /// assert_eq!(set.len(), 7);
+  /// assert!(set.contains(&Point::new(1, 2, 5)));
+  /// assert!(set.contains(&Point::new(2, 2, 5)));
+  /// assert!(set.contains(&Point::new(1, 3, 5)));
+  /// assert!(set.contains(&Point::new(0, 3, 5)));
+  /// assert!(set.contains(&Point::new(0, 2, 5)));
+  /// assert!(set.contains(&Point::new(1, 1, 5)));
+  /// assert!(set.contains(&Point::new(2, 1, 5)));
+  /// ```
+  pub fn range_of_2d(self, range: i32) -> HashSet<Point> {
+    let mut set: HashSet<Point> = HashSet::new();
+
+    for dq in -range..range + 1 {
+      let lower: i32 = max(-range, -dq - range);
+      let upper: i32 = min(range, -dq + range);
+
+      for ds in lower..upper + 1 {
+        let dr: i32 = -dq - ds;
+        let point = self + Point::new(dq, dr, 0);
+
+        set.insert(point);
+      }
+
     }
 
     set
