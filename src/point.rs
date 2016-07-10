@@ -222,7 +222,7 @@ impl Point {
     Point::new(self.q, self.r, self.t - units)
   }
 
-  /// Calculate the distance measured in hexes between two points
+  /// Calculate the manhattan distance between two points
   ///
   /// Distance is rounded up to the next integer.
   ///
@@ -243,20 +243,14 @@ impl Point {
   /// let spot: Point = Point::new(1, 2, 5);
   /// let other: Point = Point::new(3, 4, 10);
   ///
-  /// assert_eq!(7, spot.distance(other));
+  /// assert_eq!(9, spot.distance(other));
   /// ```
   pub fn distance(self, other: Point) -> i32 {
     let diff: Point = self - other;
     let base = (diff.q.abs() + diff.r.abs() + diff.s.abs()) / 2;
     let height = diff.t.abs();
 
-    if height == 0 {
-      return base;
-    }
-
-    let hypot: f32 = (base.pow(2) + height.pow(2)) as f32;
-
-    hypot.sqrt().ceil() as i32
+    base + height
   }
 
   /// Determine the points in a line between two provided points
