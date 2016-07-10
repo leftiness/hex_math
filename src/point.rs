@@ -234,7 +234,7 @@ impl Point {
   /// let spot: Point = Point::new_2d(1, 2);
   /// let other: Point = Point::new_2d(3, 4);
   ///
-  /// assert_eq!(4, spot.distance_to(other));
+  /// assert_eq!(4, spot.distance(other));
   /// ```
   ///
   /// ```
@@ -243,9 +243,9 @@ impl Point {
   /// let spot: Point = Point::new(1, 2, 5);
   /// let other: Point = Point::new(3, 4, 10);
   ///
-  /// assert_eq!(7, spot.distance_to(other));
+  /// assert_eq!(7, spot.distance(other));
   /// ```
-  pub fn distance_to(self, other: Point) -> i32 {
+  pub fn distance(self, other: Point) -> i32 {
     let diff: Point = self - other;
     let base = (diff.q.abs() + diff.r.abs() + diff.s.abs()) / 2;
     let height = diff.t.abs();
@@ -269,7 +269,7 @@ impl Point {
   ///
   /// let spot: Point = Point::new(1, 2, 5);
   /// let other: Point = Point::new(3, 4, 10);
-  /// let set: HashSet<Point> = spot.line_to(other);
+  /// let set: HashSet<Point> = spot.line(other);
   ///
   /// assert!(set.contains(&Point::new(1, 2, 5)));
   /// assert!(set.contains(&Point::new(1, 2, 6)));
@@ -287,7 +287,7 @@ impl Point {
   ///
   /// let spot: Point = Point::new_2d(1, 2);
   /// let other: Point = Point::new_2d(3, 4);
-  /// let set: HashSet<Point> = spot.line_to(other);
+  /// let set: HashSet<Point> = spot.line(other);
   ///
   /// assert!(set.contains(&Point::new_2d(1, 2)));
   /// assert!(set.contains(&Point::new_2d(2, 2)));
@@ -295,8 +295,8 @@ impl Point {
   /// assert!(set.contains(&Point::new_2d(3, 3)));
   /// assert!(set.contains(&Point::new_2d(3, 4)));
   /// ```
-  pub fn line_to(self, other: Point) -> HashSet<Point> {
-    let distance: i32 = self.distance_to(other);
+  pub fn line(self, other: Point) -> HashSet<Point> {
+    let distance: i32 = self.distance(other);
     let mut set: HashSet<Point> = HashSet::new();
 
     for index in 0..distance + 1 {
@@ -316,7 +316,7 @@ impl Point {
   /// # use std::collections::HashSet;
   ///
   /// let spot: Point = Point::new(1, 2, 5);
-  /// let set: HashSet<Point> = spot.range_of(1);
+  /// let set: HashSet<Point> = spot.range(1);
   ///
   /// assert_eq!(set.len(), 9);
   /// assert!(set.contains(&Point::new(1, 2, 5)));
@@ -329,13 +329,13 @@ impl Point {
   /// assert!(set.contains(&Point::new(1, 2, 4)));
   /// assert!(set.contains(&Point::new(1, 2, 6)));
   /// ```
-  pub fn range_of(self, range: i32) -> HashSet<Point> {
-    let mut set: HashSet<Point> = self.range_of_2d(range);
+  pub fn range(self, range: i32) -> HashSet<Point> {
+    let mut set: HashSet<Point> = self.range_2d(range);
 
     for index in 1..range + 1 {
       let diff = range - index;
-      let down: HashSet<Point> = self.up(index).range_of_2d(diff);
-      let up: HashSet<Point> = self.down(index).range_of_2d(diff);
+      let down: HashSet<Point> = self.up(index).range_2d(diff);
+      let up: HashSet<Point> = self.down(index).range_2d(diff);
 
       set.extend(down);
       set.extend(up);
@@ -353,7 +353,7 @@ impl Point {
   /// # use std::collections::HashSet;
   ///
   /// let spot: Point = Point::new(1, 2, 5);
-  /// let set: HashSet<Point> = spot.range_of_2d(1);
+  /// let set: HashSet<Point> = spot.range_2d(1);
   ///
   /// assert_eq!(set.len(), 7);
   /// assert!(set.contains(&Point::new(1, 2, 5)));
@@ -364,7 +364,7 @@ impl Point {
   /// assert!(set.contains(&Point::new(1, 1, 5)));
   /// assert!(set.contains(&Point::new(2, 1, 5)));
   /// ```
-  pub fn range_of_2d(self, range: i32) -> HashSet<Point> {
+  pub fn range_2d(self, range: i32) -> HashSet<Point> {
     let mut set: HashSet<Point> = HashSet::new();
 
     for dq in -range..range + 1 {
