@@ -1,27 +1,28 @@
 //! Basic point on a coordinate plane
-//!
-//! # Examples
-//!
-//! Direction functions are chainable.
-//!
-//! ```
-//! # use hex_math::point::Point;
-//!
-//! let spot: Point = Point::new(1, 2, 5);
-//! let other: Point = spot.northwest(5).west(2).down(2);
-//!
-//! assert_eq!((-1, -3, 3), other.values());
-//! ```
 
 use std::ops::{Add, Sub};
 use std::collections::HashSet;
 use std::cmp::{max, min};
 
+/// Basic point on a coordinate plane
+///
+/// The point contains three coordinates (QRS) to describe its position in
+/// two dimensions and a fourth (T) to describe its third dimension.
+/// The first three are "cube" coordinates as they describe a 2D hexagon as
+/// if it were a cube in 3D space, making several algorithms easier to use.
 #[derive(Copy, Clone, Debug, Eq, Hash, PartialEq)]
 pub struct Point {
+
+  /// This can also be considered axis X on a cube.
   pub q: i32,
+
+  /// This can also be considered axis Z on a cube.
   pub r: i32,
+
+  /// This can also be considered axis Y on a cube.
   pub s: i32,
+
+  /// This is the height of the point in 3D space.
   pub t: i32,
 }
 
@@ -29,11 +30,11 @@ impl Point {
 
   /// Factory function for making new points
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// # use hex_math::point::Point;
-  ///
+  /// #
   /// let spot: Point = Point::new(1, 2, 5);
   /// ```
   pub fn new(q: i32, r: i32, t: i32) -> Point {
@@ -42,11 +43,11 @@ impl Point {
 
   /// Convenience function for making two-dimensional points
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// # use hex_math::point::Point;
-  ///
+  /// #
   /// let spot: Point = Point::new_2d(1, 2);
   /// ```
   pub fn new_2d(q: i32, r: i32) -> Point {
@@ -55,11 +56,11 @@ impl Point {
 
   /// Convenient getter for the point's axial coordinate values
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// # use hex_math::point::Point;
-  ///
+  /// #
   /// let spot: Point = Point::new(1, 2, 5);
   ///
   /// assert_eq!((1, 2, 5), spot.values());
@@ -69,7 +70,7 @@ impl Point {
   ///
   /// ```
   /// # use hex_math::point::Point;
-  ///
+  /// #
   /// let spot: Point = Point::new_2d(1, 2);
   /// let (q, r, _) = spot.values();
   ///
@@ -79,28 +80,28 @@ impl Point {
     (self.q, self.r, self.t)
   }
 
-  /// Convenient getter for the point's cuboid coordinate values
+  /// Convenient getter for the point's cube coordinate values
   ///
   /// # Exampes
   ///
   /// ```
   /// # use hex_math::point::Point;
-  ///
+  /// #
   /// let spot: Point = Point::new(1, 2, 5);
   ///
-  /// assert_eq!((1, 2, -3, 5), spot.values_cuboid());
+  /// assert_eq!((1, 2, -3, 5), spot.values_cube());
   /// ```
-  pub fn values_cuboid(&self) -> (i32, i32, i32, i32) {
+  pub fn values_cube(&self) -> (i32, i32, i32, i32) {
     (self.q, self.r, self.s, self.t)
   }
 
   /// Create a point which is relatively northwest a specified number of units
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// # use hex_math::point::Point;
-  ///
+  /// #
   /// let spot: Point = Point::new(1, 2, 5);
   /// let other: Point = spot.northwest(2);
   ///
@@ -112,11 +113,11 @@ impl Point {
 
   /// Create a point which is relatively west a specified number of units
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// # use hex_math::point::Point;
-  ///
+  /// #
   /// let spot: Point = Point::new(1, 2, 5);
   /// let other: Point = spot.west(2);
   ///
@@ -128,11 +129,11 @@ impl Point {
 
   /// Create a point which is relatively southwest a specified number of units
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// # use hex_math::point::Point;
-  ///
+  /// #
   /// let spot: Point = Point::new(1, 2, 5);
   /// let other: Point = spot.southwest(2);
   ///
@@ -144,11 +145,11 @@ impl Point {
 
   /// Create a point which is relatively southeast a specified number of units
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// # use hex_math::point::Point;
-  ///
+  /// #
   /// let spot: Point = Point::new(1, 2, 5);
   /// let other: Point = spot.southeast(2);
   ///
@@ -160,11 +161,11 @@ impl Point {
 
   /// Create a point which is relatively east a specified number of units
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// # use hex_math::point::Point;
-  ///
+  /// #
   /// let spot: Point = Point::new(1, 2, 5);
   /// let other: Point = spot.east(2);
   ///
@@ -176,11 +177,11 @@ impl Point {
 
   /// Create a point which is relatively northeast a specified number of units
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// # use hex_math::point::Point;
-  ///
+  /// #
   /// let spot: Point = Point::new(1, 2, 5);
   /// let other: Point = spot.northeast(2);
   ///
@@ -192,11 +193,11 @@ impl Point {
 
   /// Create a point which is relatively up a specified number of units
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// # use hex_math::point::Point;
-  ///
+  /// #
   /// let spot: Point = Point::new(1, 2, 5);
   /// let other: Point = spot.up(2);
   ///
@@ -208,11 +209,11 @@ impl Point {
 
   /// Create a point which is relatively down a specified number of units
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// # use hex_math::point::Point;
-  ///
+  /// #
   /// let spot: Point = Point::new(1, 2, 5);
   /// let other: Point = spot.down(2);
   ///
@@ -226,11 +227,11 @@ impl Point {
   ///
   /// Distance is rounded up to the next integer.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// # use hex_math::point::Point;
-  ///
+  /// #
   /// let spot: Point = Point::new_2d(1, 2);
   /// let other: Point = Point::new_2d(3, 4);
   ///
@@ -239,7 +240,7 @@ impl Point {
   ///
   /// ```
   /// # use hex_math::point::Point;
-  ///
+  /// #
   /// let spot: Point = Point::new(1, 2, 5);
   /// let other: Point = Point::new(3, 4, 10);
   ///
@@ -247,42 +248,62 @@ impl Point {
   /// ```
   pub fn distance(self, other: Point) -> i32 {
     let diff: Point = self - other;
-    let base = (diff.q.abs() + diff.r.abs() + diff.s.abs()) / 2;
+    let base = self.distance_2d(other);
     let height = diff.t.abs();
 
     base + height
   }
 
-  /// Determine the points in a line between two provided points
+  /// Calculate the manhattan distance between two points ignoring height
   ///
-  /// # Examples
+  /// Distance is rounded up to the next integer.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// # use hex_math::point::Point;
+  /// #
+  /// let spot: Point = Point::new(1, 2, 5);
+  /// let other: Point = Point::new(3, 4, 10);
+  ///
+  /// assert_eq!(4, spot.distance_2d(other));
+  /// ```
+  pub fn distance_2d(self, other: Point) -> i32 {
+    let diff: Point = self - other;
+    let distance = (diff.q.abs() + diff.r.abs() + diff.s.abs()) / 2;
+
+    distance
+  }
+
+  /// Find the points in a line between the current point and the one provided
+  ///
+  /// # Example
   ///
   /// ```
   /// # use hex_math::point::Point;
   /// # use std::collections::HashSet;
-  ///
+  /// #
   /// let spot: Point = Point::new(1, 2, 5);
   /// let other: Point = Point::new(3, 4, 10);
   /// let set: HashSet<Point> = spot.line(other);
   ///
+  /// assert_eq!(set.len(), 5);
   /// assert!(set.contains(&Point::new(1, 2, 5)));
-  /// assert!(set.contains(&Point::new(1, 2, 6)));
   /// assert!(set.contains(&Point::new(2, 2, 6)));
-  /// assert!(set.contains(&Point::new(2, 3, 7)));
   /// assert!(set.contains(&Point::new(2, 3, 8)));
-  /// assert!(set.contains(&Point::new(2, 4, 9)));
-  /// assert!(set.contains(&Point::new(3, 4, 9)));
+  /// assert!(set.contains(&Point::new(3, 3, 9)));
   /// assert!(set.contains(&Point::new(3, 4, 10)));
   /// ```
   ///
   /// ```
   /// # use hex_math::point::Point;
   /// # use std::collections::HashSet;
-  ///
+  /// #
   /// let spot: Point = Point::new_2d(1, 2);
   /// let other: Point = Point::new_2d(3, 4);
   /// let set: HashSet<Point> = spot.line(other);
   ///
+  /// assert_eq!(set.len(), 5);
   /// assert!(set.contains(&Point::new_2d(1, 2)));
   /// assert!(set.contains(&Point::new_2d(2, 2)));
   /// assert!(set.contains(&Point::new_2d(2, 3)));
@@ -290,25 +311,27 @@ impl Point {
   /// assert!(set.contains(&Point::new_2d(3, 4)));
   /// ```
   pub fn line(self, other: Point) -> HashSet<Point> {
-    let distance: i32 = self.distance(other);
+    let distance: i32 = self.distance_2d(other);
     let mut set: HashSet<Point> = HashSet::new();
 
     for index in 0..distance + 1 {
       let t: f32 = index as f32 / distance as f32;
-      set.insert(point_round(point_lerp(self, other, t)));
+      let spot: Point = point_round(point_lerp(self, other, t));
+
+      set.insert(spot);
     }
 
     set
   }
 
-  /// Determines the points within a specified three-dimensional range
+  /// Find the points within the provided manhattan distance
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// # use hex_math::point::Point;
   /// # use std::collections::HashSet;
-  ///
+  /// #
   /// let spot: Point = Point::new(1, 2, 5);
   /// let set: HashSet<Point> = spot.range(1);
   ///
@@ -338,14 +361,14 @@ impl Point {
     set
   }
 
-  /// Determine the points within a specified two-dimensional range
+  /// Find the points at the same height within the provided manhattan distance
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// # use hex_math::point::Point;
   /// # use std::collections::HashSet;
-  ///
+  /// #
   /// let spot: Point = Point::new(1, 2, 5);
   /// let set: HashSet<Point> = spot.range_2d(1);
   ///
@@ -379,46 +402,46 @@ impl Point {
 
 }
 
+/// Add one point to another
+///
+/// # Example
+///
+/// ```
+/// # use hex_math::point::Point;
+/// #
+/// let spot: Point = Point::new(1, 2, 5);
+/// let other: Point = Point::new(3, 4, 10);
+/// let result: Point = spot + other;
+///
+/// assert_eq!((4, 6, 15), result.values());
+/// ```
 impl Add for Point {
 
   type Output = Point;
 
-  /// Add one point to another
-  ///
-  /// # Examples
-  ///
-  /// ```
-  /// # use hex_math::point::Point;
-  ///
-  /// let spot: Point = Point::new(1, 2, 5);
-  /// let other: Point = Point::new(3, 4, 5);
-  /// let result: Point = spot + other;
-  ///
-  /// assert_eq!((4, 6, 10), result.values());
-  /// ```
   fn add(self, rhs: Point) -> Point {
     Point::new(self.q + rhs.q, self.r + rhs.r, self.t + rhs.t)
   }
 
 }
 
+/// Subtract one point from another
+///
+/// # Example
+///
+/// ```
+/// # use hex_math::point::Point;
+/// #
+/// let spot: Point = Point::new(1, 2, 5);
+/// let other: Point = Point::new(3, 4, 10);
+/// let result: Point = spot - other;
+///
+/// assert_eq!((-2, -2, -5), result.values());
+/// ```
 impl Sub for Point {
 
   type Output = Point;
 
-  /// Subtract one point from another
-  ///
-  /// # Examples
-  ///
-  /// ```
-  /// # use hex_math::point::Point;
-  ///
-  /// let spot: Point = Point::new(1, 2, 5);
-  /// let other: Point = Point::new(3, 4, 5);
-  /// let result: Point = spot - other;
-  ///
-  /// assert_eq!((-2, -2, 0), result.values());
-  /// ```
   fn sub(self, rhs: Point) -> Point {
     Point::new(self.q - rhs.q, self.r - rhs.r, self.t - rhs.t)
   }
@@ -462,6 +485,8 @@ fn point_round((q, r, s, t): (f32, f32, f32, f32)) -> Point {
     rr = -rq - rs;
   }
 
-  Point::new(rq as i32, rr as i32, rt as i32)
+  let spot: Point = Point::new(rq as i32, rr as i32, rt as i32);
+
+  spot
 }
 
