@@ -351,8 +351,8 @@ impl Point {
 
     for index in 1..range + 1 {
       let diff = range - index;
-      let down: HashSet<Point> = self.up(index).range_2d(diff);
-      let up: HashSet<Point> = self.down(index).range_2d(diff);
+      let up: HashSet<Point> = self.up(index).range_2d(diff);
+      let down: HashSet<Point> = self.down(index).range_2d(diff);
 
       set.extend(down);
       set.extend(up);
