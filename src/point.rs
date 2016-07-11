@@ -316,7 +316,7 @@ impl Point {
 
     for index in 0..distance + 1 {
       let t: f32 = index as f32 / distance as f32;
-      let spot: Point = point_round(point_lerp(self, other, t));
+      let spot: Point = util::point_round(util::point_lerp(self, other, t));
 
       set.insert(spot);
     }
@@ -346,7 +346,7 @@ impl Point {
   /// assert!(set.contains(&Point::new(1, 2, 4)));
   /// assert!(set.contains(&Point::new(1, 2, 6)));
   /// ```
-  pub fn range(self, range: i32) -> HashSet<Point> {
+  pub fn range(&self, range: i32) -> HashSet<Point> {
     let mut set: HashSet<Point> = self.range_2d(range);
 
     for index in 1..range + 1 {
@@ -381,7 +381,7 @@ impl Point {
   /// assert!(set.contains(&Point::new(1, 1, 5)));
   /// assert!(set.contains(&Point::new(2, 1, 5)));
   /// ```
-  pub fn range_2d(self, range: i32) -> HashSet<Point> {
+  pub fn range_2d(&self, range: i32) -> HashSet<Point> {
     let mut set: HashSet<Point> = HashSet::new();
 
     for dq in -range..range + 1 {
@@ -390,7 +390,7 @@ impl Point {
 
       for ds in lower..upper + 1 {
         let dr: i32 = -dq - ds;
-        let point = self + Point::new(dq, dr, 0);
+        let point = self.clone() + Point::new(dq, dr, 0);
 
         set.insert(point);
       }
@@ -398,6 +398,84 @@ impl Point {
     }
 
     set
+  }
+
+  /// Find reachable points within a specified range
+  ///
+  /// A point may be within range while being unreachable if the path to that
+  /// point is blocked by an invalid point.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// # use hex_math::point::Point;
+  /// # use std::collections::HashSet;
+  /// #
+  /// let spot: Point = Point::new(1, 2, 2);
+  /// let mut invalid: HashSet<Point> = HashSet::new();
+  ///
+  /// invalid.insert(Point::new(1, 1, 2));
+  /// invalid.insert(Point::new(2, 1, 2));
+  /// invalid.insert(Point::new(2, 2, 2));
+  /// invalid.insert(Point::new(1, 3, 2));
+  /// invalid.insert(Point::new(0, 3, 2));
+  /// invalid.insert(Point::new(1, 2, 1));
+  /// invalid.insert(Point::new(1, 2, 3));
+  ///
+  /// let result: HashSet<Point> = spot.flood(2, &invalid);
+  ///
+  /// assert_eq!(result.len(), 7);
+  /// assert!(result.contains(&spot));
+  /// assert!(result.contains(&Point::new(0, 2, 2)));
+  /// assert!(result.contains(&Point::new(0, 1, 2)));
+  /// assert!(result.contains(&Point::new(-1, 2, 2)));
+  /// assert!(result.contains(&Point::new(-1, 3, 2)));
+  /// assert!(result.contains(&Point::new(0, 2, 1)));
+  /// assert!(result.contains(&Point::new(0, 2, 3)));
+  /// ```
+  pub fn flood(
+    self,
+    range: i32,
+    invalid: &HashSet<Point>,
+  ) -> HashSet<Point> {
+    util::flood(self, range, Point::range, invalid)
+  }
+
+  /// Find reachable points of the same height within a specified range
+  ///
+  /// A point may be within range while being unreachable if the path to that
+  /// point is blocked by an invalid point.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// # use hex_math::point::Point;
+  /// # use std::collections::HashSet;
+  /// #
+  /// let spot: Point = Point::new_2d(1, 2);
+  /// let mut invalid: HashSet<Point> = HashSet::new();
+  ///
+  /// invalid.insert(Point::new_2d(1, 1));
+  /// invalid.insert(Point::new_2d(2, 1));
+  /// invalid.insert(Point::new_2d(2, 2));
+  /// invalid.insert(Point::new_2d(1, 3));
+  /// invalid.insert(Point::new_2d(0, 3));
+  ///
+  /// let result: HashSet<Point> = spot.flood_2d(2, &invalid);
+  ///
+  /// assert_eq!(result.len(), 5);
+  /// assert!(result.contains(&spot));
+  /// assert!(result.contains(&Point::new_2d(0, 2)));
+  /// assert!(result.contains(&Point::new_2d(0, 1)));
+  /// assert!(result.contains(&Point::new_2d(-1, 2)));
+  /// assert!(result.contains(&Point::new_2d(-1, 3)));
+  /// ```
+  pub fn flood_2d(
+    self,
+    range: i32,
+    invalid: &HashSet<Point>,
+  ) -> HashSet<Point> {
+    util::flood(self, range, Point::range_2d, invalid)
   }
 
 }
@@ -448,56 +526,99 @@ impl Sub for Point {
 
 }
 
-/// Linear interpolation of floats with specified offset
-fn lerp(a: i32, b: i32, t: f32, o: f32) -> f32 {
-  let a = a as f32 + o;
-  let b = b as f32 + o;
+mod util {
+  use super::Point;
+  use std::collections::HashSet;
 
-  a + ((b - a) * t)
-}
+  /// Linear interpolation of floats with specified offset
+  pub fn lerp(a: i32, b: i32, t: f32, o: f32) -> f32 {
+    let a = a as f32 + o;
+    let b = b as f32 + o;
 
-/// Linear interpolation of points with small offset
-///
-/// The offset is used to prevent the interpolation from falling exactly
-/// on a border between two points. It is eliminated with rounding later.
-fn point_lerp(a: Point, b: Point, t: f32) -> (f32, f32, f32, f32) { (
-  lerp(a.q, b.q, t, 1e-6),
-  lerp(a.r, b.r, t, 1e-6),
-  lerp(a.s, b.s, t, -2e-6),
-  lerp(a.t, b.t, t, 1e-6),
-) }
-
-/// Round a float point back to a standard point
-fn point_round((q, r, s, t): (f32, f32, f32, f32)) -> Point {
-  let mut rq = q.round();
-  let mut rr = r.round();
-
-  let rs = s.round();
-  let rt = t.round();
-
-  let dq = (rq - q).abs();
-  let dr = (rr - r).abs();
-  let ds = (rs - s).abs();
-
-  if (dq > ds) && (dq > dr) {
-    rq = -rs - rr;
-  } else if ds < dr {
-    rr = -rq - rs;
+    a + ((b - a) * t)
   }
 
-  let spot: Point = Point::new(rq as i32, rr as i32, rt as i32);
+  /// Linear interpolation of points with small offset
+  ///
+  /// The offset is used to prevent the interpolation from falling exactly
+  /// on a border between two points. It is eliminated with rounding later.
+  pub fn point_lerp(a: Point, b: Point, t: f32) -> (f32, f32, f32, f32) { (
+    lerp(a.q, b.q, t, 1e-6),
+    lerp(a.r, b.r, t, 1e-6),
+    lerp(a.s, b.s, t, -2e-6),
+    lerp(a.t, b.t, t, 1e-6),
+  ) }
 
-  spot
+  /// Round a float point back to a standard point
+  pub fn point_round((q, r, s, t): (f32, f32, f32, f32)) -> Point {
+    let mut rq = q.round();
+    let mut rr = r.round();
+
+    let rs = s.round();
+    let rt = t.round();
+
+    let dq = (rq - q).abs();
+    let dr = (rr - r).abs();
+    let ds = (rs - s).abs();
+
+    if (dq > ds) && (dq > dr) {
+      rq = -rs - rr;
+    } else if ds < dr {
+      rr = -rq - rs;
+    }
+
+    let spot: Point = Point::new(rq as i32, rr as i32, rt as i32);
+
+    spot
+  }
+
+  /// Find reachable points within a specified range with a provided function
+  pub fn flood(
+    start: Point,
+    range: i32,
+    range_fn: fn(&Point, i32) -> HashSet<Point>,
+    invalid: &HashSet<Point>,
+  ) -> HashSet<Point> {
+    let mut visited: HashSet<Point> = HashSet::new();
+    let mut fringes: Vec<Vec<Point>> = Vec::new();
+
+    if invalid.contains(&start) {
+      return visited;
+    }
+
+    fringes.push(vec![start]);
+    visited.insert(start);
+
+    for step in 1..range + 1 {
+      let mut found = vec![];
+
+      for point in &fringes[step as usize - 1] {
+        for neighbor in range_fn(point, 1) {
+          if !invalid.contains(&neighbor) && !visited.contains(&neighbor) {
+            found.push(neighbor);
+          }
+        }
+      }
+
+      visited.extend(&found);
+      fringes.push(found);
+    }
+
+    visited
+  }
+
 }
 
 #[cfg(test)]
 mod tests {
   #[allow(unused)]
-  use super::*;
+  use super::Point;
+  use super::util;
+  use std::collections::HashSet;
 
   #[test]
   fn lerp() {
-    let result = super::lerp(1, 2, 0.5, 1e-6);
+    let result = util::lerp(1, 2, 0.5, 1e-6);
 
     assert_eq!(result, 1.5 + 1e-6);
   }
@@ -506,7 +627,7 @@ mod tests {
   fn point_lerp() {
     let spot: Point = Point::new(1, 2, 5);
     let other: Point = Point::new(3, 4, 10);
-    let result = super::point_lerp(spot, other, 0.5);
+    let result = util::point_lerp(spot, other, 0.5);
     let expect = (2f32 + 1e-6, 3f32 + 1e-6, -5f32 - 2e-6, 7.5f32 + 1e-6);
 
     assert_eq!(result, expect);
@@ -515,9 +636,34 @@ mod tests {
   #[test]
   fn point_round() {
     let coordinates = (1.6, 1.6, -3.2, 2.5);
-    let spot: Point = super::point_round(coordinates);
+    let spot: Point = util::point_round(coordinates);
 
     assert_eq!(spot, Point::new(2, 1, 3));
+  }
+
+  #[test]
+  fn flood() {
+    let spot: Point = Point::new(0, 0, 0);
+    let mut invalid: HashSet<Point> = HashSet::new();
+
+    invalid.insert(Point::new(0, 0, 2));
+
+    fn range_1d(point: &Point, range: i32) -> HashSet<Point> {
+      let mut set: HashSet<Point> = HashSet::new();
+
+      set.insert(point.up(range));
+      set.insert(point.down(range));
+
+      set
+    };
+
+    let result: HashSet<Point> = util::flood(spot, 2, range_1d, &invalid);
+
+    assert_eq!(result.len(), 4);
+    assert!(result.contains(&spot));
+    assert!(result.contains(&Point::new(0, 0, 1)));
+    assert!(result.contains(&Point::new(0, 0, -1)));
+    assert!(result.contains(&Point::new(0, 0, -2)));
   }
 
 }
