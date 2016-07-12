@@ -1,0 +1,51 @@
+//! Useful stuff for rotating points
+
+use point::Point;
+
+/// Rotate the point a specified number of times
+///
+/// Positive rotations are clockwise.
+///
+/// # Example
+///
+/// ```
+/// use hex_math::point::Point;
+/// use hex_math::rotate::rotate;
+///
+/// let spot: Point = Point::new(1, 2, 5);
+///
+/// assert_eq!(rotate(&spot, 1), Point::new(-2, 3, 5));
+/// assert_eq!(rotate(&spot, 2), Point::new(-3, 1, 5));
+/// assert_eq!(rotate(&spot, 3), Point::new(-1, -2, 5));
+/// assert_eq!(rotate(&spot, 4), Point::new(2, -3, 5));
+/// assert_eq!(rotate(&spot, 5), Point::new(3, -1, 5));
+/// assert_eq!(rotate(&spot, 6), spot);
+/// assert_eq!(rotate(&spot, -1), Point::new(3, -1, 5));
+/// assert_eq!(rotate(&spot, -2), Point::new(2, -3, 5));
+/// assert_eq!(rotate(&spot, -3), Point::new(-1, -2, 5));
+/// assert_eq!(rotate(&spot, -4), Point::new(-3, 1, 5));
+/// assert_eq!(rotate(&spot, -5), Point::new(-2, 3, 5));
+/// assert_eq!(rotate(&spot, -6), spot);
+/// assert_eq!(rotate(&spot, -12), spot);
+/// ```
+pub fn rotate(point: &Point, mut times: i32) -> Point {
+
+  let (q, r, s, t) = point.values_cube();
+
+  times %= 6;
+
+  if times < 0 {
+    times += 6;
+  }
+
+  return match times {
+    1 => Point::new(-r, -s, t),
+    2 => Point::new(s, q, t),
+    3 => Point::new(-q, -r, t),
+    4 => Point::new(r, s, t),
+    5 => Point::new(-s, -q, t),
+    _ => point.clone(),
+  }
+
+}
+

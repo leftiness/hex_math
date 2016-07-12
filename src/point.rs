@@ -93,49 +93,6 @@ impl Point {
     (self.q, self.r, self.s, self.t)
   }
 
-  /// Rotate the point a specified number of times
-  ///
-  /// Positive rotations are clockwise.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// # use hex_math::point::Point;
-  /// #
-  /// let spot: Point = Point::new(1, 2, 5);
-  ///
-  /// assert_eq!(spot.rotate(1), Point::new(-2, 3, 5));
-  /// assert_eq!(spot.rotate(2), Point::new(-3, 1, 5));
-  /// assert_eq!(spot.rotate(3), Point::new(-1, -2, 5));
-  /// assert_eq!(spot.rotate(4), Point::new(2, -3, 5));
-  /// assert_eq!(spot.rotate(5), Point::new(3, -1, 5));
-  /// assert_eq!(spot.rotate(6), spot);
-  /// assert_eq!(spot.rotate(-1), Point::new(3, -1, 5));
-  /// assert_eq!(spot.rotate(-2), Point::new(2, -3, 5));
-  /// assert_eq!(spot.rotate(-3), Point::new(-1, -2, 5));
-  /// assert_eq!(spot.rotate(-4), Point::new(-3, 1, 5));
-  /// assert_eq!(spot.rotate(-5), Point::new(-2, 3, 5));
-  /// assert_eq!(spot.rotate(-6), spot);
-  /// ```
-  pub fn rotate(self, mut times: i32) -> Point {
-
-    let (q, r, s, t) = self.values_cube();
-
-    if times < 0 {
-      times += 6;
-    }
-
-    return match times % 6 {
-      1 => Point::new(-r, -s, t),
-      2 => Point::new(s, q, t),
-      3 => Point::new(-q, -r, t),
-      4 => Point::new(r, s, t),
-      5 => Point::new(-s, -q, t),
-      _ => self,
-    }
-
-  }
-
 }
 
 /// Add one point to another
