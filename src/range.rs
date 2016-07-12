@@ -13,8 +13,8 @@ use travel::{Direction, travel};
 /// ```
 /// use std::collections::HashSet;
 ///
-/// use hex_math::point::Point;
-/// use hex_math::range::range;
+/// use hex_math::Point;
+/// use hex_math::range;
 ///
 /// let spot: Point = Point::new(1, 2, 5);
 /// let set: HashSet<Point> = range(&spot, 1);
@@ -54,8 +54,8 @@ pub fn range(point: &Point, range: i32) -> HashSet<Point> {
 /// ```
 /// use std::collections::HashSet;
 ///
-/// use hex_math::point::Point;
-/// use hex_math::range::range_2d;
+/// use hex_math::Point;
+/// use hex_math::range_2d;
 ///
 /// let spot: Point = Point::new(1, 2, 5);
 /// let set: HashSet<Point> = range_2d(&spot, 1);
@@ -98,8 +98,8 @@ pub fn range_2d(point: &Point, range: i32) -> HashSet<Point> {
 /// ```
 /// use std::collections::HashSet;
 ///
-/// use hex_math::point::Point;
-/// use hex_math::range::flood;
+/// use hex_math::Point;
+/// use hex_math::flood;
 ///
 /// let spot: Point = Point::new(1, 2, 2);
 /// let mut invalid: HashSet<Point> = HashSet::new();
@@ -141,8 +141,8 @@ pub fn flood(
 /// ```
 /// use std::collections::HashSet;
 ///
-/// use hex_math::point::Point;
-/// use hex_math::range::flood_2d;
+/// use hex_math::Point;
+/// use hex_math::flood_2d;
 ///
 /// let spot: Point = Point::new_2d(1, 2);
 /// let mut invalid: HashSet<Point> = HashSet::new();

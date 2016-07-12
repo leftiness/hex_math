@@ -12,8 +12,8 @@ use distance::distance_2d;
 /// ```
 /// use std::collections::HashSet;
 ///
-/// use hex_math::point::Point;
-/// use hex_math::line::line;
+/// use hex_math::Point;
+/// use hex_math::line;
 ///
 /// let spot: Point = Point::new(1, 2, 5);
 /// let other: Point = Point::new(3, 4, 10);
@@ -30,8 +30,8 @@ use distance::distance_2d;
 /// ```
 /// use std::collections::HashSet;
 ///
-/// use hex_math::point::Point;
-/// use hex_math::line::line;
+/// use hex_math::Point;
+/// use hex_math::line;
 ///
 /// let spot: Point = Point::new_2d(1, 2);
 /// let other: Point = Point::new_2d(3, 4);

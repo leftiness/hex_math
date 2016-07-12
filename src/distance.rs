@@ -9,8 +9,8 @@ use point::Point;
 /// # Example
 ///
 /// ```
-/// use hex_math::point::Point;
-/// use hex_math::distance::distance;
+/// use hex_math::Point;
+/// use hex_math::distance;
 ///
 /// let spot: Point = Point::new_2d(1, 2);
 /// let other: Point = Point::new_2d(3, 4);
@@ -19,8 +19,8 @@ use point::Point;
 /// ```
 ///
 /// ```
-/// use hex_math::point::Point;
-/// use hex_math::distance::distance;
+/// use hex_math::Point;
+/// use hex_math::distance;
 ///
 /// let spot: Point = Point::new(1, 2, 5);
 /// let other: Point = Point::new(3, 4, 10);
@@ -44,8 +44,8 @@ pub fn distance(point: &Point, other: &Point) -> i32 {
 /// # Example
 ///
 /// ```
-/// use hex_math::point::Point;
-/// use hex_math::distance::distance_2d;
+/// use hex_math::Point;
+/// use hex_math::distance_2d;
 ///
 /// let spot: Point = Point::new(1, 2, 5);
 /// let other: Point = Point::new(3, 4, 10);

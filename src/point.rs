@@ -31,7 +31,7 @@ impl Point {
   /// # Example
   ///
   /// ```
-  /// use hex_math::point::Point;
+  /// use hex_math::Point;
   ///
   /// let spot: Point = Point::new(1, 2, 5);
   /// ```
@@ -44,7 +44,7 @@ impl Point {
   /// Example
   ///
   /// ```
-  /// use hex_math::point::Point;
+  /// use hex_math::Point;
   ///
   /// let spot: Point = Point::new_2d(1, 2);
   /// ```
@@ -57,7 +57,7 @@ impl Point {
   /// # Example
   ///
   /// ```
-  /// use hex_math::point::Point;
+  /// use hex_math::Point;
   ///
   /// let spot: Point = Point::new(1, 2, 5);
   ///
@@ -67,7 +67,7 @@ impl Point {
   /// Those using two-dimensional points may simply ignore a value.
   ///
   /// ```
-  /// use hex_math::point::Point;
+  /// use hex_math::Point;
   ///
   /// let spot: Point = Point::new_2d(1, 2);
   /// let (q, r, _) = spot.values();
@@ -83,7 +83,7 @@ impl Point {
   /// # Exampes
   ///
   /// ```
-  /// use hex_math::point::Point;
+  /// use hex_math::Point;
   ///
   /// let spot: Point = Point::new(1, 2, 5);
   ///
@@ -100,7 +100,7 @@ impl Point {
 /// # Example
 ///
 /// ```
-/// use hex_math::point::Point;
+/// use hex_math::Point;
 ///
 /// let spot: Point = Point::new(1, 2, 5);
 /// let other: Point = Point::new(3, 4, 10);
@@ -123,7 +123,7 @@ impl Add for Point {
 /// # Example
 ///
 /// ```
-/// use hex_math::point::Point;
+/// use hex_math::Point;
 ///
 /// let spot: Point = Point::new(1, 2, 5);
 /// let other: Point = Point::new(3, 4, 10);
