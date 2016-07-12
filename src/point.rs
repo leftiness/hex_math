@@ -4,6 +4,8 @@ use std::ops::{Add, Sub};
 use std::collections::HashSet;
 use std::cmp::{max, min};
 
+use travel::{Direction, travel};
+
 /// Basic point on a coordinate plane
 ///
 /// The point contains three coordinates (QRS) to describe its position in
@@ -93,134 +95,6 @@ impl Point {
   /// ```
   pub fn values_cube(&self) -> (i32, i32, i32, i32) {
     (self.q, self.r, self.s, self.t)
-  }
-
-  /// Create a point which is relatively northwest a specified number of units
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// # use hex_math::point::Point;
-  /// #
-  /// let spot: Point = Point::new(1, 2, 5);
-  /// let other: Point = spot.northwest(2);
-  ///
-  /// assert_eq!((1, 0, 5), other.values());
-  /// ```
-  pub fn northwest(&self, units: i32) -> Point {
-    Point::new(self.q, self.r - units, self.t)
-  }
-
-  /// Create a point which is relatively west a specified number of units
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// # use hex_math::point::Point;
-  /// #
-  /// let spot: Point = Point::new(1, 2, 5);
-  /// let other: Point = spot.west(2);
-  ///
-  /// assert_eq!((-1, 2, 5), other.values());
-  /// ```
-  pub fn west(&self, units: i32) -> Point {
-    Point::new(self.q - units, self.r, self.t)
-  }
-
-  /// Create a point which is relatively southwest a specified number of units
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// # use hex_math::point::Point;
-  /// #
-  /// let spot: Point = Point::new(1, 2, 5);
-  /// let other: Point = spot.southwest(2);
-  ///
-  /// assert_eq!((-1, 4, 5), other.values());
-  /// ```
-  pub fn southwest(&self, units: i32) -> Point {
-    Point::new(self.q - units, self.r + units, self.t)
-  }
-
-  /// Create a point which is relatively southeast a specified number of units
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// # use hex_math::point::Point;
-  /// #
-  /// let spot: Point = Point::new(1, 2, 5);
-  /// let other: Point = spot.southeast(2);
-  ///
-  /// assert_eq!((1, 4, 5), other.values());
-  /// ```
-  pub fn southeast(&self, units: i32) -> Point {
-    Point::new(self.q, self.r + units, self.t)
-  }
-
-  /// Create a point which is relatively east a specified number of units
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// # use hex_math::point::Point;
-  /// #
-  /// let spot: Point = Point::new(1, 2, 5);
-  /// let other: Point = spot.east(2);
-  ///
-  /// assert_eq!((3, 2, 5), other.values());
-  /// ```
-  pub fn east(&self, units: i32) -> Point {
-    Point::new(self.q + units, self.r, self.t)
-  }
-
-  /// Create a point which is relatively northeast a specified number of units
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// # use hex_math::point::Point;
-  /// #
-  /// let spot: Point = Point::new(1, 2, 5);
-  /// let other: Point = spot.northeast(2);
-  ///
-  /// assert_eq!((3, 0, 5), other.values());
-  /// ```
-  pub fn northeast(&self, units: i32) -> Point {
-    Point::new(self.q + units, self.r - units, self.t)
-  }
-
-  /// Create a point which is relatively up a specified number of units
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// # use hex_math::point::Point;
-  /// #
-  /// let spot: Point = Point::new(1, 2, 5);
-  /// let other: Point = spot.up(2);
-  ///
-  /// assert_eq!((1, 2, 7), other.values());
-  /// ```
-  pub fn up(&self, units: i32) -> Point {
-    Point::new(self.q, self.r, self.t + units)
-  }
-
-  /// Create a point which is relatively down a specified number of units
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// # use hex_math::point::Point;
-  /// #
-  /// let spot: Point = Point::new(1, 2, 5);
-  /// let other: Point = spot.down(2);
-  ///
-  /// assert_eq!((1, 2, 3), other.values());
-  /// ```
-  pub fn down(&self, units: i32) -> Point {
-    Point::new(self.q, self.r, self.t - units)
   }
 
   /// Calculate the manhattan distance between two points
@@ -351,11 +225,13 @@ impl Point {
 
     for index in 1..range + 1 {
       let diff = range - index;
-      let up: HashSet<Point> = self.up(index).range_2d(diff);
-      let down: HashSet<Point> = self.down(index).range_2d(diff);
+      let up: Point = travel(&self, Direction::Up, index);
+      let down: Point = travel(&self, Direction::Down, index);
+      let up_range: HashSet<Point> = up.range_2d(diff);
+      let down_range: HashSet<Point> = down.range_2d(diff);
 
-      set.extend(down);
-      set.extend(up);
+      set.extend(up_range);
+      set.extend(down_range);
     }
 
     set
@@ -655,8 +531,11 @@ mod util {
 #[cfg(test)]
 mod tests {
   #[allow(unused)]
+  use travel::{Direction, travel};
+
   use super::Point;
   use super::util;
+
   use std::collections::HashSet;
 
   #[test]
@@ -693,9 +572,11 @@ mod tests {
 
     fn range_1d(point: &Point, range: i32) -> HashSet<Point> {
       let mut set: HashSet<Point> = HashSet::new();
+      let up: Point = travel(&point, Direction::Up, range);
+      let down: Point = travel(&point, Direction::Down, range);
 
-      set.insert(point.up(range));
-      set.insert(point.down(range));
+      set.insert(up);
+      set.insert(down);
 
       set
     };
