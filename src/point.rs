@@ -5,6 +5,7 @@ use std::collections::HashSet;
 use std::cmp::{max, min};
 
 use travel::{Direction, travel};
+use distance::{distance, distance_2d};
 
 /// Basic point on a coordinate plane
 ///
@@ -97,58 +98,6 @@ impl Point {
     (self.q, self.r, self.s, self.t)
   }
 
-  /// Calculate the manhattan distance between two points
-  ///
-  /// Distance is rounded up to the next integer.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// # use hex_math::point::Point;
-  /// #
-  /// let spot: Point = Point::new_2d(1, 2);
-  /// let other: Point = Point::new_2d(3, 4);
-  ///
-  /// assert_eq!(4, spot.distance(other));
-  /// ```
-  ///
-  /// ```
-  /// # use hex_math::point::Point;
-  /// #
-  /// let spot: Point = Point::new(1, 2, 5);
-  /// let other: Point = Point::new(3, 4, 10);
-  ///
-  /// assert_eq!(9, spot.distance(other));
-  /// ```
-  pub fn distance(self, other: Point) -> i32 {
-    let diff: Point = self - other;
-    let base = self.distance_2d(other);
-    let height = diff.t.abs();
-
-    base + height
-  }
-
-  /// Calculate the manhattan distance between two points ignoring height
-  ///
-  /// Distance is rounded up to the next integer.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// # use hex_math::point::Point;
-  /// #
-  /// let spot: Point = Point::new(1, 2, 5);
-  /// let other: Point = Point::new(3, 4, 10);
-  ///
-  /// assert_eq!(4, spot.distance_2d(other));
-  /// ```
-  pub fn distance_2d(self, other: Point) -> i32 {
-    let diff: Point = self - other;
-    let distance = (diff.q.abs() + diff.r.abs() + diff.s.abs()) / 2;
-
-    distance
-  }
-
   /// Find the points in a line between the current point and the one provided
   ///
   /// # Example
@@ -185,7 +134,7 @@ impl Point {
   /// assert!(set.contains(&Point::new_2d(3, 4)));
   /// ```
   pub fn line(self, other: Point) -> HashSet<Point> {
-    let distance: i32 = self.distance_2d(other);
+    let distance: i32 = distance_2d(&self, &other);
     let mut set: HashSet<Point> = HashSet::new();
 
     for index in 0..distance + 1 {
