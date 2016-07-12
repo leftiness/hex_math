@@ -31,8 +31,8 @@ impl Point {
   /// # Example
   ///
   /// ```
-  /// # use hex_math::point::Point;
-  /// #
+  /// use hex_math::point::Point;
+  ///
   /// let spot: Point = Point::new(1, 2, 5);
   /// ```
   pub fn new(q: i32, r: i32, t: i32) -> Point {
@@ -41,11 +41,11 @@ impl Point {
 
   /// Convenience function for making two-dimensional points
   ///
-  /// # Example
+  /// Example
   ///
   /// ```
-  /// # use hex_math::point::Point;
-  /// #
+  /// use hex_math::point::Point;
+  ///
   /// let spot: Point = Point::new_2d(1, 2);
   /// ```
   pub fn new_2d(q: i32, r: i32) -> Point {
@@ -57,8 +57,8 @@ impl Point {
   /// # Example
   ///
   /// ```
-  /// # use hex_math::point::Point;
-  /// #
+  /// use hex_math::point::Point;
+  ///
   /// let spot: Point = Point::new(1, 2, 5);
   ///
   /// assert_eq!((1, 2, 5), spot.values());
@@ -67,8 +67,8 @@ impl Point {
   /// Those using two-dimensional points may simply ignore a value.
   ///
   /// ```
-  /// # use hex_math::point::Point;
-  /// #
+  /// use hex_math::point::Point;
+  ///
   /// let spot: Point = Point::new_2d(1, 2);
   /// let (q, r, _) = spot.values();
   ///
@@ -83,8 +83,8 @@ impl Point {
   /// # Exampes
   ///
   /// ```
-  /// # use hex_math::point::Point;
-  /// #
+  /// use hex_math::point::Point;
+  ///
   /// let spot: Point = Point::new(1, 2, 5);
   ///
   /// assert_eq!((1, 2, -3, 5), spot.values_cube());
@@ -100,8 +100,8 @@ impl Point {
 /// # Example
 ///
 /// ```
-/// # use hex_math::point::Point;
-/// #
+/// use hex_math::point::Point;
+///
 /// let spot: Point = Point::new(1, 2, 5);
 /// let other: Point = Point::new(3, 4, 10);
 /// let result: Point = spot + other;
@@ -123,8 +123,8 @@ impl Add for Point {
 /// # Example
 ///
 /// ```
-/// # use hex_math::point::Point;
-/// #
+/// use hex_math::point::Point;
+///
 /// let spot: Point = Point::new(1, 2, 5);
 /// let other: Point = Point::new(3, 4, 10);
 /// let result: Point = spot - other;
