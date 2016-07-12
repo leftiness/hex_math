@@ -15,9 +15,9 @@ use distance::distance_2d;
 /// use hex_math::Point;
 /// use hex_math::line;
 ///
-/// let spot: Point = Point::new(1, 2, 5);
+/// let point: Point = Point::new(1, 2, 5);
 /// let other: Point = Point::new(3, 4, 10);
-/// let set: HashSet<Point> = line(&spot, &other);
+/// let set: HashSet<Point> = line(&point, &other);
 ///
 /// assert_eq!(set.len(), 5);
 /// assert!(set.contains(&Point::new(1, 2, 5)));
@@ -33,9 +33,9 @@ use distance::distance_2d;
 /// use hex_math::Point;
 /// use hex_math::line;
 ///
-/// let spot: Point = Point::new_2d(1, 2);
+/// let point: Point = Point::new_2d(1, 2);
 /// let other: Point = Point::new_2d(3, 4);
-/// let set: HashSet<Point> = line(&spot, &other);
+/// let set: HashSet<Point> = line(&point, &other);
 ///
 /// assert_eq!(set.len(), 5);
 /// assert!(set.contains(&Point::new_2d(1, 2)));
@@ -50,9 +50,9 @@ pub fn line(point: &Point, other: &Point) -> HashSet<Point> {
 
   for index in 0..distance + 1 {
     let t: f32 = index as f32 / distance as f32;
-    let spot: Point = util::point_round(util::point_lerp(&point, &other, t));
+    let found: Point = util::point_round(util::point_lerp(&point, &other, t));
 
-    set.insert(spot);
+    set.insert(found);
   }
 
   set
@@ -98,9 +98,9 @@ mod util {
       rr = -rq - rs;
     }
 
-    let spot: Point = Point::new(rq as i32, rr as i32, rt as i32);
+    let point: Point = Point::new(rq as i32, rr as i32, rt as i32);
 
-    spot
+    point
   }
 
 }
@@ -120,9 +120,9 @@ mod tests {
 
   #[test]
   fn point_lerp() {
-    let spot: Point = Point::new(1, 2, 5);
+    let point: Point = Point::new(1, 2, 5);
     let other: Point = Point::new(3, 4, 10);
-    let result = util::point_lerp(&spot, &other, 0.5);
+    let result = util::point_lerp(&point, &other, 0.5);
     let expect = (2f32 + 1e-6, 3f32 + 1e-6, -5f32 - 2e-6, 7.5f32 + 1e-6);
 
     assert_eq!(result, expect);
@@ -131,9 +131,9 @@ mod tests {
   #[test]
   fn point_round() {
     let coordinates = (1.6, 1.6, -3.2, 2.5);
-    let spot: Point = util::point_round(coordinates);
+    let point: Point = util::point_round(coordinates);
 
-    assert_eq!(spot, Point::new(2, 1, 3));
+    assert_eq!(point, Point::new(2, 1, 3));
   }
 
 }

@@ -16,8 +16,8 @@ use travel::{Direction, travel};
 /// use hex_math::Point;
 /// use hex_math::range;
 ///
-/// let spot: Point = Point::new(1, 2, 5);
-/// let set: HashSet<Point> = range(&spot, 1);
+/// let point: Point = Point::new(1, 2, 5);
+/// let set: HashSet<Point> = range(&point, 1);
 ///
 /// assert_eq!(set.len(), 9);
 /// assert!(set.contains(&Point::new(1, 2, 5)));
@@ -57,8 +57,8 @@ pub fn range(point: &Point, range: i32) -> HashSet<Point> {
 /// use hex_math::Point;
 /// use hex_math::range_2d;
 ///
-/// let spot: Point = Point::new(1, 2, 5);
-/// let set: HashSet<Point> = range_2d(&spot, 1);
+/// let point: Point = Point::new(1, 2, 5);
+/// let set: HashSet<Point> = range_2d(&point, 1);
 ///
 /// assert_eq!(set.len(), 7);
 /// assert!(set.contains(&Point::new(1, 2, 5)));
@@ -101,7 +101,7 @@ pub fn range_2d(point: &Point, range: i32) -> HashSet<Point> {
 /// use hex_math::Point;
 /// use hex_math::flood;
 ///
-/// let spot: Point = Point::new(1, 2, 2);
+/// let point: Point = Point::new(1, 2, 2);
 /// let mut invalid: HashSet<Point> = HashSet::new();
 ///
 /// invalid.insert(Point::new(1, 1, 2));
@@ -112,10 +112,10 @@ pub fn range_2d(point: &Point, range: i32) -> HashSet<Point> {
 /// invalid.insert(Point::new(1, 2, 1));
 /// invalid.insert(Point::new(1, 2, 3));
 ///
-/// let result: HashSet<Point> = flood(&spot, 2, &invalid);
+/// let result: HashSet<Point> = flood(&point, 2, &invalid);
 ///
 /// assert_eq!(result.len(), 7);
-/// assert!(result.contains(&spot));
+/// assert!(result.contains(&point));
 /// assert!(result.contains(&Point::new(0, 2, 2)));
 /// assert!(result.contains(&Point::new(0, 1, 2)));
 /// assert!(result.contains(&Point::new(-1, 2, 2)));
@@ -144,7 +144,7 @@ pub fn flood(
 /// use hex_math::Point;
 /// use hex_math::flood_2d;
 ///
-/// let spot: Point = Point::new_2d(1, 2);
+/// let point: Point = Point::new_2d(1, 2);
 /// let mut invalid: HashSet<Point> = HashSet::new();
 ///
 /// invalid.insert(Point::new_2d(1, 1));
@@ -153,10 +153,10 @@ pub fn flood(
 /// invalid.insert(Point::new_2d(1, 3));
 /// invalid.insert(Point::new_2d(0, 3));
 ///
-/// let result: HashSet<Point> = flood_2d(&spot, 2, &invalid);
+/// let result: HashSet<Point> = flood_2d(&point, 2, &invalid);
 ///
 /// assert_eq!(result.len(), 5);
-/// assert!(result.contains(&spot));
+/// assert!(result.contains(&point));
 /// assert!(result.contains(&Point::new_2d(0, 2)));
 /// assert!(result.contains(&Point::new_2d(0, 1)));
 /// assert!(result.contains(&Point::new_2d(-1, 2)));
@@ -224,7 +224,7 @@ mod tests {
 
   #[test]
   fn flood() {
-    let spot: Point = Point::new(0, 0, 0);
+    let point: Point = Point::new(0, 0, 0);
     let mut invalid: HashSet<Point> = HashSet::new();
 
     invalid.insert(Point::new(0, 0, 2));
@@ -240,10 +240,10 @@ mod tests {
       set
     };
 
-    let result: HashSet<Point> = util::flood(&spot, 2, range_1d, &invalid);
+    let result: HashSet<Point> = util::flood(&point, 2, range_1d, &invalid);
 
     assert_eq!(result.len(), 4);
-    assert!(result.contains(&spot));
+    assert!(result.contains(&point));
     assert!(result.contains(&Point::new(0, 0, 1)));
     assert!(result.contains(&Point::new(0, 0, -1)));
     assert!(result.contains(&Point::new(0, 0, -2)));

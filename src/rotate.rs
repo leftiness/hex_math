@@ -12,21 +12,21 @@ use point::Point;
 /// use hex_math::Point;
 /// use hex_math::rotate;
 ///
-/// let spot: Point = Point::new(1, 2, 5);
+/// let point: Point = Point::new(1, 2, 5);
 ///
-/// assert_eq!(rotate(&spot, 1), Point::new(-2, 3, 5));
-/// assert_eq!(rotate(&spot, 2), Point::new(-3, 1, 5));
-/// assert_eq!(rotate(&spot, 3), Point::new(-1, -2, 5));
-/// assert_eq!(rotate(&spot, 4), Point::new(2, -3, 5));
-/// assert_eq!(rotate(&spot, 5), Point::new(3, -1, 5));
-/// assert_eq!(rotate(&spot, 6), spot);
-/// assert_eq!(rotate(&spot, -1), Point::new(3, -1, 5));
-/// assert_eq!(rotate(&spot, -2), Point::new(2, -3, 5));
-/// assert_eq!(rotate(&spot, -3), Point::new(-1, -2, 5));
-/// assert_eq!(rotate(&spot, -4), Point::new(-3, 1, 5));
-/// assert_eq!(rotate(&spot, -5), Point::new(-2, 3, 5));
-/// assert_eq!(rotate(&spot, -6), spot);
-/// assert_eq!(rotate(&spot, -12), spot);
+/// assert_eq!(rotate(&point, 1), Point::new(-2, 3, 5));
+/// assert_eq!(rotate(&point, 2), Point::new(-3, 1, 5));
+/// assert_eq!(rotate(&point, 3), Point::new(-1, -2, 5));
+/// assert_eq!(rotate(&point, 4), Point::new(2, -3, 5));
+/// assert_eq!(rotate(&point, 5), Point::new(3, -1, 5));
+/// assert_eq!(rotate(&point, 6), point);
+/// assert_eq!(rotate(&point, -1), Point::new(3, -1, 5));
+/// assert_eq!(rotate(&point, -2), Point::new(2, -3, 5));
+/// assert_eq!(rotate(&point, -3), Point::new(-1, -2, 5));
+/// assert_eq!(rotate(&point, -4), Point::new(-3, 1, 5));
+/// assert_eq!(rotate(&point, -5), Point::new(-2, 3, 5));
+/// assert_eq!(rotate(&point, -6), point);
+/// assert_eq!(rotate(&point, -12), point);
 /// ```
 pub fn rotate(point: &Point, mut times: i32) -> Point {
 

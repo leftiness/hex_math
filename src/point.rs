@@ -33,7 +33,7 @@ impl Point {
   /// ```
   /// use hex_math::Point;
   ///
-  /// let spot: Point = Point::new(1, 2, 5);
+  /// let point: Point = Point::new(1, 2, 5);
   /// ```
   pub fn new(q: i32, r: i32, t: i32) -> Point {
     Point {q: q, r: r, s: -q - r, t: t}
@@ -46,7 +46,7 @@ impl Point {
   /// ```
   /// use hex_math::Point;
   ///
-  /// let spot: Point = Point::new_2d(1, 2);
+  /// let point: Point = Point::new_2d(1, 2);
   /// ```
   pub fn new_2d(q: i32, r: i32) -> Point {
     Point::new(q, r, 0)
@@ -59,9 +59,9 @@ impl Point {
   /// ```
   /// use hex_math::Point;
   ///
-  /// let spot: Point = Point::new(1, 2, 5);
+  /// let point: Point = Point::new(1, 2, 5);
   ///
-  /// assert_eq!((1, 2, 5), spot.values());
+  /// assert_eq!((1, 2, 5), point.values());
   /// ```
   ///
   /// Those using two-dimensional points may simply ignore a value.
@@ -69,8 +69,8 @@ impl Point {
   /// ```
   /// use hex_math::Point;
   ///
-  /// let spot: Point = Point::new_2d(1, 2);
-  /// let (q, r, _) = spot.values();
+  /// let point: Point = Point::new_2d(1, 2);
+  /// let (q, r, _) = point.values();
   ///
   /// assert_eq!((1, 2), (q, r));
   /// ```
@@ -85,9 +85,9 @@ impl Point {
   /// ```
   /// use hex_math::Point;
   ///
-  /// let spot: Point = Point::new(1, 2, 5);
+  /// let point: Point = Point::new(1, 2, 5);
   ///
-  /// assert_eq!((1, 2, -3, 5), spot.values_cube());
+  /// assert_eq!((1, 2, -3, 5), point.values_cube());
   /// ```
   pub fn values_cube(&self) -> (i32, i32, i32, i32) {
     (self.q, self.r, self.s, self.t)
@@ -102,9 +102,9 @@ impl Point {
 /// ```
 /// use hex_math::Point;
 ///
-/// let spot: Point = Point::new(1, 2, 5);
+/// let point: Point = Point::new(1, 2, 5);
 /// let other: Point = Point::new(3, 4, 10);
-/// let result: Point = spot + other;
+/// let result: Point = point + other;
 ///
 /// assert_eq!((4, 6, 15), result.values());
 /// ```
@@ -125,9 +125,9 @@ impl Add for Point {
 /// ```
 /// use hex_math::Point;
 ///
-/// let spot: Point = Point::new(1, 2, 5);
+/// let point: Point = Point::new(1, 2, 5);
 /// let other: Point = Point::new(3, 4, 10);
-/// let result: Point = spot - other;
+/// let result: Point = point - other;
 ///
 /// assert_eq!((-2, -2, -5), result.values());
 /// ```

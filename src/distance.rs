@@ -12,20 +12,20 @@ use point::Point;
 /// use hex_math::Point;
 /// use hex_math::distance;
 ///
-/// let spot: Point = Point::new_2d(1, 2);
+/// let point: Point = Point::new_2d(1, 2);
 /// let other: Point = Point::new_2d(3, 4);
 ///
-/// assert_eq!(4, distance(&spot, &other));
+/// assert_eq!(4, distance(&point, &other));
 /// ```
 ///
 /// ```
 /// use hex_math::Point;
 /// use hex_math::distance;
 ///
-/// let spot: Point = Point::new(1, 2, 5);
+/// let point: Point = Point::new(1, 2, 5);
 /// let other: Point = Point::new(3, 4, 10);
 ///
-/// assert_eq!(9, distance(&spot, &other));
+/// assert_eq!(9, distance(&point, &other));
 /// ```
 pub fn distance(point: &Point, other: &Point) -> i32 {
   let point = point.clone();
@@ -47,10 +47,10 @@ pub fn distance(point: &Point, other: &Point) -> i32 {
 /// use hex_math::Point;
 /// use hex_math::distance_2d;
 ///
-/// let spot: Point = Point::new(1, 2, 5);
+/// let point: Point = Point::new(1, 2, 5);
 /// let other: Point = Point::new(3, 4, 10);
 ///
-/// assert_eq!(4, distance_2d(&spot, &other));
+/// assert_eq!(4, distance_2d(&point, &other));
 /// ```
 pub fn distance_2d(point: &Point, other: &Point) -> i32 {
   let point = point.clone();
