@@ -3,4 +3,5 @@
 pub mod point;
 pub mod travel;
 pub mod distance;
+pub mod line;
 
