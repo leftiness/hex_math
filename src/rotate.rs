@@ -9,8 +9,7 @@ use point::Point;
 /// # Example
 ///
 /// ```
-/// use hex_math::Point;
-/// use hex_math::rotate;
+/// use hex_math::{Point, rotate};
 ///
 /// let point: Point = Point::new(1, 2, 5);
 ///

@@ -19,8 +19,7 @@ pub enum Direction {
 /// # Example
 ///
 /// ```
-/// use hex_math::Point;
-/// use hex_math::{Direction, travel};
+/// use hex_math::{Direction, Point, travel};
 ///
 /// let point: Point = Point::new(1, 2, 5);
 ///
