@@ -3,7 +3,6 @@
 use std::collections::HashSet;
 
 use point::Point;
-use distance::{distance, distance_2d};
 
 /// Find the points in a line between the current point and the one provided
 ///
@@ -43,32 +42,158 @@ use distance::{distance, distance_2d};
 /// assert!(set.contains(&Point::new_2d(3, 4)));
 /// ```
 pub fn line(point: &Point, other: &Point) -> HashSet<Point> {
-  let mut set: HashSet<Point> = HashSet::new();
+  util::line(&point, &other, None, None)
+}
 
-  if &point == &other {
-    set.insert(point.clone());
+/// Find the points within range in a line through two points
+///
+/// # Example
+///
+/// ```
+/// use std::collections::HashSet;
+///
+/// use hex_math::{line_through, Point};
+///
+/// let point: Point = Point::new(1, 2, 5);
+/// let other: Point = Point::new(2, 2, 6);
+/// let set: HashSet<Point> = line_through(&point, &other, 3);
+///
+/// assert_eq!(set.len(), 4);
+/// assert!(set.contains(&Point::new(1, 2, 5)));
+/// assert!(set.contains(&Point::new(2, 2, 6)));
+/// assert!(set.contains(&Point::new(3, 2, 7)));
+/// assert!(set.contains(&Point::new(4, 2, 8)));
+/// ```
+///
+/// ```
+/// use std::collections::HashSet;
+///
+/// use hex_math::{line_through, Point};
+///
+/// let point: Point = Point::new_2d(1, 2);
+/// let other: Point = Point::new_2d(2, 2);
+/// let set: HashSet<Point> = line_through(&point, &other, 3);
+///
+/// assert_eq!(set.len(), 4);
+/// assert!(set.contains(&Point::new_2d(1, 2)));
+/// assert!(set.contains(&Point::new_2d(2, 2)));
+/// assert!(set.contains(&Point::new_2d(3, 2)));
+/// assert!(set.contains(&Point::new_2d(4, 2)));
+/// ```
+pub fn line_through(
+  point: &Point,
+  other: &Point,
+  range: i32,
+) -> HashSet<Point> {
+  util::line(&point, &other, Some(range), None)
+}
 
-    return set;
-  }
+/// Find unblocked points in a line between two points
+///
+/// # Example
+///
+/// ```
+/// use std::collections::HashSet;
+///
+/// use hex_math::{ray, Point};
+///
+/// let point: Point = Point::new(1, 2, 5);
+/// let other: Point = Point::new(3, 4, 10);
+/// let mut opaque: HashSet<Point> = HashSet::new();
+///
+/// opaque.insert(Point::new(3, 3, 9));
+///
+/// let set: HashSet<Point> = ray(&point, &other, &opaque);
+///
+/// assert_eq!(set.len(), 4);
+/// assert!(set.contains(&Point::new(1, 2, 5)));
+/// assert!(set.contains(&Point::new(2, 2, 6)));
+/// assert!(set.contains(&Point::new(2, 3, 8)));
+/// assert!(set.contains(&Point::new(3, 3, 9)));
+/// ```
+///
+/// ```
+/// use std::collections::HashSet;
+///
+/// use hex_math::{ray, Point};
+///
+/// let point: Point = Point::new_2d(1, 2);
+/// let other: Point = Point::new_2d(3, 4);
+/// let mut opaque: HashSet<Point> = HashSet::new();
+///
+/// opaque.insert(Point::new_2d(3, 3));
+///
+/// let set: HashSet<Point> = ray(&point, &other, &opaque);
+///
+/// assert_eq!(set.len(), 4);
+/// assert!(set.contains(&Point::new_2d(1, 2)));
+/// assert!(set.contains(&Point::new_2d(2, 2)));
+/// assert!(set.contains(&Point::new_2d(2, 3)));
+/// assert!(set.contains(&Point::new_2d(3, 3)));
+/// ```
+pub fn ray(
+  point: &Point,
+  other: &Point,
+  opaque: &HashSet<Point>,
+) -> HashSet<Point> {
+  util::line(&point, &other, None, Some(&opaque))
+}
 
-  let distance: i32 = if point.values_2d() == other.values_2d() {
-    distance(&point, &other)
-  } else {
-    distance_2d(&point, &other)
-  };
-
-  for index in 0..distance + 1 {
-    let t: f32 = index as f32 / distance as f32;
-    let found: Point = util::point_round(util::point_lerp(&point, &other, t));
-
-    set.insert(found);
-  }
-
-  set
+/// Find unblocked points within range in a line through two points
+///
+/// # Example
+///
+/// ```
+/// use std::collections::HashSet;
+///
+/// use hex_math::{ray_through, Point};
+///
+/// let point: Point = Point::new(1, 2, 5);
+/// let other: Point = Point::new(2, 2, 6);
+/// let mut opaque: HashSet<Point> = HashSet::new();
+///
+/// opaque.insert(Point::new(3, 2, 7));
+///
+/// let set: HashSet<Point> = ray_through(&point, &other, 3, &opaque);
+///
+/// assert_eq!(set.len(), 3);
+/// assert!(set.contains(&Point::new(1, 2, 5)));
+/// assert!(set.contains(&Point::new(2, 2, 6)));
+/// assert!(set.contains(&Point::new(3, 2, 7)));
+/// ```
+///
+/// ```
+/// use std::collections::HashSet;
+///
+/// use hex_math::{ray_through, Point};
+///
+/// let point: Point = Point::new_2d(1, 2);
+/// let other: Point = Point::new_2d(2, 2);
+/// let mut opaque: HashSet<Point> = HashSet::new();
+///
+/// opaque.insert(Point::new_2d(3, 2));
+///
+/// let set: HashSet<Point> = ray_through(&point, &other, 3, &opaque);
+///
+/// assert_eq!(set.len(), 3);
+/// assert!(set.contains(&Point::new_2d(1, 2)));
+/// assert!(set.contains(&Point::new_2d(2, 2)));
+/// assert!(set.contains(&Point::new_2d(3, 2)));
+/// ```
+pub fn ray_through(
+  point: &Point,
+  other: &Point,
+  range: i32,
+  opaque: &HashSet<Point>,
+) -> HashSet<Point> {
+  util::line(&point, &other, Some(range), Some(&opaque))
 }
 
 mod util {
+  use std::collections::HashSet;
+
   use point::Point;
+  use distance::{distance, distance_2d};
 
   /// Linear interpolation of floats with specified offset
   pub fn lerp(a: i32, b: i32, t: f32, o: f32) -> f32 {
@@ -112,6 +237,51 @@ mod util {
     point
   }
 
+  /// Find the points in a line between two points
+  ///
+  /// Optionally provide a range. The line will end at that range.
+  ///
+  /// Optionally provide a set of opaque point which are impassable.
+  pub fn line(
+    point: &Point,
+    other: &Point,
+    range: Option<i32>,
+    opaque: Option<&HashSet<Point>>,
+  ) -> HashSet<Point> {
+    let mut set: HashSet<Point> = HashSet::new();
+
+    if &point == &other {
+      set.insert(point.clone());
+
+      return set;
+    }
+
+    let distance: i32 = if point.values_2d() == other.values_2d() {
+      distance(&point, &other)
+    } else {
+      distance_2d(&point, &other)
+    };
+
+
+    let empty: HashSet<Point> = HashSet::new();
+    let opaque: &HashSet<Point> = opaque.unwrap_or(&empty);
+    let should_check_opaque: bool = !opaque.is_empty();
+
+    for index in 0..range.unwrap_or(distance) + 1 {
+      let t: f32 = index as f32 / distance as f32;
+      let lerp: (f32, f32, f32, f32) = point_lerp(&point, &other, t);
+      let found: Point = point_round(lerp);
+
+      set.insert(found);
+
+      if should_check_opaque && opaque.contains(&found) {
+        break;
+      }
+    }
+
+    set
+  }
+
 }
 
 #[cfg(test)]
@@ -151,7 +321,7 @@ mod tests {
   fn line_vertical() {
     let point: Point = Point::new(1, 2, 5);
     let other: Point = Point::new(1, 2, 7);
-    let line: HashSet<Point> = super::line(&point, &other);
+    let line: HashSet<Point> = util::line(&point, &other, None, None);
 
     assert!(line.contains(&Point::new(1, 2, 5)));
     assert!(line.contains(&Point::new(1, 2, 6)));
