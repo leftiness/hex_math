@@ -3,7 +3,7 @@
 use std::collections::HashSet;
 
 use point::Point;
-use distance::distance_2d;
+use distance::{distance, distance_2d};
 
 /// Find the points in a line between the current point and the one provided
 ///
@@ -43,8 +43,19 @@ use distance::distance_2d;
 /// assert!(set.contains(&Point::new_2d(3, 4)));
 /// ```
 pub fn line(point: &Point, other: &Point) -> HashSet<Point> {
-  let distance: i32 = distance_2d(&point, &other);
   let mut set: HashSet<Point> = HashSet::new();
+
+  if &point == &other {
+    set.insert(point.clone());
+
+    return set;
+  }
+
+  let distance: i32 = if point.values_2d() == other.values_2d() {
+    distance(&point, &other)
+  } else {
+    distance_2d(&point, &other)
+  };
 
   for index in 0..distance + 1 {
     let t: f32 = index as f32 / distance as f32;
@@ -105,6 +116,8 @@ mod util {
 
 #[cfg(test)]
 mod tests {
+  use std::collections::HashSet;
+
   use point::Point;
 
   use super::util;
@@ -132,6 +145,17 @@ mod tests {
     let point: Point = util::point_round(coordinates);
 
     assert_eq!(point, Point::new(2, 1, 3));
+  }
+
+  #[test]
+  fn line_vertical() {
+    let point: Point = Point::new(1, 2, 5);
+    let other: Point = Point::new(1, 2, 7);
+    let line: HashSet<Point> = super::line(&point, &other);
+
+    assert!(line.contains(&Point::new(1, 2, 5)));
+    assert!(line.contains(&Point::new(1, 2, 6)));
+    assert!(line.contains(&Point::new(1, 2, 7)));
   }
 
 }

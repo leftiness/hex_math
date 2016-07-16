@@ -63,24 +63,28 @@ impl Point {
   ///
   /// assert_eq!((1, 2, 5), point.values());
   /// ```
+  pub fn values(&self) -> (i32, i32, i32) {
+    (self.q, self.r, self.t)
+  }
+
+  /// Convenient getter for the point's 2D axial coordinate values
   ///
-  /// Those using two-dimensional points may simply ignore a value.
+  /// # Example
   ///
   /// ```
   /// use hex_math::Point;
   ///
   /// let point: Point = Point::new_2d(1, 2);
-  /// let (q, r, _) = point.values();
   ///
-  /// assert_eq!((1, 2), (q, r));
+  /// assert_eq!((1, 2), point.values_2d());
   /// ```
-  pub fn values(&self) -> (i32, i32, i32) {
-    (self.q, self.r, self.t)
+  pub fn values_2d(&self) -> (i32, i32) {
+    (self.q, self.r)
   }
 
   /// Convenient getter for the point's cube coordinate values
   ///
-  /// # Exampes
+  /// # Example
   ///
   /// ```
   /// use hex_math::Point;
@@ -91,6 +95,21 @@ impl Point {
   /// ```
   pub fn values_cube(&self) -> (i32, i32, i32, i32) {
     (self.q, self.r, self.s, self.t)
+  }
+
+  /// Convenient getter for the point's 2D cube coordinate values
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use hex_math::Point;
+  ///
+  /// let point: Point = Point::new_2d(1, 2);
+  ///
+  /// assert_eq!((1, 2, -3), point.values_cube_2d());
+  /// ```
+  pub fn values_cube_2d(&self) -> (i32, i32, i32) {
+    (self.q, self.r, self.s)
   }
 
 }
