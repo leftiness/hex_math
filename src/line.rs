@@ -262,7 +262,6 @@ mod util {
       distance_2d(&point, &other)
     };
 
-
     let empty: HashSet<Point> = HashSet::new();
     let opaque: &HashSet<Point> = opaque.unwrap_or(&empty);
     let should_check_opaque: bool = !opaque.is_empty();
