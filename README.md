@@ -1,4 +1,4 @@
-# hex_math
+# hex\_math
 
 Useful stuff for working with a bunch of hexagons.
 
