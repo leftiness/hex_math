@@ -25,6 +25,7 @@
 //! ```
 
 mod point;
+mod prism;
 mod travel;
 mod distance;
 mod line;
@@ -33,6 +34,7 @@ mod rotate;
 mod ring;
 
 pub use point::Point;
+pub use prism::Prism;
 pub use travel::{Direction, travel};
 pub use distance::{distance, distance_2d};
 pub use line::{line, line_through, ray, ray_through};

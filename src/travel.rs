@@ -3,7 +3,7 @@
 use point::Point;
 
 /// Enum describing positions in relation to a point
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug, Eq, Hash, PartialEq)]
 pub enum Direction {
   East,
   Southeast,
