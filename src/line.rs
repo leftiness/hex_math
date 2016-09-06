@@ -192,6 +192,7 @@ pub fn ray_through(
 mod util {
   use std::collections::HashSet;
 
+  use traits::has_values::HasValues;
   use point::Point;
   use distance::{distance, distance_2d};
 
@@ -207,12 +208,19 @@ mod util {
   ///
   /// The offset is used to prevent the interpolation from falling exactly
   /// on a border between two points. It is eliminated with rounding later.
-  pub fn point_lerp(a: &Point, b: &Point, t: f32) -> (f32, f32, f32, f32) { (
-    lerp(a.q, b.q, t, 1e-6),
-    lerp(a.r, b.r, t, 1e-6),
-    lerp(a.s, b.s, t, -2e-6),
-    lerp(a.t, b.t, t, 1e-6),
-  ) }
+  pub fn point_lerp(a: &Point, b: &Point, t: f32) -> (f32, f32, f32, f32) {
+    let (qa, ra, sa, ta) = a.values_cube();
+    let (qb, rb, sb, tb) = b.values_cube();
+
+    let result = (
+      lerp(qa, qb, t, 1e-6),
+      lerp(ra, rb, t, 1e-6),
+      lerp(sa, sb, t, -2e-6),
+      lerp(ta, tb, t, 1e-6),
+    );
+
+    result
+  }
 
   /// Round a float point back to a standard point
   pub fn point_round((q, r, s, t): (f32, f32, f32, f32)) -> Point {

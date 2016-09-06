@@ -2,6 +2,8 @@
 
 use std::ops::{Add, Sub};
 
+use traits::has_values::HasValues;
+
 /// Basic point on a coordinate plane
 ///
 /// The point contains three coordinates (QRS) to describe its position in
@@ -17,11 +19,9 @@ pub struct Point {
   /// This can also be considered axis Z on a cube.
   pub r: i32,
 
-  /// This can also be considered axis Y on a cube.
-  pub s: i32,
-
   /// This is the height of the point in 3D space.
   pub t: i32,
+
 }
 
 impl Point {
@@ -36,7 +36,7 @@ impl Point {
   /// let point: Point = Point::new(1, 2, 5);
   /// ```
   pub fn new(q: i32, r: i32, t: i32) -> Point {
-    Point {q: q, r: r, s: -q - r, t: t}
+    Point {q: q, r: r, t: t}
   }
 
   /// Convenience function for making two-dimensional points
@@ -52,66 +52,6 @@ impl Point {
     Point::new(q, r, 0)
   }
 
-  /// Convenient getter for the point's axial coordinate values
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use hex_math::Point;
-  ///
-  /// let point: Point = Point::new(1, 2, 5);
-  ///
-  /// assert_eq!((1, 2, 5), point.values());
-  /// ```
-  pub fn values(&self) -> (i32, i32, i32) {
-    (self.q, self.r, self.t)
-  }
-
-  /// Convenient getter for the point's 2D axial coordinate values
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use hex_math::Point;
-  ///
-  /// let point: Point = Point::new_2d(1, 2);
-  ///
-  /// assert_eq!((1, 2), point.values_2d());
-  /// ```
-  pub fn values_2d(&self) -> (i32, i32) {
-    (self.q, self.r)
-  }
-
-  /// Convenient getter for the point's cube coordinate values
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use hex_math::Point;
-  ///
-  /// let point: Point = Point::new(1, 2, 5);
-  ///
-  /// assert_eq!((1, 2, -3, 5), point.values_cube());
-  /// ```
-  pub fn values_cube(&self) -> (i32, i32, i32, i32) {
-    (self.q, self.r, self.s, self.t)
-  }
-
-  /// Convenient getter for the point's 2D cube coordinate values
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use hex_math::Point;
-  ///
-  /// let point: Point = Point::new_2d(1, 2);
-  ///
-  /// assert_eq!((1, 2, -3), point.values_cube_2d());
-  /// ```
-  pub fn values_cube_2d(&self) -> (i32, i32, i32) {
-    (self.q, self.r, self.s)
-  }
-
 }
 
 /// Add one point to another
@@ -119,7 +59,7 @@ impl Point {
 /// # Example
 ///
 /// ```
-/// use hex_math::Point;
+/// use hex_math::{Point, HasValues};
 ///
 /// let point: Point = Point::new(1, 2, 5);
 /// let other: Point = Point::new(3, 4, 10);
@@ -142,7 +82,7 @@ impl Add for Point {
 /// # Example
 ///
 /// ```
-/// use hex_math::Point;
+/// use hex_math::{Point, HasValues};
 ///
 /// let point: Point = Point::new(1, 2, 5);
 /// let other: Point = Point::new(3, 4, 10);
@@ -156,6 +96,28 @@ impl Sub for Point {
 
   fn sub(self, rhs: Point) -> Point {
     Point::new(self.q - rhs.q, self.r - rhs.r, self.t - rhs.t)
+  }
+
+}
+
+/// Access the point's coordinate values
+///
+/// # Example
+///
+/// ```
+/// use hex_math::{Point, HasValues};
+///
+/// let point: Point = Point::new(1, 2, 5);
+///
+/// assert_eq!((1, 2, 5), point.values());
+/// assert_eq!((1, 2, -3, 5), point.values_cube());
+/// assert_eq!((1, 2), point.values_2d());
+/// assert_eq!((1, 2, -3), point.values_cube_2d());
+/// ```
+impl HasValues for Point {
+
+  fn values(&self) -> (i32, i32, i32) {
+    (self.q, self.r, self.t)
   }
 
 }

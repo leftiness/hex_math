@@ -1,5 +1,6 @@
 //! Useful stuff for rotating points
 
+use traits::has_values::HasValues;
 use point::Point;
 
 /// Rotate the point a specified number of times

@@ -1,5 +1,6 @@
 //! Useful stuff for calculating the distance between points
 
+use traits::has_values::HasValues;
 use point::Point;
 
 /// Calculate the manhattan distance between two points
@@ -53,7 +54,8 @@ pub fn distance_2d(point: &Point, other: &Point) -> i32 {
   let point = point.clone();
   let other = other.clone();
   let diff: Point = point - other;
-  let distance = (diff.q.abs() + diff.r.abs() + diff.s.abs()) / 2;
+  let (q, r, s) = diff.values_cube_2d();
+  let distance = (q.abs() + r.abs() + s.abs()) / 2;
 
   distance
 }

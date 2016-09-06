@@ -1,8 +1,8 @@
 //! A prism is a point with walls
 
 use std::collections::HashMap;
-use std::convert::From;
 
+use traits::has_values::HasValues;
 use point::Point;
 use travel::Direction;
 
@@ -98,25 +98,25 @@ impl Prism {
 
 }
 
-/// Convert a point to a prism
+/// Access the prism's coordinate values
 ///
 /// # Example
 ///
 /// ```
-/// use std::convert::From;
-///
-/// use hex_math::{Point, Prism};
+/// use hex_math::{Point, Prism, HasValues};
 ///
 /// let point: Point = Point::new(1, 2, 5);
 /// let prism: Prism = Prism::new(point);
-/// let other: Point = From::from(prism);
 ///
-/// assert_eq!(point, other);
+/// assert_eq!((1, 2, 5), prism.values());
+/// assert_eq!((1, 2, -3, 5), prism.values_cube());
+/// assert_eq!((1, 2), prism.values_2d());
+/// assert_eq!((1, 2, -3), prism.values_cube_2d());
 /// ```
-impl From<Point> for Prism {
+impl HasValues for Prism {
 
-  fn from(point: Point) -> Prism {
-    Prism::new(point)
+  fn values(&self) -> (i32, i32, i32) {
+    self.point.values()
   }
 
 }

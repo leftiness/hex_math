@@ -1,5 +1,6 @@
 //! Useful stuff for moving in a specified direction
 
+use traits::has_values::HasValues;
 use point::Point;
 
 /// Enum describing positions in relation to a point
