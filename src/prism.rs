@@ -1,7 +1,6 @@
 //! A prism is a point with walls
 
 use std::collections::HashMap;
-use std::convert::From;
 
 use point::Point;
 use travel::Direction;
@@ -94,29 +93,6 @@ impl Prism {
     strength: i32,
   ) -> bool {
     self.walls.get(&direction).unwrap_or(&0) >= &strength
-  }
-
-}
-
-/// Convert a point to a prism
-///
-/// # Example
-///
-/// ```
-/// use std::convert::From;
-///
-/// use hex_math::{Point, Prism};
-///
-/// let point: Point = Point::new(1, 2, 5);
-/// let prism: Prism = Prism::new(point);
-/// let other: Point = From::from(prism);
-///
-/// assert_eq!(point, other);
-/// ```
-impl From<Point> for Prism {
-
-  fn from(point: Point) -> Prism {
-    Prism::new(point)
   }
 
 }
