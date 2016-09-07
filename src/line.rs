@@ -85,7 +85,7 @@ pub fn line_through(
   other: &Point,
   range: i32,
 ) -> HashSet<Point> {
-  util::line(&point, &other, Some(range), None)
+  util::line(point, other, Some(range), None)
 }
 
 /// Find unblocked points in a line between two points
@@ -136,7 +136,7 @@ pub fn ray(
   other: &Point,
   opaque: &HashSet<Point>,
 ) -> HashSet<Point> {
-  util::line(&point, &other, None, Some(&opaque))
+  util::line(point, other, None, Some(opaque))
 }
 
 /// Find unblocked points within range in a line through two points
@@ -186,7 +186,7 @@ pub fn ray_through(
   range: i32,
   opaque: &HashSet<Point>,
 ) -> HashSet<Point> {
-  util::line(&point, &other, Some(range), Some(&opaque))
+  util::line(point, other, Some(range), Some(opaque))
 }
 
 mod util {
@@ -258,16 +258,16 @@ mod util {
   ) -> HashSet<Point> {
     let mut set: HashSet<Point> = HashSet::new();
 
-    if &point == &other {
+    if point == other {
       set.insert(point.clone());
 
       return set;
     }
 
     let distance: i32 = if point.values_2d() == other.values_2d() {
-      distance(&point, &other)
+      distance(point, other)
     } else {
-      distance_2d(&point, &other)
+      distance_2d(point, other)
     };
 
     let empty: HashSet<Point> = HashSet::new();
@@ -276,7 +276,7 @@ mod util {
 
     for index in 0..range.unwrap_or(distance) + 1 {
       let t: f32 = index as f32 / distance as f32;
-      let lerp: (f32, f32, f32, f32) = point_lerp(&point, &other, t);
+      let lerp: (f32, f32, f32, f32) = point_lerp(point, other, t);
       let found: Point = point_round(lerp);
 
       set.insert(found);
