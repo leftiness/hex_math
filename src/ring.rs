@@ -53,8 +53,8 @@ pub fn ring(point: &Point, range: i32) -> HashSet<Point> {
 
   for index in 1..range + 1 {
     let diff = range - index;
-    let up: Point = travel(&point, Direction::Up, index);
-    let down: Point = travel(&point, Direction::Down, index);
+    let up: Point = travel(point, Direction::Up, index);
+    let down: Point = travel(point, Direction::Down, index);
     let up_ring: HashSet<Point> = ring_2d(&up, diff);
     let down_ring: HashSet<Point> = ring_2d(&down, diff);
 
@@ -62,8 +62,8 @@ pub fn ring(point: &Point, range: i32) -> HashSet<Point> {
     set.extend(down_ring);
   }
 
-  set.insert(travel(&point, Direction::Up, range));
-  set.insert(travel(&point, Direction::Down, range));
+  set.insert(travel(point, Direction::Up, range));
+  set.insert(travel(point, Direction::Down, range));
 
   set
 }
@@ -89,7 +89,7 @@ pub fn ring(point: &Point, range: i32) -> HashSet<Point> {
 /// ```
 pub fn ring_2d(point: &Point, range: i32) -> HashSet<Point> {
   let mut set: HashSet<Point> = HashSet::new();
-  let mut position: Point = travel(&point, Direction::Northwest, range);
+  let mut position: Point = travel(point, Direction::Northwest, range);
 
   for direction in 0..6 {
     for _ in 0..range {
