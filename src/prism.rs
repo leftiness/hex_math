@@ -98,3 +98,25 @@ impl Prism {
 
 }
 
+/// Access the prism's coordinate values
+///
+/// # Example
+///
+/// ```
+/// use hex_math::{Point, Prism, HasValues};
+///
+/// let point: Point = Point::new(1, 2, 5);
+/// let prism: Prism = Prism::new(point);
+///
+/// assert_eq!((1, 2, 5), prism.values());
+/// assert_eq!((1, 2, -3, 5), prism.values_cube());
+/// assert_eq!((1, 2), prism.values_2d());
+/// assert_eq!((1, 2, -3), prism.values_cube_2d());
+/// ```
+impl HasValues for Prism {
+
+  fn values(&self) -> (i32, i32, i32) {
+    self.point.values()
+  }
+
+}

@@ -1,5 +1,7 @@
 //! Provide access to the point's coordinate values
 
+use point::Point;
+
 /// Provide access to the point's coordinate values
 pub trait HasValues {
 
@@ -64,6 +66,31 @@ pub trait HasValues {
     let (q, r, s, _) = self.values_cube();
 
     (q, r, s)
+  }
+
+  /// Return a point from QRT
+  ///
+  /// ```
+  /// use hex_math::{Point, HasValues};
+  ///
+  /// let point: Point = Point::new(1, 2, 5);
+  /// let other: Point = point.to_point();
+  ///
+  /// assert_eq!((1, 2, 5), other.values());
+  /// ```
+  ///
+  /// ```
+  /// use hex_math::{Point, Prism, HasValues};
+  ///
+  /// let point: Point = Point::new(1, 2, 5);
+  /// let prism: Prism = Prism::new(point);
+  /// let other: Point = prism.to_point();
+  ///
+  /// assert_eq!((1, 2, 5), prism.values());
+  /// assert_eq!((1, 2, 5), other.values());
+  /// ```
+  fn to_point(&self) -> Point {
+    Point::from_values(self.values())
   }
 
 }

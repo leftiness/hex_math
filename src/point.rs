@@ -1,5 +1,6 @@
 //! Basic point on a coordinate plane
 
+use std::convert::From;
 use std::ops::{Add, Sub};
 
 use traits::has_values::HasValues;
@@ -50,6 +51,22 @@ impl Point {
   /// ```
   pub fn new_2d(q: i32, r: i32) -> Point {
     Point::new(q, r, 0)
+  }
+
+  /// Convenience function for making points from a values tuple
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use hex_math::{Point, HasValues};
+  ///
+  /// let point: Point = Point::new(1, 2, 5);
+  /// let other: Point = Point::from_values(point.values());
+  ///
+  /// assert_eq!((1, 2, 5), other.values());
+  /// ```
+  pub fn from_values((q, r, t): (i32, i32, i32)) -> Point {
+    Point::new(q, r, t)
   }
 
 }
@@ -118,6 +135,26 @@ impl HasValues for Point {
 
   fn values(&self) -> (i32, i32, i32) {
     (self.q, self.r, self.t)
+  }
+
+}
+
+/// Conveniently convert a values tuple into a point
+///
+/// # Example
+///
+/// ```
+/// use hex_math::{Point, HasValues};
+///
+/// let point: Point = Point::new(1, 2, 5);
+/// let other: Point = From::from(point.values());
+///
+/// assert_eq!((1, 2, 5), other.values());
+/// ```
+impl From<(i32, i32, i32)> for Point {
+
+  fn from((q, r, t): (i32, i32, i32)) -> Point {
+    Point::new(q, r, t)
   }
 
 }
