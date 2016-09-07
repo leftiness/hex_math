@@ -123,15 +123,15 @@ impl Point {
 ///
 /// let point: Point = Point::new(1, 2, 5);
 /// let other: Point = Point::new(3, 4, 10);
-/// let result: Point = point + other;
+/// let result: Point = &point + &other;
 ///
 /// assert_eq!((4, 6, 15), result.values());
 /// ```
-impl Add for Point {
+impl<'a, 'b> Add<&'b Point> for &'a Point {
 
   type Output = Point;
 
-  fn add(self, rhs: Point) -> Point {
+  fn add(self, rhs: &'b Point) -> Point {
     Point::new(self.q + rhs.q, self.r + rhs.r, self.t + rhs.t)
   }
 
@@ -146,15 +146,15 @@ impl Add for Point {
 ///
 /// let point: Point = Point::new(1, 2, 5);
 /// let other: Point = Point::new(3, 4, 10);
-/// let result: Point = point - other;
+/// let result: Point = &point - &other;
 ///
 /// assert_eq!((-2, -2, -5), result.values());
 /// ```
-impl Sub for Point {
+impl<'a, 'b> Sub<&'b Point> for &'a Point {
 
   type Output = Point;
 
-  fn sub(self, rhs: Point) -> Point {
+  fn sub(self, rhs: &'b Point) -> Point {
     Point::new(self.q - rhs.q, self.r - rhs.r, self.t - rhs.t)
   }
 
