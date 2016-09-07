@@ -76,7 +76,7 @@ pub fn range_2d(point: &Point, range: i32) -> HashSet<Point> {
 
     for ds in lower..upper + 1 {
       let dr: i32 = -dq - ds;
-      let found = point.clone() + Point::new(dq, dr, 0);
+      let found = point + &Point::new(dq, dr, 0);
 
       set.insert(found);
     }
