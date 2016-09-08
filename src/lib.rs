@@ -32,6 +32,7 @@ mod line;
 mod range;
 mod rotate;
 mod ring;
+mod traits;
 
 pub use point::Point;
 pub use prism::Prism;
@@ -41,4 +42,5 @@ pub use line::{line, line_through, ray, ray_through};
 pub use range::{range, range_2d, flood, flood_2d};
 pub use rotate::rotate;
 pub use ring::{ring, ring_2d};
+pub use traits::has_values::HasValues;
 

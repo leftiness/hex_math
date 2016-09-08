@@ -2,6 +2,7 @@
 
 use std::collections::HashSet;
 
+use traits::has_values::HasValues;
 use point::Point;
 use travel::{Direction, travel};
 
@@ -48,8 +49,8 @@ use travel::{Direction, travel};
 ///
 /// assert_eq!(set.len(), 26);
 /// ```
-pub fn ring(point: &Point, range: i32) -> HashSet<Point> {
-  let mut set: HashSet<Point> = ring_2d(&point, range);
+pub fn ring<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
+  let mut set: HashSet<Point> = ring_2d(point, range);
 
   for index in 1..range + 1 {
     let diff = range - index;
@@ -87,7 +88,7 @@ pub fn ring(point: &Point, range: i32) -> HashSet<Point> {
 /// assert!(set.contains(&Point::new(0, 3, 5)));
 /// assert!(set.contains(&Point::new(0, 2, 5)));
 /// ```
-pub fn ring_2d(point: &Point, range: i32) -> HashSet<Point> {
+pub fn ring_2d<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
   let mut set: HashSet<Point> = HashSet::new();
   let mut position: Point = travel(point, Direction::Northwest, range);
 

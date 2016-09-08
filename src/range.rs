@@ -3,6 +3,7 @@
 use std::collections::HashSet;
 use std::cmp::{max, min};
 
+use traits::has_values::HasValues;
 use point::Point;
 use travel::{Direction, travel};
 
@@ -29,8 +30,8 @@ use travel::{Direction, travel};
 /// assert!(set.contains(&Point::new(1, 2, 4)));
 /// assert!(set.contains(&Point::new(1, 2, 6)));
 /// ```
-pub fn range(point: &Point, range: i32) -> HashSet<Point> {
-  let mut set: HashSet<Point> = range_2d(&point, range);
+pub fn range<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
+  let mut set: HashSet<Point> = range_2d(point, range);
 
   for index in 1..range + 1 {
     let diff = range - index;
@@ -67,7 +68,7 @@ pub fn range(point: &Point, range: i32) -> HashSet<Point> {
 /// assert!(set.contains(&Point::new(1, 1, 5)));
 /// assert!(set.contains(&Point::new(2, 1, 5)));
 /// ```
-pub fn range_2d(point: &Point, range: i32) -> HashSet<Point> {
+pub fn range_2d<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
   let mut set: HashSet<Point> = HashSet::new();
 
   for dq in -range..range + 1 {
@@ -76,7 +77,7 @@ pub fn range_2d(point: &Point, range: i32) -> HashSet<Point> {
 
     for ds in lower..upper + 1 {
       let dr: i32 = -dq - ds;
-      let found = point + &Point::new(dq, dr, 0);
+      let found = &point.to_point() + &Point::new(dq, dr, 0);
 
       set.insert(found);
     }
@@ -120,12 +121,12 @@ pub fn range_2d(point: &Point, range: i32) -> HashSet<Point> {
 /// assert!(result.contains(&Point::new(0, 2, 1)));
 /// assert!(result.contains(&Point::new(0, 2, 3)));
 /// ```
-pub fn flood(
-  point: &Point,
+pub fn flood<T: HasValues>(
+  point: &T,
   range: i32,
   invalid: &HashSet<Point>,
 ) -> HashSet<Point> {
-  util::flood(&point, range, self::range, &invalid)
+  util::flood(point, range, self::range, invalid)
 }
 
 /// Find reachable points of the same height within a specified range
@@ -158,35 +159,36 @@ pub fn flood(
 /// assert!(result.contains(&Point::new_2d(-1, 2)));
 /// assert!(result.contains(&Point::new_2d(-1, 3)));
 /// ```
-pub fn flood_2d(
-  point: &Point,
+pub fn flood_2d<T: HasValues>(
+  point: &T,
   range: i32,
   invalid: &HashSet<Point>,
 ) -> HashSet<Point> {
-  util::flood(&point, range, self::range_2d, &invalid)
+  util::flood(point, range, self::range_2d, invalid)
 }
 
 mod util {
   use std::collections::HashSet;
 
+  use traits::has_values::HasValues;
   use point::Point;
 
   /// Find reachable points within a specified range with a provided function
-  pub fn flood(
-    start: &Point,
+  pub fn flood<T: HasValues>(
+    start: &T,
     range: i32,
     range_fn: fn(&Point, i32) -> HashSet<Point>,
     invalid: &HashSet<Point>,
   ) -> HashSet<Point> {
     let mut visited: HashSet<Point> = HashSet::new();
     let mut fringes: Vec<Vec<Point>> = Vec::new();
-    let start: Point = start.clone();
+    let start: Point = start.to_point();
 
     if invalid.contains(&start) {
       return visited;
     }
 
-    fringes.push(vec![start.clone()]);
+    fringes.push(vec![start]);
     visited.insert(start);
 
     for step in 1..range + 1 {

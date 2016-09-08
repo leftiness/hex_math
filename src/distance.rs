@@ -1,5 +1,6 @@
 //! Useful stuff for calculating the distance between points
 
+use traits::has_values::HasValues;
 use point::Point;
 
 /// Calculate the manhattan distance between two points
@@ -25,9 +26,9 @@ use point::Point;
 ///
 /// assert_eq!(9, distance(&point, &other));
 /// ```
-pub fn distance(point: &Point, other: &Point) -> i32 {
-  let diff: Point = point - other;
-  let base = distance_2d(&point, &other);
+pub fn distance<T: HasValues>(point: &T, other: &T) -> i32 {
+  let diff: Point = &point.to_point() - &other.to_point();
+  let base = distance_2d(point, other);
   let height = diff.t.abs();
   let distance = base + height;
 
@@ -48,9 +49,10 @@ pub fn distance(point: &Point, other: &Point) -> i32 {
 ///
 /// assert_eq!(4, distance_2d(&point, &other));
 /// ```
-pub fn distance_2d(point: &Point, other: &Point) -> i32 {
-  let diff: Point = point - other;
-  let distance = (diff.q.abs() + diff.r.abs() + diff.s.abs()) / 2;
+pub fn distance_2d<T: HasValues>(point: &T, other: &T) -> i32 {
+  let diff: Point = &point.to_point() - &other.to_point();
+  let (q, r, s) = diff.values_cube_2d();
+  let distance = (q.abs() + r.abs() + s.abs()) / 2;
 
   distance
 }

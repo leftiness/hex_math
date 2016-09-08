@@ -2,6 +2,7 @@
 
 use std::collections::HashSet;
 
+use traits::has_values::HasValues;
 use point::Point;
 
 /// Find the points in a line between the current point and the one provided
@@ -41,8 +42,8 @@ use point::Point;
 /// assert!(set.contains(&Point::new_2d(3, 3)));
 /// assert!(set.contains(&Point::new_2d(3, 4)));
 /// ```
-pub fn line(point: &Point, other: &Point) -> HashSet<Point> {
-  util::line(&point, &other, None, None)
+pub fn line<T: HasValues>(point: &T, other: &T) -> HashSet<Point> {
+  util::line(point, other, None, None)
 }
 
 /// Find the points within range in a line through two points
@@ -80,12 +81,12 @@ pub fn line(point: &Point, other: &Point) -> HashSet<Point> {
 /// assert!(set.contains(&Point::new_2d(3, 2)));
 /// assert!(set.contains(&Point::new_2d(4, 2)));
 /// ```
-pub fn line_through(
-  point: &Point,
-  other: &Point,
+pub fn line_through<T: HasValues>(
+  point: &T,
+  other: &T,
   range: i32,
 ) -> HashSet<Point> {
-  util::line(&point, &other, Some(range), None)
+  util::line(point, other, Some(range), None)
 }
 
 /// Find unblocked points in a line between two points
@@ -131,12 +132,12 @@ pub fn line_through(
 /// assert!(set.contains(&Point::new_2d(2, 3)));
 /// assert!(set.contains(&Point::new_2d(3, 3)));
 /// ```
-pub fn ray(
-  point: &Point,
-  other: &Point,
+pub fn ray<T: HasValues>(
+  point: &T,
+  other: &T,
   opaque: &HashSet<Point>,
 ) -> HashSet<Point> {
-  util::line(&point, &other, None, Some(&opaque))
+  util::line(point, other, None, Some(opaque))
 }
 
 /// Find unblocked points within range in a line through two points
@@ -180,18 +181,19 @@ pub fn ray(
 /// assert!(set.contains(&Point::new_2d(2, 2)));
 /// assert!(set.contains(&Point::new_2d(3, 2)));
 /// ```
-pub fn ray_through(
-  point: &Point,
-  other: &Point,
+pub fn ray_through<T: HasValues>(
+  point: &T,
+  other: &T,
   range: i32,
   opaque: &HashSet<Point>,
 ) -> HashSet<Point> {
-  util::line(&point, &other, Some(range), Some(&opaque))
+  util::line(point, other, Some(range), Some(opaque))
 }
 
 mod util {
   use std::collections::HashSet;
 
+  use traits::has_values::HasValues;
   use point::Point;
   use distance::{distance, distance_2d};
 
@@ -207,12 +209,23 @@ mod util {
   ///
   /// The offset is used to prevent the interpolation from falling exactly
   /// on a border between two points. It is eliminated with rounding later.
-  pub fn point_lerp(a: &Point, b: &Point, t: f32) -> (f32, f32, f32, f32) { (
-    lerp(a.q, b.q, t, 1e-6),
-    lerp(a.r, b.r, t, 1e-6),
-    lerp(a.s, b.s, t, -2e-6),
-    lerp(a.t, b.t, t, 1e-6),
-  ) }
+  pub fn point_lerp<T: HasValues>(
+    a: &T,
+    b: &T,
+    t: f32
+  ) -> (f32, f32, f32, f32) {
+    let (qa, ra, sa, ta) = a.values_cube();
+    let (qb, rb, sb, tb) = b.values_cube();
+
+    let result = (
+      lerp(qa, qb, t, 1e-6),
+      lerp(ra, rb, t, 1e-6),
+      lerp(sa, sb, t, -2e-6),
+      lerp(ta, tb, t, 1e-6),
+    );
+
+    result
+  }
 
   /// Round a float point back to a standard point
   pub fn point_round((q, r, s, t): (f32, f32, f32, f32)) -> Point {
@@ -242,24 +255,24 @@ mod util {
   /// Optionally provide a range. The line will end at that range.
   ///
   /// Optionally provide a set of opaque point which are impassable.
-  pub fn line(
-    point: &Point,
-    other: &Point,
+  pub fn line<T: HasValues>(
+    point: &T,
+    other: &T,
     range: Option<i32>,
     opaque: Option<&HashSet<Point>>,
   ) -> HashSet<Point> {
     let mut set: HashSet<Point> = HashSet::new();
 
-    if &point == &other {
-      set.insert(point.clone());
+    if point.values() == other.values() {
+      set.insert(Point::from_values(point.values()));
 
       return set;
     }
 
     let distance: i32 = if point.values_2d() == other.values_2d() {
-      distance(&point, &other)
+      distance(point, other)
     } else {
-      distance_2d(&point, &other)
+      distance_2d(point, other)
     };
 
     let empty: HashSet<Point> = HashSet::new();
@@ -268,7 +281,7 @@ mod util {
 
     for index in 0..range.unwrap_or(distance) + 1 {
       let t: f32 = index as f32 / distance as f32;
-      let lerp: (f32, f32, f32, f32) = point_lerp(&point, &other, t);
+      let lerp: (f32, f32, f32, f32) = point_lerp(point, other, t);
       let found: Point = point_round(lerp);
 
       set.insert(found);

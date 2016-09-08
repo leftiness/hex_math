@@ -1,5 +1,6 @@
 //! Useful stuff for moving in a specified direction
 
+use traits::has_values::HasValues;
 use point::Point;
 
 /// Enum describing positions in relation to a point
@@ -33,7 +34,11 @@ pub enum Direction {
 /// assert_eq!(travel(&point, Direction::Up       , 2), Point::new( 1, 2, 7));
 /// assert_eq!(travel(&point, Direction::Down     , 2), Point::new( 1, 2, 3));
 /// ```
-pub fn travel(point: &Point, direction: Direction, units: i32) -> Point {
+pub fn travel<T: HasValues>(
+  point: &T,
+  direction: Direction,
+  units: i32
+) -> Point {
   let (q, r, t) = point.values();
 
   return match direction {
