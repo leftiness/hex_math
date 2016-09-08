@@ -2,6 +2,7 @@
 
 use std::collections::HashSet;
 
+use traits::has_values::HasValues;
 use point::Point;
 
 /// Find the points in a line between the current point and the one provided
@@ -41,8 +42,8 @@ use point::Point;
 /// assert!(set.contains(&Point::new_2d(3, 3)));
 /// assert!(set.contains(&Point::new_2d(3, 4)));
 /// ```
-pub fn line(point: &Point, other: &Point) -> HashSet<Point> {
-  util::line(&point, &other, None, None)
+pub fn line<T: HasValues>(point: &T, other: &T) -> HashSet<Point> {
+  util::line(point, other, None, None)
 }
 
 /// Find the points within range in a line through two points
@@ -80,9 +81,9 @@ pub fn line(point: &Point, other: &Point) -> HashSet<Point> {
 /// assert!(set.contains(&Point::new_2d(3, 2)));
 /// assert!(set.contains(&Point::new_2d(4, 2)));
 /// ```
-pub fn line_through(
-  point: &Point,
-  other: &Point,
+pub fn line_through<T: HasValues>(
+  point: &T,
+  other: &T,
   range: i32,
 ) -> HashSet<Point> {
   util::line(point, other, Some(range), None)
@@ -131,9 +132,9 @@ pub fn line_through(
 /// assert!(set.contains(&Point::new_2d(2, 3)));
 /// assert!(set.contains(&Point::new_2d(3, 3)));
 /// ```
-pub fn ray(
-  point: &Point,
-  other: &Point,
+pub fn ray<T: HasValues>(
+  point: &T,
+  other: &T,
   opaque: &HashSet<Point>,
 ) -> HashSet<Point> {
   util::line(point, other, None, Some(opaque))
@@ -180,9 +181,9 @@ pub fn ray(
 /// assert!(set.contains(&Point::new_2d(2, 2)));
 /// assert!(set.contains(&Point::new_2d(3, 2)));
 /// ```
-pub fn ray_through(
-  point: &Point,
-  other: &Point,
+pub fn ray_through<T: HasValues>(
+  point: &T,
+  other: &T,
   range: i32,
   opaque: &HashSet<Point>,
 ) -> HashSet<Point> {
@@ -208,7 +209,11 @@ mod util {
   ///
   /// The offset is used to prevent the interpolation from falling exactly
   /// on a border between two points. It is eliminated with rounding later.
-  pub fn point_lerp(a: &Point, b: &Point, t: f32) -> (f32, f32, f32, f32) {
+  pub fn point_lerp<T: HasValues>(
+    a: &T,
+    b: &T,
+    t: f32
+  ) -> (f32, f32, f32, f32) {
     let (qa, ra, sa, ta) = a.values_cube();
     let (qb, rb, sb, tb) = b.values_cube();
 
@@ -250,16 +255,16 @@ mod util {
   /// Optionally provide a range. The line will end at that range.
   ///
   /// Optionally provide a set of opaque point which are impassable.
-  pub fn line(
-    point: &Point,
-    other: &Point,
+  pub fn line<T: HasValues>(
+    point: &T,
+    other: &T,
     range: Option<i32>,
     opaque: Option<&HashSet<Point>>,
   ) -> HashSet<Point> {
     let mut set: HashSet<Point> = HashSet::new();
 
-    if point == other {
-      set.insert(point.clone());
+    if point.values() == other.values() {
+      set.insert(Point::from_values(point.values()));
 
       return set;
     }
