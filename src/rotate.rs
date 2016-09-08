@@ -28,7 +28,7 @@ use point::Point;
 /// assert_eq!(rotate(&point, -6), point);
 /// assert_eq!(rotate(&point, -12), point);
 /// ```
-pub fn rotate(point: &Point, mut times: i32) -> Point {
+pub fn rotate<T: HasValues>(point: &T, mut times: i32) -> Point {
 
   let (q, r, s, t) = point.values_cube();
 
@@ -44,7 +44,7 @@ pub fn rotate(point: &Point, mut times: i32) -> Point {
     3 => Point::new(-q, -r, t),
     4 => Point::new(r, s, t),
     5 => Point::new(-s, -q, t),
-    _ => point.clone(),
+    _ => point.to_point(),
   }
 
 }
