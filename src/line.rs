@@ -264,7 +264,7 @@ mod util {
     let mut set: HashSet<Point> = HashSet::new();
 
     if point.values() == other.values() {
-      set.insert(Point::from_values(point.values()));
+      set.insert(point.to_point());
 
       return set;
     }

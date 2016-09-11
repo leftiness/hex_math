@@ -22,7 +22,7 @@ pub enum Direction {
 /// ```
 /// use hex_math::Direction;
 ///
-/// let direction: Direction = From::from(0);
+/// let direction: Direction = Direction::from(0);
 /// assert_eq!(direction, Direction::East);
 /// ```
 ///
@@ -30,7 +30,7 @@ pub enum Direction {
 /// use hex_math::Direction;
 ///
 /// for i in 0..6 {
-///   let direction: Direction = From::from(i);
+///   let direction: Direction = Direction::from(i);
 /// }
 /// ```
 impl From<i32> for Direction {
