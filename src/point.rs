@@ -53,22 +53,6 @@ impl Point {
     Point::new(q, r, 0)
   }
 
-  /// Convenience function for making points from a values tuple
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use hex_math::{Point, HasValues};
-  ///
-  /// let point: Point = Point::new(1, 2, 5);
-  /// let other: Point = Point::from_values(point.values());
-  ///
-  /// assert_eq!((1, 2, 5), other.values());
-  /// ```
-  pub fn from_values((q, r, t): (i32, i32, i32)) -> Point {
-    Point::new(q, r, t)
-  }
-
 }
 
 /// Add one point to another
@@ -147,7 +131,7 @@ impl HasValues for Point {
 /// use hex_math::{Point, HasValues};
 ///
 /// let point: Point = Point::new(1, 2, 5);
-/// let other: Point = From::from(point.values());
+/// let other: Point = Point::from(point.values());
 ///
 /// assert_eq!((1, 2, 5), other.values());
 /// ```

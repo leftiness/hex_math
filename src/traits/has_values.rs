@@ -90,7 +90,7 @@ pub trait HasValues {
   /// assert_eq!((1, 2, 5), other.values());
   /// ```
   fn to_point(&self) -> Point {
-    Point::from_values(self.values())
+    Point::from(self.values())
   }
 
 }
