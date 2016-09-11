@@ -4,8 +4,9 @@ use std::collections::HashSet;
 use std::cmp::{max, min};
 
 use traits::has_values::HasValues;
+use enums::Direction;
 use point::Point;
-use travel::{Direction, travel};
+use travel::travel;
 
 /// Find the points within the provided manhattan distance
 ///
@@ -213,8 +214,9 @@ mod util {
 
 #[cfg(test)]
 mod tests {
+  use enums::Direction;
   use point::Point;
-  use travel::{Direction, travel};
+  use travel::travel;
 
   use super::util;
 
