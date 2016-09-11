@@ -47,7 +47,6 @@ use travel::travel;
 ///
 /// assert!(set.contains(&Point::new(1, 2, 7)));
 /// assert!(set.contains(&Point::new(1, 2, 3)));
-///
 /// assert_eq!(set.len(), 26);
 /// ```
 pub fn ring<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
