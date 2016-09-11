@@ -1,20 +1,8 @@
 //! Useful stuff for moving in a specified direction
 
 use traits::has_values::HasValues;
+use enums::Direction;
 use point::Point;
-
-/// Enum describing positions in relation to a point
-#[derive(Copy, Clone, Debug, Eq, Hash, PartialEq)]
-pub enum Direction {
-  East,
-  Southeast,
-  Southwest,
-  West,
-  Northwest,
-  Northeast,
-  Up,
-  Down,
-}
 
 /// Create a point in the specified direction a specified number of units
 ///

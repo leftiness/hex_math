@@ -3,8 +3,8 @@
 use std::collections::HashMap;
 
 use traits::has_values::HasValues;
+use enums::Direction;
 use point::Point;
-use travel::Direction;
 
 /// A prism is a point with walls
 ///

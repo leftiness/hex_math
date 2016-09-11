@@ -3,8 +3,9 @@
 use std::collections::HashSet;
 
 use traits::has_values::HasValues;
+use enums::Direction;
 use point::Point;
-use travel::{Direction, travel};
+use travel::travel;
 
 /// Find points at the same height in a ring of a provided radius
 ///
@@ -94,19 +95,8 @@ pub fn ring_2d<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
 
   for direction in 0..6 {
     for _ in 0..range {
-
-      let direction: Direction = match direction {
-        0 => Direction::East,
-        1 => Direction::Southeast,
-        2 => Direction::Southwest,
-        3 => Direction::West,
-        4 => Direction::Northwest,
-        5 => Direction::Northeast,
-        _ => break,
-      };
-
       set.insert(position);
-      position = travel(&position, direction, 1);
+      position = travel(&position, Direction::from(direction), 1);
     }
   }
 
