@@ -18,12 +18,12 @@ use point::Point;
 /// let other: Point = Point::new(3, 4, 10);
 /// let set: HashSet<Point> = line(&point, &other);
 ///
-/// assert_eq!(set.len(), 5);
 /// assert!(set.contains(&Point::new(1, 2, 5)));
 /// assert!(set.contains(&Point::new(2, 2, 6)));
 /// assert!(set.contains(&Point::new(2, 3, 8)));
 /// assert!(set.contains(&Point::new(3, 3, 9)));
 /// assert!(set.contains(&Point::new(3, 4, 10)));
+/// assert_eq!(set.len(), 5);
 /// ```
 ///
 /// ```
@@ -35,12 +35,12 @@ use point::Point;
 /// let other: Point = Point::new_2d(3, 4);
 /// let set: HashSet<Point> = line(&point, &other);
 ///
-/// assert_eq!(set.len(), 5);
 /// assert!(set.contains(&Point::new_2d(1, 2)));
 /// assert!(set.contains(&Point::new_2d(2, 2)));
 /// assert!(set.contains(&Point::new_2d(2, 3)));
 /// assert!(set.contains(&Point::new_2d(3, 3)));
 /// assert!(set.contains(&Point::new_2d(3, 4)));
+/// assert_eq!(set.len(), 5);
 /// ```
 pub fn line<T: HasValues>(point: &T, other: &T) -> HashSet<Point> {
   util::line(point, other, None, None)
@@ -59,11 +59,11 @@ pub fn line<T: HasValues>(point: &T, other: &T) -> HashSet<Point> {
 /// let other: Point = Point::new(2, 2, 6);
 /// let set: HashSet<Point> = line_through(&point, &other, 3);
 ///
-/// assert_eq!(set.len(), 4);
 /// assert!(set.contains(&Point::new(1, 2, 5)));
 /// assert!(set.contains(&Point::new(2, 2, 6)));
 /// assert!(set.contains(&Point::new(3, 2, 7)));
 /// assert!(set.contains(&Point::new(4, 2, 8)));
+/// assert_eq!(set.len(), 4);
 /// ```
 ///
 /// ```
@@ -75,11 +75,11 @@ pub fn line<T: HasValues>(point: &T, other: &T) -> HashSet<Point> {
 /// let other: Point = Point::new_2d(2, 2);
 /// let set: HashSet<Point> = line_through(&point, &other, 3);
 ///
-/// assert_eq!(set.len(), 4);
 /// assert!(set.contains(&Point::new_2d(1, 2)));
 /// assert!(set.contains(&Point::new_2d(2, 2)));
 /// assert!(set.contains(&Point::new_2d(3, 2)));
 /// assert!(set.contains(&Point::new_2d(4, 2)));
+/// assert_eq!(set.len(), 4);
 /// ```
 pub fn line_through<T: HasValues>(
   point: &T,
@@ -106,11 +106,11 @@ pub fn line_through<T: HasValues>(
 ///
 /// let set: HashSet<Point> = ray(&point, &other, &opaque);
 ///
-/// assert_eq!(set.len(), 4);
 /// assert!(set.contains(&Point::new(1, 2, 5)));
 /// assert!(set.contains(&Point::new(2, 2, 6)));
 /// assert!(set.contains(&Point::new(2, 3, 8)));
 /// assert!(set.contains(&Point::new(3, 3, 9)));
+/// assert_eq!(set.len(), 4);
 /// ```
 ///
 /// ```
@@ -126,11 +126,11 @@ pub fn line_through<T: HasValues>(
 ///
 /// let set: HashSet<Point> = ray(&point, &other, &opaque);
 ///
-/// assert_eq!(set.len(), 4);
 /// assert!(set.contains(&Point::new_2d(1, 2)));
 /// assert!(set.contains(&Point::new_2d(2, 2)));
 /// assert!(set.contains(&Point::new_2d(2, 3)));
 /// assert!(set.contains(&Point::new_2d(3, 3)));
+/// assert_eq!(set.len(), 4);
 /// ```
 pub fn ray<T: HasValues>(
   point: &T,
@@ -157,10 +157,10 @@ pub fn ray<T: HasValues>(
 ///
 /// let set: HashSet<Point> = ray_through(&point, &other, 3, &opaque);
 ///
-/// assert_eq!(set.len(), 3);
 /// assert!(set.contains(&Point::new(1, 2, 5)));
 /// assert!(set.contains(&Point::new(2, 2, 6)));
 /// assert!(set.contains(&Point::new(3, 2, 7)));
+/// assert_eq!(set.len(), 3);
 /// ```
 ///
 /// ```
@@ -176,10 +176,10 @@ pub fn ray<T: HasValues>(
 ///
 /// let set: HashSet<Point> = ray_through(&point, &other, 3, &opaque);
 ///
-/// assert_eq!(set.len(), 3);
 /// assert!(set.contains(&Point::new_2d(1, 2)));
 /// assert!(set.contains(&Point::new_2d(2, 2)));
 /// assert!(set.contains(&Point::new_2d(3, 2)));
+/// assert_eq!(set.len(), 3);
 /// ```
 pub fn ray_through<T: HasValues>(
   point: &T,

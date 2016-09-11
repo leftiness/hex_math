@@ -20,7 +20,6 @@ use travel::travel;
 /// let point: Point = Point::new(1, 2, 5);
 /// let set: HashSet<Point> = range(&point, 1);
 ///
-/// assert_eq!(set.len(), 9);
 /// assert!(set.contains(&Point::new(1, 2, 5)));
 /// assert!(set.contains(&Point::new(2, 2, 5)));
 /// assert!(set.contains(&Point::new(1, 3, 5)));
@@ -30,6 +29,7 @@ use travel::travel;
 /// assert!(set.contains(&Point::new(2, 1, 5)));
 /// assert!(set.contains(&Point::new(1, 2, 4)));
 /// assert!(set.contains(&Point::new(1, 2, 6)));
+/// assert_eq!(set.len(), 9);
 /// ```
 pub fn range<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
   let mut set: HashSet<Point> = range_2d(point, range);
@@ -60,7 +60,6 @@ pub fn range<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
 /// let point: Point = Point::new(1, 2, 5);
 /// let set: HashSet<Point> = range_2d(&point, 1);
 ///
-/// assert_eq!(set.len(), 7);
 /// assert!(set.contains(&Point::new(1, 2, 5)));
 /// assert!(set.contains(&Point::new(2, 2, 5)));
 /// assert!(set.contains(&Point::new(1, 3, 5)));
@@ -68,6 +67,7 @@ pub fn range<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
 /// assert!(set.contains(&Point::new(0, 2, 5)));
 /// assert!(set.contains(&Point::new(1, 1, 5)));
 /// assert!(set.contains(&Point::new(2, 1, 5)));
+/// assert_eq!(set.len(), 7);
 /// ```
 pub fn range_2d<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
   let mut set: HashSet<Point> = HashSet::new();
@@ -113,7 +113,6 @@ pub fn range_2d<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
 ///
 /// let result: HashSet<Point> = flood(&point, 2, &invalid);
 ///
-/// assert_eq!(result.len(), 7);
 /// assert!(result.contains(&point));
 /// assert!(result.contains(&Point::new(0, 2, 2)));
 /// assert!(result.contains(&Point::new(0, 1, 2)));
@@ -121,6 +120,7 @@ pub fn range_2d<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
 /// assert!(result.contains(&Point::new(-1, 3, 2)));
 /// assert!(result.contains(&Point::new(0, 2, 1)));
 /// assert!(result.contains(&Point::new(0, 2, 3)));
+/// assert_eq!(result.len(), 7);
 /// ```
 pub fn flood<T: HasValues>(
   point: &T,
@@ -153,12 +153,12 @@ pub fn flood<T: HasValues>(
 ///
 /// let result: HashSet<Point> = flood_2d(&point, 2, &invalid);
 ///
-/// assert_eq!(result.len(), 5);
 /// assert!(result.contains(&point));
 /// assert!(result.contains(&Point::new_2d(0, 2)));
 /// assert!(result.contains(&Point::new_2d(0, 1)));
 /// assert!(result.contains(&Point::new_2d(-1, 2)));
 /// assert!(result.contains(&Point::new_2d(-1, 3)));
+/// assert_eq!(result.len(), 5);
 /// ```
 pub fn flood_2d<T: HasValues>(
   point: &T,
@@ -243,11 +243,11 @@ mod tests {
 
     let result: HashSet<Point> = util::flood(&point, 2, range_1d, &invalid);
 
-    assert_eq!(result.len(), 4);
     assert!(result.contains(&point));
     assert!(result.contains(&Point::new(0, 0, 1)));
     assert!(result.contains(&Point::new(0, 0, -1)));
     assert!(result.contains(&Point::new(0, 0, -2)));
+    assert_eq!(result.len(), 4);
   }
 
 }
