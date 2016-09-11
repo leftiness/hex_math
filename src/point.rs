@@ -11,7 +11,7 @@ use traits::has_values::HasValues;
 /// two dimensions and a fourth (T) to describe its third dimension.
 /// The first three are "cube" coordinates as they describe a 2D hexagon as
 /// if it were a cube in 3D space, making several algorithms easier to use.
-#[derive(Copy, Clone, Debug, Eq, Hash, PartialEq)]
+#[derive(Debug, Eq, Hash, PartialEq)]
 pub struct Point {
 
   /// This can also be considered axis X on a cube.

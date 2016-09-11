@@ -14,7 +14,7 @@ use point::Point;
 /// Note that it's possible to designate all walls with only four directions
 /// by consistently using the same directions because one prism's west is
 /// another prism's east.
-#[derive(Clone, Debug)]
+#[derive(Debug)]
 pub struct Prism {
 
   /// The walls surrounding the point and their strength

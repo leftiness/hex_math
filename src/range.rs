@@ -182,20 +182,19 @@ mod util {
     invalid: &HashSet<Point>,
   ) -> HashSet<Point> {
     let mut visited: HashSet<Point> = HashSet::new();
-    let mut fringes: Vec<Vec<Point>> = Vec::new();
+    let mut fringes: Vec<Point> = Vec::new();
     let start: Point = start.to_point();
 
     if invalid.contains(&start) {
       return visited;
     }
 
-    fringes.push(vec![start]);
-    visited.insert(start);
+    fringes.push(start);
 
-    for step in 1..range + 1 {
+    for _ in 1..range + 1 {
       let mut found = vec![];
 
-      for point in &fringes[step as usize - 1] {
+      for point in &fringes {
         for neighbor in range_fn(point, 1) {
           if !invalid.contains(&neighbor) && !visited.contains(&neighbor) {
             found.push(neighbor);
@@ -203,9 +202,11 @@ mod util {
         }
       }
 
-      visited.extend(&found);
-      fringes.push(found);
+      visited.extend(fringes);
+      fringes = found;
     }
+
+    visited.extend(fringes);
 
     visited
   }
