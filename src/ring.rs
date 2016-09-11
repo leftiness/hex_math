@@ -81,22 +81,24 @@ pub fn ring<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
 /// let point: Point = Point::new(1, 2, 5);
 /// let set: HashSet<Point> = ring_2d(&point, 1);
 ///
-/// assert_eq!(set.len(), 6);
 /// assert!(set.contains(&Point::new(1, 1, 5)));
 /// assert!(set.contains(&Point::new(2, 1, 5)));
 /// assert!(set.contains(&Point::new(2, 2, 5)));
 /// assert!(set.contains(&Point::new(1, 3, 5)));
 /// assert!(set.contains(&Point::new(0, 3, 5)));
 /// assert!(set.contains(&Point::new(0, 2, 5)));
+/// assert_eq!(set.len(), 6);
 /// ```
 pub fn ring_2d<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
   let mut set: HashSet<Point> = HashSet::new();
-  let mut position: Point = travel(point, Direction::Northwest, range);
+  let mut point: Point = travel(point, Direction::Northwest, range);
 
   for direction in 0..6 {
     for _ in 0..range {
-      set.insert(position);
-      position = travel(&position, Direction::from(direction), 1);
+      let next: Point = travel(&point, Direction::from(direction), 1);
+
+      set.insert(point);
+      point = next;
     }
   }
 

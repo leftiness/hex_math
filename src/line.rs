@@ -283,10 +283,11 @@ mod util {
       let t: f32 = index as f32 / distance as f32;
       let lerp: (f32, f32, f32, f32) = point_lerp(point, other, t);
       let found: Point = point_round(lerp);
+      let should_break = should_check_opaque && opaque.contains(&found);
 
       set.insert(found);
 
-      if should_check_opaque && opaque.contains(&found) {
+      if should_break {
         break;
       }
     }
