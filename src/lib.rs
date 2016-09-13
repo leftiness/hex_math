@@ -43,6 +43,6 @@ pub use line::{line, line_through, ray, ray_through};
 pub use range::{range, range_2d, flood, flood_2d};
 pub use rotate::rotate_2d;
 pub use ring::{ring, ring_2d};
-pub use traits::has_values::HasValues;
+pub use traits::{HasValues, HasWalls};
 pub use enums::Direction;
 

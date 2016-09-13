@@ -3,7 +3,7 @@
 use std::convert::From;
 use std::ops::{Add, Sub};
 
-use traits::has_values::HasValues;
+use traits::HasValues;
 
 /// Basic point on a coordinate plane
 ///

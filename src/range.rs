@@ -3,7 +3,7 @@
 use std::collections::HashSet;
 use std::cmp::{max, min};
 
-use traits::has_values::HasValues;
+use traits::HasValues;
 use enums::Direction;
 use point::Point;
 use travel::travel;
@@ -171,7 +171,7 @@ pub fn flood_2d<T: HasValues>(
 mod util {
   use std::collections::HashSet;
 
-  use traits::has_values::HasValues;
+  use traits::HasValues;
   use point::Point;
 
   /// Find reachable points within a specified range with a provided function

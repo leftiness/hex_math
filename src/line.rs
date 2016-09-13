@@ -2,7 +2,7 @@
 
 use std::collections::HashSet;
 
-use traits::has_values::HasValues;
+use traits::HasValues;
 use point::Point;
 
 /// Find the points in a line between the current point and the one provided
@@ -193,7 +193,7 @@ pub fn ray_through<T: HasValues>(
 mod util {
   use std::collections::HashSet;
 
-  use traits::has_values::HasValues;
+  use traits::HasValues;
   use point::Point;
   use distance::{distance, distance_2d};
 
