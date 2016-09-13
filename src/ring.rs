@@ -2,7 +2,7 @@
 
 use std::collections::HashSet;
 
-use traits::has_values::HasValues;
+use traits::HasValues;
 use enums::Direction;
 use point::Point;
 use travel::travel;

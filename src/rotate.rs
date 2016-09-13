@@ -1,6 +1,6 @@
 //! Useful stuff for rotating points
 
-use traits::has_values::HasValues;
+use traits::HasValues;
 use point::Point;
 
 /// Rotate the point around a provided center, keeping the same height

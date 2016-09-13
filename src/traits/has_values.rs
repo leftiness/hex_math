@@ -83,7 +83,7 @@ pub trait HasValues {
   /// use hex_math::{Point, Prism, HasValues};
   ///
   /// let point: Point = Point::new(1, 2, 5);
-  /// let prism: Prism = Prism::new(point);
+  /// let prism: Prism = Prism::new(point, 1, 1, 1, 1);
   /// let other: Point = prism.to_point();
   ///
   /// assert_eq!((1, 2, 5), prism.values());
