@@ -1,7 +1,9 @@
 //! Provide access to a prism's walls
 
+use traits::HasValues;
+
 /// Provide access to a prism's walls
-pub trait HasWalls {
+pub trait HasWalls: HasValues {
 
   /// Return a tuple of (East, Southeast, Southwest, Down) wall strength
   ///
