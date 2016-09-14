@@ -1,5 +1,3 @@
-//! Useful stuff for finding points in a line
-
 use std::collections::HashSet;
 
 use traits::HasValues;

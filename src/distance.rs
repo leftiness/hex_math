@@ -1,5 +1,3 @@
-//! Useful stuff for calculating the distance between points
-
 use traits::HasValues;
 use point::Point;
 

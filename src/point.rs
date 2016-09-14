@@ -1,5 +1,3 @@
-//! Basic point on a coordinate plane
-
 use std::convert::From;
 use std::ops::{Add, Sub};
 

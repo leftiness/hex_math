@@ -1,5 +1,3 @@
-//! Useful stuff for rotating points
-
 use traits::HasValues;
 use point::Point;
 

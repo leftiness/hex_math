@@ -1,5 +1,3 @@
-//! Enum describing positions in relation to a point
-
 use std::convert::From;
 
 /// Enum describing positions in relation to a point

@@ -1,5 +1,3 @@
-//! Useful stuff for finding points in a ring
-
 use std::collections::HashSet;
 
 use traits::HasValues;
