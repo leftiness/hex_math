@@ -5,7 +5,7 @@ use enums::Direction;
 use point::Point;
 use travel::travel;
 
-/// Find points at the same height in a ring of a provided radius
+/// Find points in a spherical ring of a provided radius
 ///
 /// # Example
 ///
