@@ -1,5 +1,3 @@
-//! Useful stuff for finding points in a range
-
 use std::collections::HashSet;
 use std::cmp::{max, min};
 

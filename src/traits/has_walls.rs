@@ -1,5 +1,3 @@
-//! Provide access to a prism's walls
-
 use traits::HasValues;
 
 /// Provide access to a prism's walls

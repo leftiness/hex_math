@@ -1,5 +1,3 @@
-//! Useful stuff for moving in a specified direction
-
 use traits::HasValues;
 use enums::Direction;
 use point::Point;

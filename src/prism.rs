@@ -1,5 +1,3 @@
-//! A prism is a point with walls
-
 use traits::{HasValues, HasWalls};
 use point::Point;
 

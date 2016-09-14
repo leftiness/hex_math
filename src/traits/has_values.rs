@@ -1,5 +1,3 @@
-//! Provide access to the point's coordinate values
-
 use point::Point;
 
 /// Provide access to the point's coordinate values
