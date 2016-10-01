@@ -195,34 +195,47 @@ mod util {
   use point::Point;
   use distance::{distance, distance_2d};
 
-  /// Linear interpolation of floats with specified offset
-  pub fn lerp(a: i32, b: i32, t: f32, o: f32) -> f32 {
-    let a = a as f32 + o;
-    let b = b as f32 + o;
-
-    a + ((b - a) * t)
-  }
-
-  /// Linear interpolation of points with small offset
-  ///
-  /// The offset is used to prevent the interpolation from falling exactly
-  /// on a border between two points. It is eliminated with rounding later.
-  pub fn point_lerp<T: HasValues>(
+  /// Return the floats one step along a line between two points
+  pub fn step_size<T: HasValues>(
     a: &T,
     b: &T,
-    t: f32
+    step: f32
   ) -> (f32, f32, f32, f32) {
+
+    let lerp = |x: i32, y: i32, offset: f32| offset + (y - x) as f32 * step;
     let (qa, ra, sa, ta) = a.values_cube();
     let (qb, rb, sb, tb) = b.values_cube();
 
     let result = (
-      lerp(qa, qb, t, 1e-6),
-      lerp(ra, rb, t, 1e-6),
-      lerp(sa, sb, t, -2e-6),
-      lerp(ta, tb, t, 1e-6),
+      lerp(qa, qb, 1e-6),
+      lerp(ra, rb, 1e-6),
+      lerp(sa, sb, -2e-6),
+      lerp(ta, tb, 1e-6),
     );
 
     result
+
+  }
+
+  /// Return the floats a number of sized steps away from a point
+  pub fn take_steps<T: HasValues>(
+    steps: i32,
+    (dq, dr, ds, dt): (f32, f32, f32, f32),
+    point: &T
+  ) -> (f32, f32, f32, f32) {
+
+    let (q, r, s, t) = point.values_cube();
+    let step = |x: f32, y: i32| (x * steps as f32) + y as f32;
+
+    let result = (
+      step(dq, q),
+      step(dr, r),
+      step(ds, s),
+      step(dt, t),
+    );
+
+    result
+
   }
 
   /// Round a float point back to a standard point
@@ -277,11 +290,12 @@ mod util {
     let opaque: &HashSet<Point> = opaque.unwrap_or(&empty);
     let should_check_opaque: bool = !opaque.is_empty();
 
+    let step: f32 = 1f32 / distance as f32;
+    let size: (f32, f32, f32, f32) = step_size(point, other, step);
+
     for index in 0..range.unwrap_or(distance) + 1 {
-      let t: f32 = index as f32 / distance as f32;
-      let lerp: (f32, f32, f32, f32) = point_lerp(point, other, t);
-      let found: Point = point_round(lerp);
-      let should_break = should_check_opaque && opaque.contains(&found);
+      let found: Point = point_round(take_steps(index, size, point));
+      let should_break: bool = should_check_opaque && opaque.contains(&found);
 
       set.insert(found);
 
@@ -304,20 +318,22 @@ mod tests {
   use super::util;
 
   #[test]
-  fn lerp() {
-    let result = util::lerp(1, 2, 0.5, 1e-6);
+  fn step_size() {
+    let point: Point = Point::new(1, 2, 5);
+    let other: Point = Point::new(1, 12, 5);
+    let size: (f32, f32, f32, f32) = util::step_size(&point, &other, 1f32);
 
-    assert_eq!(result, 1.5 + 1e-6);
+    assert_eq!((1e-6, 10f32 + 1e-6, -10f32 - 2e-6, 1e-6), size);
   }
 
   #[test]
-  fn point_lerp() {
+  fn take_steps() {
+    let steps = 2;
+    let size = (2f32, 2f32, -4f32, 2f32);
     let point: Point = Point::new(1, 2, 5);
-    let other: Point = Point::new(3, 4, 10);
-    let result = util::point_lerp(&point, &other, 0.5);
-    let expect = (2f32 + 1e-6, 3f32 + 1e-6, -5f32 - 2e-6, 7.5f32 + 1e-6);
+    let step: (f32, f32, f32, f32) = util::take_steps(steps, size, &point);
 
-    assert_eq!(result, expect);
+    assert_eq!((5f32, 6f32, -11f32, 9f32), step);
   }
 
   #[test]
