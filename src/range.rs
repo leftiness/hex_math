@@ -34,8 +34,8 @@ pub fn range<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
 
   for index in 1..range + 1 {
     let diff = range - index;
-    let up: Point = travel(point, Direction::Up, index);
-    let down: Point = travel(point, Direction::Down, index);
+    let up: Point = travel(point, &Direction::Up, index);
+    let down: Point = travel(point, &Direction::Down, index);
     let up_range: HashSet<Point> = range_2d(&up, diff);
     let down_range: HashSet<Point> = range_2d(&down, diff);
 
@@ -230,8 +230,8 @@ mod tests {
 
     fn range_1d(point: &Point, range: i32) -> HashSet<Point> {
       let mut set: HashSet<Point> = HashSet::new();
-      let up: Point = travel(point, Direction::Up, range);
-      let down: Point = travel(point, Direction::Down, range);
+      let up: Point = travel(point, &Direction::Up, range);
+      let down: Point = travel(point, &Direction::Down, range);
 
       set.insert(up);
       set.insert(down);
