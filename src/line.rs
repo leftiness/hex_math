@@ -217,27 +217,6 @@ mod util {
 
   }
 
-  /// Return the floats a number of sized steps away from a point
-  pub fn take_steps<T: HasValues>(
-    steps: i32,
-    (dq, dr, ds, dt): (f32, f32, f32, f32),
-    point: &T
-  ) -> (f32, f32, f32, f32) {
-
-    let (q, r, s, t) = point.values_cube();
-    let step = |x: f32, y: i32| (x * steps as f32) + y as f32;
-
-    let result = (
-      step(dq, q),
-      step(dr, r),
-      step(ds, s),
-      step(dt, t),
-    );
-
-    result
-
-  }
-
   /// Round a float point back to a standard point
   pub fn point_round((q, r, s, t): (f32, f32, f32, f32)) -> Point {
     let mut rq = q.round();
@@ -272,11 +251,12 @@ mod util {
     range: Option<i32>,
     opaque: Option<&HashSet<Point>>,
   ) -> HashSet<Point> {
+
     let mut set: HashSet<Point> = HashSet::new();
 
-    if point.values() == other.values() {
-      set.insert(point.to_point());
+    set.insert(point.to_point());
 
+    if point.values() == other.values() {
       return set;
     }
 
@@ -291,20 +271,30 @@ mod util {
     let should_check_opaque: bool = !opaque.is_empty();
 
     let step: f32 = 1f32 / distance as f32;
-    let size: (f32, f32, f32, f32) = step_size(point, other, step);
+    let (sq, sr, ss, st) = step_size(point, other, step);
 
-    for index in 0..range.unwrap_or(distance) + 1 {
-      let found: Point = point_round(take_steps(index, size, point));
-      let should_break: bool = should_check_opaque && opaque.contains(&found);
+    let (pq, pr, ps, pt) = point.values_cube();
+    let mut found = (pq as f32, pr as f32, ps as f32, pt as f32);
 
-      set.insert(found);
+    for _ in 0..range.unwrap_or(distance) {
+
+      let (fq, fr, fs, ft) = found;
+
+      found = (fq + sq, fr + sr, fs + ss, ft + st);
+
+      let round: Point = point_round(found);
+      let should_break: bool = should_check_opaque && opaque.contains(&round);
+
+      set.insert(round);
 
       if should_break {
         break;
       }
+
     }
 
     set
+
   }
 
 }
@@ -327,16 +317,6 @@ mod tests {
   }
 
   #[test]
-  fn take_steps() {
-    let steps = 2;
-    let size = (2f32, 2f32, -4f32, 2f32);
-    let point: Point = Point::new(1, 2, 5);
-    let step: (f32, f32, f32, f32) = util::take_steps(steps, size, &point);
-
-    assert_eq!((5f32, 6f32, -11f32, 9f32), step);
-  }
-
-  #[test]
   fn point_round() {
     let coordinates = (1.6, 1.6, -3.2, 2.5);
     let point: Point = util::point_round(coordinates);
@@ -353,6 +333,7 @@ mod tests {
     assert!(line.contains(&Point::new(1, 2, 5)));
     assert!(line.contains(&Point::new(1, 2, 6)));
     assert!(line.contains(&Point::new(1, 2, 7)));
+    assert_eq!(line.len(), 3);
   }
 
 }
