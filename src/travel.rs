@@ -1,6 +1,6 @@
-use traits::HasValues;
 use enums::Direction;
-use point::Point;
+use structs::Point;
+use traits::HasValues;
 
 /// Create a point in the specified direction a specified number of units
 ///

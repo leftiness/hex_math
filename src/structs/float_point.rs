@@ -1,7 +1,7 @@
 use std::convert::From;
 use std::ops::{Add, Sub};
 
-use point::Point;
+use structs::Point;
 use traits::HasValues;
 
 /// Point on a coordinate plane with floating point coordinate values

@@ -1,5 +1,5 @@
+use structs::Point;
 use traits::{HasValues, HasWalls};
-use point::Point;
 
 /// A prism is a point with walls
 #[derive(Debug)]

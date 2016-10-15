@@ -1,9 +1,9 @@
 use std::collections::HashSet;
 use std::cmp::{max, min};
 
-use traits::HasValues;
 use enums::Direction;
-use point::Point;
+use structs::Point;
+use traits::HasValues;
 use travel::travel;
 
 /// Find the points within the provided manhattan distance
@@ -171,7 +171,7 @@ mod util {
   use std::collections::HashSet;
 
   use traits::HasValues;
-  use point::Point;
+  use structs::Point;
 
   /// Find reachable points within a specified range with a provided function
   pub fn flood<T: HasValues>(
@@ -215,7 +215,7 @@ mod util {
 #[cfg(test)]
 mod tests {
   use enums::Direction;
-  use point::Point;
+  use structs::Point;
   use travel::travel;
 
   use super::util;

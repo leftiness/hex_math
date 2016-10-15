@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
+use structs::Point;
 use traits::HasValues;
-use point::Point;
 
 /// Find the points in a line between the current point and the one provided
 ///
@@ -191,10 +191,9 @@ pub fn ray_through<T: HasValues>(
 mod util {
   use std::collections::HashSet;
 
-  use traits::HasValues;
-  use point::Point;
-  use float_point::FloatPoint;
   use distance::{distance, distance_2d};
+  use structs::{FloatPoint, Point};
+  use traits::HasValues;
 
   /// Return the floats one step along a line between two points
   ///
@@ -276,8 +275,8 @@ mod util {
 mod tests {
   use std::collections::HashSet;
 
-  use point::Point;
-  use float_point::FloatPoint;
+  use structs::Point;
+  use structs::FloatPoint;
   use traits::HasValues;
 
   use super::util;

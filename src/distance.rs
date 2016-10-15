@@ -1,5 +1,5 @@
+use structs::Point;
 use traits::HasValues;
-use point::Point;
 
 /// Calculate the manhattan distance between two points
 ///
