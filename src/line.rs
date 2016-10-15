@@ -193,51 +193,27 @@ mod util {
 
   use traits::HasValues;
   use point::Point;
+  use float_point::FloatPoint;
   use distance::{distance, distance_2d};
 
   /// Return the floats one step along a line between two points
-  pub fn step_size<T: HasValues>(
-    a: &T,
-    b: &T,
-    step: f32
-  ) -> (f32, f32, f32, f32) {
+  ///
+  /// The lerp is offset a small amount to prevent points from landing
+  /// directly on the line between two hexes.
+  pub fn step_size<T: HasValues>(a: &T, b: &T, step: f32) -> FloatPoint {
 
-    let lerp = |x: i32, y: i32, offset: f32| offset + (y - x) as f32 * step;
-    let (qa, ra, sa, ta) = a.values_cube();
-    let (qb, rb, sb, tb) = b.values_cube();
+    let lerp = |x: i32, y: i32| 1e-6 + (y - x) as f32 * step;
+    let (qa, ra, ta) = a.values();
+    let (qb, rb, tb) = b.values();
 
-    let result = (
-      lerp(qa, qb, 1e-6),
-      lerp(ra, rb, 1e-6),
-      lerp(sa, sb, -2e-6),
-      lerp(ta, tb, 1e-6),
+    let result = FloatPoint::new(
+      lerp(qa, qb),
+      lerp(ra, rb),
+      lerp(ta, tb),
     );
 
     result
 
-  }
-
-  /// Round a float point back to a standard point
-  pub fn point_round((q, r, s, t): (f32, f32, f32, f32)) -> Point {
-    let mut rq = q.round();
-    let mut rr = r.round();
-
-    let rs = s.round();
-    let rt = t.round();
-
-    let dq = (rq - q).abs();
-    let dr = (rr - r).abs();
-    let ds = (rs - s).abs();
-
-    if (dq > ds) && (dq > dr) {
-      rq = -rs - rr;
-    } else if ds < dr {
-      rr = -rq - rs;
-    }
-
-    let point: Point = Point::new(rq as i32, rr as i32, rt as i32);
-
-    point
   }
 
   /// Find the points in a line between two points
@@ -254,7 +230,7 @@ mod util {
 
     let mut set: HashSet<Point> = HashSet::new();
 
-    set.insert(point.to_point());
+    set.insert(Point::from(point.values()));
 
     if point.values() == other.values() {
       return set;
@@ -271,18 +247,15 @@ mod util {
     let should_check_opaque: bool = !opaque.is_empty();
 
     let step: f32 = 1f32 / distance as f32;
-    let (sq, sr, ss, st) = step_size(point, other, step);
+    let size: FloatPoint = step_size(point, other, step);
 
-    let (pq, pr, ps, pt) = point.values_cube();
-    let mut found = (pq as f32, pr as f32, ps as f32, pt as f32);
+    let mut found: FloatPoint = FloatPoint::from(point.values());
 
     for _ in 0..range.unwrap_or(distance) {
 
-      let (fq, fr, fs, ft) = found;
+      found = &found + &size;
 
-      found = (fq + sq, fr + sr, fs + ss, ft + st);
-
-      let round: Point = point_round(found);
+      let round: Point = found.round();
       let should_break: bool = should_check_opaque && opaque.contains(&round);
 
       set.insert(round);
@@ -304,6 +277,8 @@ mod tests {
   use std::collections::HashSet;
 
   use point::Point;
+  use float_point::FloatPoint;
+  use traits::HasValues;
 
   use super::util;
 
@@ -311,17 +286,9 @@ mod tests {
   fn step_size() {
     let point: Point = Point::new(1, 2, 5);
     let other: Point = Point::new(1, 12, 5);
-    let size: (f32, f32, f32, f32) = util::step_size(&point, &other, 1f32);
+    let size: FloatPoint = util::step_size(&point, &other, 1f32);
 
-    assert_eq!((1e-6, 10f32 + 1e-6, -10f32 - 2e-6, 1e-6), size);
-  }
-
-  #[test]
-  fn point_round() {
-    let coordinates = (1.6, 1.6, -3.2, 2.5);
-    let point: Point = util::point_round(coordinates);
-
-    assert_eq!(point, Point::new(2, 1, 3));
+    assert_eq!((1e-6, 10f32 + 1e-6, 1e-6), size.values());
   }
 
   #[test]

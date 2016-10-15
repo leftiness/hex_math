@@ -69,6 +69,7 @@ pub fn range<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
 /// ```
 pub fn range_2d<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
   let mut set: HashSet<Point> = HashSet::new();
+  let point: Point = Point::from(point.values());
 
   for dq in -range..range + 1 {
     let lower: i32 = max(-range, -dq - range);
@@ -76,7 +77,7 @@ pub fn range_2d<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
 
     for ds in lower..upper + 1 {
       let dr: i32 = -dq - ds;
-      let found = &point.to_point() + &Point::new(dq, dr, 0);
+      let found = &point + &Point::new(dq, dr, 0);
 
       set.insert(found);
     }
@@ -181,7 +182,7 @@ mod util {
   ) -> HashSet<Point> {
     let mut visited: HashSet<Point> = HashSet::new();
     let mut fringes: Vec<Point> = Vec::new();
-    let start: Point = start.to_point();
+    let start: Point = Point::from(start.values());
 
     if invalid.contains(&start) {
       return visited;
