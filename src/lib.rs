@@ -25,6 +25,7 @@
 //! ```
 
 mod point;
+mod float_point;
 mod prism;
 mod travel;
 mod distance;
@@ -36,6 +37,7 @@ mod traits;
 mod enums;
 
 pub use point::Point;
+pub use float_point::FloatPoint;
 pub use prism::Prism;
 pub use travel::travel;
 pub use distance::{distance, distance_2d};
