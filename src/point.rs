@@ -5,10 +5,8 @@ use traits::HasValues;
 
 /// Basic point on a coordinate plane
 ///
-/// The point contains three coordinates (QRS) to describe its position in
-/// two dimensions and a fourth (T) to describe its third dimension.
-/// The first three are "cube" coordinates as they describe a 2D hexagon as
-/// if it were a cube in 3D space, making several algorithms easier to use.
+/// The point contains two coordinates QR to describe its position in
+/// two dimensions and a third T to describe its third dimension.
 #[derive(Debug, Eq, Hash, PartialEq)]
 pub struct Point {
 
@@ -40,7 +38,7 @@ impl Point {
 
   /// Convenience function for making two-dimensional points
   ///
-  /// Example
+  /// # Example
   ///
   /// ```
   /// use hex_math::Point;
@@ -109,9 +107,6 @@ impl<'a, 'b> Sub<&'b Point> for &'a Point {
 /// let point: Point = Point::new(1, 2, 5);
 ///
 /// assert_eq!((1, 2, 5), point.values());
-/// assert_eq!((1, 2, -3, 5), point.values_cube());
-/// assert_eq!((1, 2), point.values_2d());
-/// assert_eq!((1, 2, -3), point.values_cube_2d());
 /// ```
 impl HasValues for Point {
 

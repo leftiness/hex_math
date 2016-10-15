@@ -39,8 +39,8 @@ use point::Point;
 /// ```
 pub fn rotate_2d<T: HasValues>(point: &T, center: &T, mut times: i32) -> Point {
 
-  let point: Point = point.to_point();
-  let center: Point = center.to_point();
+  let point: Point = Point::from(point.values());
+  let center: Point = Point::from(center.values());
 
   if &point == &center {
     return point;
