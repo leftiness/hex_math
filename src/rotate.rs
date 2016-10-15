@@ -1,5 +1,5 @@
 use traits::HasValues;
-use point::Point;
+use structs::Point;
 
 /// Rotate the point around a provided center, keeping the same height
 ///

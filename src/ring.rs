@@ -1,8 +1,8 @@
 use std::collections::HashSet;
 
-use traits::HasValues;
 use enums::Direction;
-use point::Point;
+use structs::Point;
+use traits::HasValues;
 use travel::travel;
 
 /// Find points in a spherical ring of a provided radius
