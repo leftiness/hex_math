@@ -43,6 +43,6 @@ pub use rotate::rotate_2d;
 pub use ring::{ring, ring_2d};
 
 pub use enums::Direction;
-pub use structs::{FloatPoint, Point, Prism};
+pub use structs::{FloatPoint, PixelPoint, Point, Prism};
 pub use traits::{HasValues, HasWalls};
 
