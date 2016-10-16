@@ -4,7 +4,7 @@ use std::ops::{Add, Sub, Mul};
 use structs::{FloatPoint, Point};
 use traits::HasValues;
 
-/// Point on the screen
+/// Translate 2D QRS coordinates to XY coordinates on a screen
 #[derive(Debug, PartialEq)]
 pub struct PixelPoint {
 
@@ -111,7 +111,7 @@ impl<'a, 'b> Sub<&'b PixelPoint> for &'a PixelPoint {
 /// let result: PixelPoint = &other * &scale;
 ///
 /// assert_eq!(3f32.sqrt() * 10f32, result.x);
-/// assert_eq!(40f32, result.y);
+/// assert_eq!(15f32, result.y);
 /// ```
 impl <'a, 'b> Mul<&'b PixelPoint> for &'a PixelPoint {
 
@@ -134,7 +134,7 @@ impl <'a, 'b> Mul<&'b PixelPoint> for &'a PixelPoint {
 /// let other: PixelPoint = PixelPoint::from(&point);
 ///
 /// assert_eq!(3f32.sqrt() * 2f32, other.x);
-/// assert_eq!(8f32, other.y);
+/// assert_eq!(3f32, other.y);
 /// ```
 impl<'a> From<&'a Point> for PixelPoint {
 
@@ -156,18 +156,18 @@ impl<'a> From<&'a Point> for PixelPoint {
 /// ```
 /// use hex_math::{FloatPoint, PixelPoint};
 ///
-/// let point: FloatPoint = FloatPoint::new(1f32, 2f32, 5f32);
+/// let point: FloatPoint = FloatPoint::new_2d(1f32, 2f32);
 /// let other: PixelPoint = PixelPoint::from(&point);
 ///
 /// assert_eq!(3f32.sqrt() * 2f32, other.x);
-/// assert_eq!(8f32, other.y);
+/// assert_eq!(3f32, other.y);
 /// ```
 impl <'a> From<&'a FloatPoint> for PixelPoint {
 
   fn from(point: &'a FloatPoint) -> PixelPoint {
 
     let x: f32 = 3f32.sqrt() * (point.q + (point.r / 2f32));
-    let y: f32 = (1.5f32 * point.r) + point.t;
+    let y: f32 = 1.5f32 * point.r;
     let result: PixelPoint = PixelPoint::new(x, y);
 
     result
