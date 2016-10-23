@@ -1,3 +1,4 @@
+use enums::Direction;
 use traits::HasValues;
 
 /// Provide access to a prism's walls
@@ -12,5 +13,37 @@ pub trait HasWalls: HasValues {
   /// by consistently using the same directions because one prism's west is
   /// another prism's east.
   fn walls(&self) -> (i32, i32, i32, i32);
+
+  /// Return whether there is a wall in the provided direction
+  ///
+  /// If the direction is not one of the four directions, false will always
+  /// be returned.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use hex_math::{Direction, Point, Prism, HasWalls};
+  ///
+  /// let point: Point = Point::new(1, 2, 5);
+  /// let prism: Prism = Prism::new(point, 1, 0, 0, 0);
+  ///
+  /// assert_eq!(true, prism.has_wall(&Direction::East));
+  /// assert_eq!(false, prism.has_wall(&Direction::Southeast));
+  /// ```
+  fn has_wall(&self, direction: &Direction) -> bool {
+
+    let (e, se, sw, d) = self.walls();
+
+    let result: bool = match direction {
+      &Direction::East => e > 0,
+      &Direction::Southeast => se > 0,
+      &Direction::Southwest => sw > 0,
+      &Direction::Down => d > 0,
+      _ => false,
+    };
+
+    result
+
+  }
 
 }

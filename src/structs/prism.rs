@@ -92,6 +92,27 @@ impl HasWalls for Prism {
 
 }
 
+/// Convert from a point to a prism with zero walls
+///
+/// # Example
+///
+/// ```
+/// use hex_math::{Point, Prism, HasValues, HasWalls};
+///
+/// let point: Point = Point::new(1, 2, 5);
+/// let prism: Prism = Prism::from(&point);
+///
+/// assert_eq!((1, 2, 5), prism.values());
+/// assert_eq!((0, 0, 0, 0), prism.walls());
+/// ```
+impl<'a> From<&'a Point> for Prism {
+
+  fn from(point: &'a Point) -> Prism {
+    Prism::new(Point::from(point.values()), 0, 0, 0, 0)
+  }
+
+}
+
 /// Convert from tuples of values and wall strengths
 ///
 /// # Example
