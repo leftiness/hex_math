@@ -1,7 +1,7 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
-use structs::Point;
-use traits::HasValues;
+use structs::{Point, Prism};
+use traits::{HasValues, HasWalls};
 
 /// Find the points in a line between the current point and the one provided
 ///
@@ -23,25 +23,11 @@ use traits::HasValues;
 /// assert!(set.contains(&Point::new(3, 4, 10)));
 /// assert_eq!(set.len(), 5);
 /// ```
-///
-/// ```
-/// use std::collections::HashSet;
-///
-/// use hex_math::{line, Point};
-///
-/// let point: Point = Point::new_2d(1, 2);
-/// let other: Point = Point::new_2d(3, 4);
-/// let set: HashSet<Point> = line(&point, &other);
-///
-/// assert!(set.contains(&Point::new_2d(1, 2)));
-/// assert!(set.contains(&Point::new_2d(2, 2)));
-/// assert!(set.contains(&Point::new_2d(2, 3)));
-/// assert!(set.contains(&Point::new_2d(3, 3)));
-/// assert!(set.contains(&Point::new_2d(3, 4)));
-/// assert_eq!(set.len(), 5);
-/// ```
-pub fn line<T: HasValues>(point: &T, other: &T) -> HashSet<Point> {
-  util::line(point, other, None, None)
+pub fn line<T: HasValues>(
+  point: &T,
+  other: &T
+) -> HashSet<Point> {
+  util::line(point, other, None, None::<&HashMap<Point, Prism>>)
 }
 
 /// Find the points within range in a line through two points
@@ -63,28 +49,12 @@ pub fn line<T: HasValues>(point: &T, other: &T) -> HashSet<Point> {
 /// assert!(set.contains(&Point::new(4, 2, 8)));
 /// assert_eq!(set.len(), 4);
 /// ```
-///
-/// ```
-/// use std::collections::HashSet;
-///
-/// use hex_math::{line_through, Point};
-///
-/// let point: Point = Point::new_2d(1, 2);
-/// let other: Point = Point::new_2d(2, 2);
-/// let set: HashSet<Point> = line_through(&point, &other, 3);
-///
-/// assert!(set.contains(&Point::new_2d(1, 2)));
-/// assert!(set.contains(&Point::new_2d(2, 2)));
-/// assert!(set.contains(&Point::new_2d(3, 2)));
-/// assert!(set.contains(&Point::new_2d(4, 2)));
-/// assert_eq!(set.len(), 4);
-/// ```
 pub fn line_through<T: HasValues>(
   point: &T,
   other: &T,
   range: i32,
 ) -> HashSet<Point> {
-  util::line(point, other, Some(range), None)
+  util::line(point, other, Some(range), None::<&HashMap<Point, Prism>>)
 }
 
 /// Find unblocked points in a line between two points
@@ -92,17 +62,20 @@ pub fn line_through<T: HasValues>(
 /// # Example
 ///
 /// ```
-/// use std::collections::HashSet;
+/// use std::collections::{HashSet, HashMap};
 ///
-/// use hex_math::{ray, Point};
+/// use hex_math::{HasValues, ray, Point, Prism};
 ///
 /// let point: Point = Point::new(1, 2, 5);
 /// let other: Point = Point::new(3, 4, 10);
-/// let mut opaque: HashSet<Point> = HashSet::new();
+/// let mut map: HashMap<Point, Prism> = HashMap::new();
 ///
-/// opaque.insert(Point::new(3, 3, 9));
+/// let wall: Point = Point::new(3, 4, 10);
+/// let prism: Prism = Prism::new(Point::from(wall.values()), 0, 0, 0, 1);
 ///
-/// let set: HashSet<Point> = ray(&point, &other, &opaque);
+/// map.insert(wall, prism);
+///
+/// let set: HashSet<Point> = ray(&point, &other, &map);
 ///
 /// assert!(set.contains(&Point::new(1, 2, 5)));
 /// assert!(set.contains(&Point::new(2, 2, 6)));
@@ -110,32 +83,12 @@ pub fn line_through<T: HasValues>(
 /// assert!(set.contains(&Point::new(3, 3, 9)));
 /// assert_eq!(set.len(), 4);
 /// ```
-///
-/// ```
-/// use std::collections::HashSet;
-///
-/// use hex_math::{ray, Point};
-///
-/// let point: Point = Point::new_2d(1, 2);
-/// let other: Point = Point::new_2d(3, 4);
-/// let mut opaque: HashSet<Point> = HashSet::new();
-///
-/// opaque.insert(Point::new_2d(3, 3));
-///
-/// let set: HashSet<Point> = ray(&point, &other, &opaque);
-///
-/// assert!(set.contains(&Point::new_2d(1, 2)));
-/// assert!(set.contains(&Point::new_2d(2, 2)));
-/// assert!(set.contains(&Point::new_2d(2, 3)));
-/// assert!(set.contains(&Point::new_2d(3, 3)));
-/// assert_eq!(set.len(), 4);
-/// ```
-pub fn ray<T: HasValues>(
+pub fn ray<T: HasValues, U: HasWalls>(
   point: &T,
   other: &T,
-  opaque: &HashSet<Point>,
+  map: &HashMap<Point, U>,
 ) -> HashSet<Point> {
-  util::line(point, other, None, Some(opaque))
+  util::line(point, other, None, Some(map))
 }
 
 /// Find unblocked points within range in a line through two points
@@ -143,57 +96,42 @@ pub fn ray<T: HasValues>(
 /// # Example
 ///
 /// ```
-/// use std::collections::HashSet;
+/// use std::collections::{HashSet, HashMap};
 ///
-/// use hex_math::{ray_through, Point};
+/// use hex_math::{HasValues, ray_through, Point, Prism};
 ///
 /// let point: Point = Point::new(1, 2, 5);
 /// let other: Point = Point::new(2, 2, 6);
-/// let mut opaque: HashSet<Point> = HashSet::new();
+/// let mut map: HashMap<Point, Prism> = HashMap::new();
 ///
-/// opaque.insert(Point::new(3, 2, 7));
+/// let wall: Point = Point::new(4, 2, 8);
+/// let prism: Prism = Prism::new(Point::from(wall.values()), 0, 0, 0, 1);
 ///
-/// let set: HashSet<Point> = ray_through(&point, &other, 3, &opaque);
+/// map.insert(wall, prism);
+///
+/// let set: HashSet<Point> = ray_through(&point, &other, 3, &map);
 ///
 /// assert!(set.contains(&Point::new(1, 2, 5)));
 /// assert!(set.contains(&Point::new(2, 2, 6)));
 /// assert!(set.contains(&Point::new(3, 2, 7)));
 /// assert_eq!(set.len(), 3);
 /// ```
-///
-/// ```
-/// use std::collections::HashSet;
-///
-/// use hex_math::{ray_through, Point};
-///
-/// let point: Point = Point::new_2d(1, 2);
-/// let other: Point = Point::new_2d(2, 2);
-/// let mut opaque: HashSet<Point> = HashSet::new();
-///
-/// opaque.insert(Point::new_2d(3, 2));
-///
-/// let set: HashSet<Point> = ray_through(&point, &other, 3, &opaque);
-///
-/// assert!(set.contains(&Point::new_2d(1, 2)));
-/// assert!(set.contains(&Point::new_2d(2, 2)));
-/// assert!(set.contains(&Point::new_2d(3, 2)));
-/// assert_eq!(set.len(), 3);
-/// ```
-pub fn ray_through<T: HasValues>(
+pub fn ray_through<T: HasValues, U: HasWalls>(
   point: &T,
   other: &T,
   range: i32,
-  opaque: &HashSet<Point>,
+  map: &HashMap<Point, U>,
 ) -> HashSet<Point> {
-  util::line(point, other, Some(range), Some(opaque))
+  util::line(point, other, Some(range), Some(map))
 }
 
 mod util {
-  use std::collections::HashSet;
+  use std::collections::{HashSet, HashMap};
 
   use distance::{distance, distance_2d};
+  use enums::Direction;
   use structs::{FloatPoint, Point};
-  use traits::HasValues;
+  use traits::{HasValues, HasWalls};
 
   /// Return the floats one step along a line between two points
   ///
@@ -215,16 +153,40 @@ mod util {
 
   }
 
+  /// Return the direction of one point which is one step after the other
+  pub fn get_step_direction(point: &Point, other: &Point) -> Direction {
+
+    let diff: Point = other - point;
+    let (dq, dr, dt) = diff.values();
+
+    match dt.signum() {
+       1 => return Direction::Up,
+      -1 => return Direction::Down,
+       _ => (),
+    }
+
+    return match (dq.signum(), dr.signum()) {
+      ( 1,  0) => Direction::East,
+      ( 0,  1) => Direction::Southeast,
+      (-1,  1) => Direction::Southwest,
+      (-1,  0) => Direction::West,
+      ( 0, -1) => Direction::Northwest,
+      ( 1, -1) => Direction::Northeast,
+      _ => panic!(),
+    }
+
+  }
+
   /// Find the points in a line between two points
   ///
   /// Optionally provide a range. The line will end at that range.
   ///
-  /// Optionally provide a set of opaque point which are impassable.
-  pub fn line<T: HasValues>(
+  /// Optionally provide a map with walls which are impassable.
+  pub fn line<T: HasValues, U: HasWalls>(
     point: &T,
     other: &T,
     range: Option<i32>,
-    opaque: Option<&HashSet<Point>>,
+    map: Option<&HashMap<Point, U>>,
   ) -> HashSet<Point> {
 
     let mut set: HashSet<Point> = HashSet::new();
@@ -241,27 +203,37 @@ mod util {
       distance_2d(point, other)
     };
 
-    let empty: HashSet<Point> = HashSet::new();
-    let opaque: &HashSet<Point> = opaque.unwrap_or(&empty);
-    let should_check_opaque: bool = !opaque.is_empty();
+    let empty: HashMap<Point, U> = HashMap::new();
+    let map: &HashMap<Point, U> = map.unwrap_or(&empty);
 
     let step: f32 = 1f32 / distance as f32;
     let size: FloatPoint = step_size(point, other, step);
 
     let mut found: FloatPoint = FloatPoint::from(point.values());
+    let mut last: Point = Point::from(point.values());
+
+    let has_wall = |point: &Point, dir: &Direction| match map.get(point) {
+      Some(prism) => prism.has_wall(dir),
+      None => false,
+    };
 
     for _ in 0..range.unwrap_or(distance) {
 
       found = &found + &size;
 
       let round: Point = found.round();
-      let should_break: bool = should_check_opaque && opaque.contains(&round);
+      let direction: Direction = get_step_direction(&last, &round);
 
-      set.insert(round);
+      let break_before_enter = has_wall(&last, &direction)
+        || has_wall(&round, &direction.opposite());
 
-      if should_break {
+      if break_before_enter {
         break;
       }
+
+      last = Point::from(round.values());
+
+      set.insert(round);
 
     }
 
@@ -273,9 +245,10 @@ mod util {
 
 #[cfg(test)]
 mod tests {
-  use std::collections::HashSet;
+  use std::collections::{HashSet, HashMap};
 
-  use structs::Point;
+  use enums::Direction;
+  use structs::{Point, Prism};
   use structs::FloatPoint;
   use traits::HasValues;
 
@@ -294,12 +267,44 @@ mod tests {
   fn line_vertical() {
     let point: Point = Point::new(1, 2, 5);
     let other: Point = Point::new(1, 2, 7);
-    let line: HashSet<Point> = util::line(&point, &other, None, None);
+
+    let line: HashSet<Point> = util::line(
+      &point,
+      &other,
+      None,
+      None::<&HashMap<Point, Prism>>
+    );
 
     assert!(line.contains(&Point::new(1, 2, 5)));
     assert!(line.contains(&Point::new(1, 2, 6)));
     assert!(line.contains(&Point::new(1, 2, 7)));
     assert_eq!(line.len(), 3);
+  }
+
+  #[test]
+  fn get_step_direction() {
+
+    let point:     Point = Point::new(1, 2, 5);
+    let east:      Point = Point::new(2, 2, 5);
+    let southeast: Point = Point::new(1, 3, 5);
+    let southwest: Point = Point::new(0, 3, 5);
+    let west:      Point = Point::new(0, 2, 5);
+    let northwest: Point = Point::new(1, 1, 5);
+    let northeast: Point = Point::new(2, 1, 5);
+    let up:        Point = Point::new(1, 2, 6);
+    let down:      Point = Point::new(1, 2, 4);
+
+    let get = util::get_step_direction;
+
+    assert_eq!(Direction::East,      get(&point, &east));
+    assert_eq!(Direction::Southeast, get(&point, &southeast));
+    assert_eq!(Direction::Southwest, get(&point, &southwest));
+    assert_eq!(Direction::West,      get(&point, &west));
+    assert_eq!(Direction::Northwest, get(&point, &northwest));
+    assert_eq!(Direction::Northeast, get(&point, &northeast));
+    assert_eq!(Direction::Up,        get(&point, &up));
+    assert_eq!(Direction::Down,      get(&point, &down));
+
   }
 
 }

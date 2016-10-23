@@ -37,5 +37,29 @@ impl Direction {
     ]
   }
 
-}
+  /// Return the opposite direction
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use hex_math::Direction;
+  ///
+  /// let east: Direction = Direction::East;
+  ///
+  /// assert_eq!(Direction::West, east.opposite());
+  pub fn opposite(&self) -> Direction {
 
+    match self {
+      &Direction::East      => Direction::West,
+      &Direction::Southeast => Direction::Northwest,
+      &Direction::Southwest => Direction::Northeast,
+      &Direction::West      => Direction::East,
+      &Direction::Northwest => Direction::Southeast,
+      &Direction::Northeast => Direction::Southwest,
+      &Direction::Up        => Direction::Down,
+      &Direction::Down      => Direction::Up,
+    }
+
+  }
+
+}
