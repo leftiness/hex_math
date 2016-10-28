@@ -217,23 +217,58 @@ mod util {
       None => false,
     };
 
-    for _ in 0..range.unwrap_or(distance) {
+    let has_wall = |point: &Point, other: &Point| {
+
+      let dir: Direction = get_step_direction(point, other);
+      let result = has_wall(point, &dir) || has_wall(other, &dir.opposite());
+
+      result
+
+    };
+
+    let range: i32 = range.unwrap_or(distance);
+    let mut steps: i32 = 0;
+
+    // TODO This wip logic is broken. Tests fail. See github issue.
+    'outer: for _ in 0 .. range {
 
       found = &found + &size;
 
       let round: Point = found.round();
-      let direction: Direction = get_step_direction(&last, &round);
 
-      let break_before_enter = has_wall(&last, &direction)
-        || has_wall(&round, &direction.opposite());
+      for t in last.t .. round.t {
 
-      if break_before_enter {
+        let vertical: Point = Point::new(round.q, round.r, t);
+
+        if &vertical == &last {
+          continue;
+        }
+
+        if has_wall(&last, &round) {
+          break 'outer;
+        }
+
+        last = Point::from(vertical.values());
+        set.insert(vertical);
+        steps += 1;
+
+        if steps == range {
+          break 'outer;
+        }
+
+      }
+
+      if has_wall(&last, &round) {
         break;
       }
 
       last = Point::from(round.values());
-
       set.insert(round);
+      steps += 1;
+
+      if steps == range {
+        break;
+      }
 
     }
 
