@@ -107,15 +107,15 @@ mod tests {
 
   #[test]
   fn from() {
-    let point:     Point = Point::new(1, 2, 5);
-    let east:      Point = Point::new(2, 2, 5);
-    let southeast: Point = Point::new(1, 3, 5);
-    let southwest: Point = Point::new(0, 3, 5);
-    let west:      Point = Point::new(0, 2, 5);
-    let northwest: Point = Point::new(1, 1, 5);
-    let northeast: Point = Point::new(2, 1, 5);
-    let up:        Point = Point::new(1, 2, 6);
-    let down:      Point = Point::new(1, 2, 4);
+    let point:     Point = Point(1, 2, 5);
+    let east:      Point = Point(2, 2, 5);
+    let southeast: Point = Point(1, 3, 5);
+    let southwest: Point = Point(0, 3, 5);
+    let west:      Point = Point(0, 2, 5);
+    let northwest: Point = Point(1, 1, 5);
+    let northeast: Point = Point(2, 1, 5);
+    let up:        Point = Point(1, 2, 6);
+    let down:      Point = Point(1, 2, 4);
 
     let from = Direction::from;
 

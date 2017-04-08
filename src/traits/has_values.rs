@@ -38,7 +38,7 @@ mod tests {
 
   #[test]
   fn values_2d() {
-    let (q, r) = Point::new(1, 2, 5).values_2d();
+    let (q, r) = Point(1, 2, 5).values_2d();
 
     assert!(1 == q);
     assert!(2 == r);
@@ -46,7 +46,7 @@ mod tests {
 
   #[test]
   fn values_cube() {
-    let (q, r, s, t) = Point::new(1, 2, 5).values_cube();
+    let (q, r, s, t) = Point(1, 2, 5).values_cube();
 
     assert!( 1 == q);
     assert!( 2 == r);
@@ -56,7 +56,7 @@ mod tests {
 
   #[test]
   fn values_cube_2d() {
-    let (q, r, s) = Point::new(1, 2, 5).values_cube_2d();
+    let (q, r, s) = Point(1, 2, 5).values_cube_2d();
 
     assert!( 1 == q);
     assert!( 2 == r);

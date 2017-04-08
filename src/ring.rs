@@ -49,52 +49,52 @@ mod tests {
 
   #[test]
   fn ring() {
-    let point: Point = Point::new(1, 2, 5);
+    let point: Point = Point(1, 2, 5);
     let set: HashSet<Point> = super::ring(&point, 2);
 
-    assert!(set.contains(&Point::new(1, 0, 5)));
-    assert!(set.contains(&Point::new(2, 0, 5)));
-    assert!(set.contains(&Point::new(3, 0, 5)));
-    assert!(set.contains(&Point::new(3, 1, 5)));
-    assert!(set.contains(&Point::new(3, 2, 5)));
-    assert!(set.contains(&Point::new(2, 3, 5)));
-    assert!(set.contains(&Point::new(1, 4, 5)));
-    assert!(set.contains(&Point::new(0, 4, 5)));
-    assert!(set.contains(&Point::new(-1, 4, 5)));
-    assert!(set.contains(&Point::new(-1, 3, 5)));
-    assert!(set.contains(&Point::new(-1, 2, 5)));
-    assert!(set.contains(&Point::new(0, 1, 5)));
+    assert!(set.contains(&Point(1, 0, 5)));
+    assert!(set.contains(&Point(2, 0, 5)));
+    assert!(set.contains(&Point(3, 0, 5)));
+    assert!(set.contains(&Point(3, 1, 5)));
+    assert!(set.contains(&Point(3, 2, 5)));
+    assert!(set.contains(&Point(2, 3, 5)));
+    assert!(set.contains(&Point(1, 4, 5)));
+    assert!(set.contains(&Point(0, 4, 5)));
+    assert!(set.contains(&Point(-1, 4, 5)));
+    assert!(set.contains(&Point(-1, 3, 5)));
+    assert!(set.contains(&Point(-1, 2, 5)));
+    assert!(set.contains(&Point(0, 1, 5)));
 
-    assert!(set.contains(&Point::new(1, 1, 6)));
-    assert!(set.contains(&Point::new(2, 1, 6)));
-    assert!(set.contains(&Point::new(2, 2, 6)));
-    assert!(set.contains(&Point::new(1, 3, 6)));
-    assert!(set.contains(&Point::new(0, 3, 6)));
-    assert!(set.contains(&Point::new(0, 2, 6)));
+    assert!(set.contains(&Point(1, 1, 6)));
+    assert!(set.contains(&Point(2, 1, 6)));
+    assert!(set.contains(&Point(2, 2, 6)));
+    assert!(set.contains(&Point(1, 3, 6)));
+    assert!(set.contains(&Point(0, 3, 6)));
+    assert!(set.contains(&Point(0, 2, 6)));
 
-    assert!(set.contains(&Point::new(1, 1, 4)));
-    assert!(set.contains(&Point::new(2, 1, 4)));
-    assert!(set.contains(&Point::new(2, 2, 4)));
-    assert!(set.contains(&Point::new(1, 3, 4)));
-    assert!(set.contains(&Point::new(0, 3, 4)));
-    assert!(set.contains(&Point::new(0, 2, 4)));
+    assert!(set.contains(&Point(1, 1, 4)));
+    assert!(set.contains(&Point(2, 1, 4)));
+    assert!(set.contains(&Point(2, 2, 4)));
+    assert!(set.contains(&Point(1, 3, 4)));
+    assert!(set.contains(&Point(0, 3, 4)));
+    assert!(set.contains(&Point(0, 2, 4)));
 
-    assert!(set.contains(&Point::new(1, 2, 7)));
-    assert!(set.contains(&Point::new(1, 2, 3)));
+    assert!(set.contains(&Point(1, 2, 7)));
+    assert!(set.contains(&Point(1, 2, 3)));
     assert!(set.len() == 26);
   }
 
   #[test]
   fn ring_2d() {
-    let point: Point = Point::new(1, 2, 5);
+    let point: Point = Point(1, 2, 5);
     let set: HashSet<Point> = super::ring_2d(&point, 1);
 
-    assert!(set.contains(&Point::new(1, 1, 5)));
-    assert!(set.contains(&Point::new(2, 1, 5)));
-    assert!(set.contains(&Point::new(2, 2, 5)));
-    assert!(set.contains(&Point::new(1, 3, 5)));
-    assert!(set.contains(&Point::new(0, 3, 5)));
-    assert!(set.contains(&Point::new(0, 2, 5)));
+    assert!(set.contains(&Point(1, 1, 5)));
+    assert!(set.contains(&Point(2, 1, 5)));
+    assert!(set.contains(&Point(2, 2, 5)));
+    assert!(set.contains(&Point(1, 3, 5)));
+    assert!(set.contains(&Point(0, 3, 5)));
+    assert!(set.contains(&Point(0, 2, 5)));
     assert!(set.len() == 6);
   }
 }

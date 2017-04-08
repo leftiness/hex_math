@@ -35,11 +35,10 @@ pub fn range_2d<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
 
     for ds in lower..upper + 1 {
       let dr: i32 = -dq - ds;
-      let found = &point + &Point::new(dq, dr, 0);
+      let found = &point + &Point(dq, dr, 0);
 
       set.insert(found);
     }
-
   }
 
   set
@@ -129,33 +128,33 @@ mod tests {
 
   #[test]
   fn range() {
-    let point: Point = Point::new(1, 2, 5);
+    let point: Point = Point(1, 2, 5);
     let set: HashSet<Point> = super::range(&point, 1);
 
-    assert!(set.contains(&Point::new(1, 2, 5)));
-    assert!(set.contains(&Point::new(2, 2, 5)));
-    assert!(set.contains(&Point::new(1, 3, 5)));
-    assert!(set.contains(&Point::new(0, 3, 5)));
-    assert!(set.contains(&Point::new(0, 2, 5)));
-    assert!(set.contains(&Point::new(1, 1, 5)));
-    assert!(set.contains(&Point::new(2, 1, 5)));
-    assert!(set.contains(&Point::new(1, 2, 4)));
-    assert!(set.contains(&Point::new(1, 2, 6)));
+    assert!(set.contains(&Point(1, 2, 5)));
+    assert!(set.contains(&Point(2, 2, 5)));
+    assert!(set.contains(&Point(1, 3, 5)));
+    assert!(set.contains(&Point(0, 3, 5)));
+    assert!(set.contains(&Point(0, 2, 5)));
+    assert!(set.contains(&Point(1, 1, 5)));
+    assert!(set.contains(&Point(2, 1, 5)));
+    assert!(set.contains(&Point(1, 2, 4)));
+    assert!(set.contains(&Point(1, 2, 6)));
     assert!(set.len() == 9);
   }
 
   #[test]
   fn range_2d() {
-    let point: Point = Point::new(1, 2, 5);
+    let point: Point = Point(1, 2, 5);
     let set: HashSet<Point> = super::range_2d(&point, 1);
 
-    assert!(set.contains(&Point::new(1, 2, 5)));
-    assert!(set.contains(&Point::new(2, 2, 5)));
-    assert!(set.contains(&Point::new(1, 3, 5)));
-    assert!(set.contains(&Point::new(0, 3, 5)));
-    assert!(set.contains(&Point::new(0, 2, 5)));
-    assert!(set.contains(&Point::new(1, 1, 5)));
-    assert!(set.contains(&Point::new(2, 1, 5)));
+    assert!(set.contains(&Point(1, 2, 5)));
+    assert!(set.contains(&Point(2, 2, 5)));
+    assert!(set.contains(&Point(1, 3, 5)));
+    assert!(set.contains(&Point(0, 3, 5)));
+    assert!(set.contains(&Point(0, 2, 5)));
+    assert!(set.contains(&Point(1, 1, 5)));
+    assert!(set.contains(&Point(2, 1, 5)));
     assert!(set.len() == 7);
   }
 
@@ -163,31 +162,31 @@ mod tests {
   fn flood() {
     let mut map: HashMap<Point, Prism> = HashMap::new();
 
-    let start: Point = Point::new(1, 2, 2);
+    let start: Point = Point(1, 2, 2);
 
-    map.insert_walled_point(Prism::new(start.values().into(), 1, 1, 1, 1));
+    map.insert_walled_point(Prism(start.values().into(), 1, 1, 1, 1));
 
     let west: Point = travel(&start, &Direction::West, 1);
-    map.insert_walled_point(Prism::new(west, 0, 1, 0, 0));
+    map.insert_walled_point(Prism(west, 0, 1, 0, 0));
 
     let northwest: Point = travel(&start, &Direction::Northwest, 1);
-    map.insert_walled_point(Prism::new(northwest, 0, 1, 1, 0));
+    map.insert_walled_point(Prism(northwest, 0, 1, 1, 0));
 
     let northeast: Point = travel(&start, &Direction::Northeast, 1);
-    map.insert_walled_point(Prism::new(northeast, 0, 0, 1, 0));
+    map.insert_walled_point(Prism(northeast, 0, 0, 1, 0));
 
     let up: Point = travel(&start, &Direction::Up, 1);
-    map.insert_walled_point(Prism::new(up, 0, 0, 0, 1));
+    map.insert_walled_point(Prism(up, 0, 0, 0, 1));
 
     let result: HashSet<Point> = super::flood(&start, 2, &map);
 
     assert!(result.contains(&start));
-    assert!(result.contains(&Point::new( 0, 2, 2)));
-    assert!(result.contains(&Point::new( 0, 1, 2)));
-    assert!(result.contains(&Point::new(-1, 2, 2)));
-    assert!(result.contains(&Point::new(-1, 3, 2)));
-    assert!(result.contains(&Point::new( 0, 2, 1)));
-    assert!(result.contains(&Point::new( 0, 2, 3)));
+    assert!(result.contains(&Point( 0, 2, 2)));
+    assert!(result.contains(&Point( 0, 1, 2)));
+    assert!(result.contains(&Point(-1, 2, 2)));
+    assert!(result.contains(&Point(-1, 3, 2)));
+    assert!(result.contains(&Point( 0, 2, 1)));
+    assert!(result.contains(&Point( 0, 2, 3)));
     assert!(result.len() == 7);
   }
 
@@ -195,38 +194,38 @@ mod tests {
   fn flood_2d() {
     let mut map: HashMap<Point, Prism> = HashMap::new();
 
-    let start: Point = Point::new_2d(1, 2);
+    let start: Point = Point(1, 2, 0);
 
-    map.insert_walled_point(Prism::new(start.values().into(), 1, 1, 1, 0));
+    map.insert_walled_point(Prism(start.values().into(), 1, 1, 1, 0));
 
     let west: Point = travel(&start, &Direction::West, 1);
-    map.insert_walled_point(Prism::new(west, 0, 1, 0, 0));
+    map.insert_walled_point(Prism(west, 0, 1, 0, 0));
 
     let northwest: Point = travel(&start, &Direction::Northwest, 1);
-    map.insert_walled_point(Prism::new(northwest, 0, 1, 1, 0));
+    map.insert_walled_point(Prism(northwest, 0, 1, 1, 0));
 
     let northeast: Point = travel(&start, &Direction::Northeast, 1);
-    map.insert_walled_point(Prism::new(northeast, 0, 0, 1, 0));
+    map.insert_walled_point(Prism(northeast, 0, 0, 1, 0));
 
     let result: HashSet<Point> = super::flood_2d(&start, 2, &map);
 
     assert!(result.contains(&start));
-    assert!(result.contains(&Point::new_2d(0, 2)));
-    assert!(result.contains(&Point::new_2d(0, 1)));
-    assert!(result.contains(&Point::new_2d(-1, 2)));
-    assert!(result.contains(&Point::new_2d(-1, 3)));
+    assert!(result.contains(&Point( 0, 2, 0)));
+    assert!(result.contains(&Point( 0, 1, 0)));
+    assert!(result.contains(&Point(-1, 2, 0)));
+    assert!(result.contains(&Point(-1, 3, 0)));
     assert!(result.len() == 5);
   }
 
   #[test]
   fn flood_util() {
 
-    let start: Point = Point::new(0, 0, 0);
-    let wall: Point = Point::new(0, 0, 2);
+    let start: Point = Point(0, 0, 0);
+    let wall: Point = Point(0, 0, 2);
 
     let mut map: HashMap<Point, Prism> = HashMap::new();
 
-    map.insert(wall.values().into(), Prism::new(wall, 0, 0, 0, 1));
+    map.insert(wall.values().into(), Prism(wall, 0, 0, 0, 1));
 
     fn range_1d(point: &Point, range: i32) -> HashSet<Point> {
 
@@ -244,9 +243,9 @@ mod tests {
     let result: HashSet<Point> = util::flood(&start, 2, range_1d, &map);
 
     assert!(result.contains(&start));
-    assert!(result.contains(&Point::new(0, 0, 1)));
-    assert!(result.contains(&Point::new(0, 0, -1)));
-    assert!(result.contains(&Point::new(0, 0, -2)));
+    assert!(result.contains(&Point(0, 0, 1)));
+    assert!(result.contains(&Point(0, 0, -1)));
+    assert!(result.contains(&Point(0, 0, -2)));
     assert!(result.len() == 4);
   }
 }

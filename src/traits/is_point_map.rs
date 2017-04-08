@@ -74,8 +74,8 @@ mod tests {
   fn has_wall() {
     let mut map: HashMap<Point, Prism> = HashMap::new();
 
-    let p0: Point = Point::new(1, 2, 5);
-    let pr0: Prism = Prism::new(p0.values().into(), 1, 0, 0, 0);
+    let p0: Point = Point(1, 2, 5);
+    let pr0: Prism = Prism(p0.values().into(), 1, 0, 0, 0);
 
     map.insert(p0.values().into(), pr0);
 
@@ -86,12 +86,12 @@ mod tests {
   fn has_wall_between() {
     let mut map: HashMap<Point, Prism> = HashMap::new();
 
-    let p0: Point = Point::new(0, 2, 5);
-    let p1: Point = Point::new(1, 2, 5);
-    let p2: Point = Point::new(2, 2, 5);
+    let p0: Point = Point(0, 2, 5);
+    let p1: Point = Point(1, 2, 5);
+    let p2: Point = Point(2, 2, 5);
 
-    let pr0: Prism = Prism::new(p0.values().into(), 1, 0, 0, 0);
-    let pr1: Prism = Prism::new(p1.values().into(), 1, 0, 0, 0);
+    let pr0: Prism = Prism(p0.values().into(), 1, 0, 0, 0);
+    let pr1: Prism = Prism(p1.values().into(), 1, 0, 0, 0);
 
     map.insert(p0.values().into(), pr0);
     map.insert(p1.values().into(), pr1);
@@ -104,8 +104,8 @@ mod tests {
   fn insert_walled_point() {
     let mut map: HashMap<Point, Prism> = HashMap::new();
 
-    let p0: Point = Point::new(1, 2, 5);
-    let pr0: Prism = Prism::new(p0.values().into(), 1, 1, 1, 1);
+    let p0: Point = Point(1, 2, 5);
+    let pr0: Prism = Prism(p0.values().into(), 1, 1, 1, 1);
 
     map.insert_walled_point(pr0);
 
