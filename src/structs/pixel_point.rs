@@ -19,14 +19,6 @@ pub struct PixelPoint {
 impl PixelPoint {
 
   /// Factory function for making new points
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use hex_math::PixelPoint;
-  ///
-  /// let point: PixelPoint = PixelPoint::new(1f32, 2f32);
-  /// ```
   pub fn new(x: f32, y: f32) -> PixelPoint {
     PixelPoint {x: x, y: y}
   }
@@ -34,19 +26,6 @@ impl PixelPoint {
 }
 
 /// Add one point to another
-///
-/// # Example
-///
-/// ```
-/// use hex_math::PixelPoint;
-///
-/// let point: PixelPoint = PixelPoint::new(1f32, 2f32);
-/// let other: PixelPoint = PixelPoint::new(3f32, 4f32);
-/// let result: PixelPoint = &point + &other;
-///
-/// assert_eq!(4f32, result.x);
-/// assert_eq!(6f32, result.y);
-/// ```
 impl<'a, 'b> Add<&'b PixelPoint> for &'a PixelPoint {
 
   type Output = PixelPoint;
@@ -58,19 +37,6 @@ impl<'a, 'b> Add<&'b PixelPoint> for &'a PixelPoint {
 }
 
 /// Subtract one point from another
-///
-/// # Example
-///
-/// ```
-/// use hex_math::PixelPoint;
-///
-/// let point: PixelPoint = PixelPoint::new(1f32, 2f32);
-/// let other: PixelPoint = PixelPoint::new(3f32, 4f32);
-/// let result: PixelPoint = &point - &other;
-///
-/// assert_eq!(-2f32, result.x);
-/// assert_eq!(-2f32, result.y);
-/// ```
 impl<'a, 'b> Sub<&'b PixelPoint> for &'a PixelPoint {
 
   type Output = PixelPoint;
@@ -88,31 +54,6 @@ impl<'a, 'b> Sub<&'b PixelPoint> for &'a PixelPoint {
 /// side is one pixel in length. Therefore, multiplying a pixel point by five
 /// would result in the coordinate values at a scale where one side is five
 /// pixels in length.
-///
-/// # Example
-///
-/// ```
-/// use hex_math::PixelPoint;
-///
-/// let point: PixelPoint = PixelPoint::new(1280f32, 720f32);
-/// let other: PixelPoint = PixelPoint::new(1.5f32, 1.5f32);
-/// let result: PixelPoint = &point * &other;
-///
-/// assert_eq!(1920f32, result.x);
-/// assert_eq!(1080f32, result.y);
-/// ```
-///
-/// ```
-/// use hex_math::{Point, PixelPoint};
-///
-/// let point: Point = Point::new(1, 2, 5);
-/// let other: PixelPoint = PixelPoint::from(&point);
-/// let scale: PixelPoint = PixelPoint::new(5f32, 5f32);
-/// let result: PixelPoint = &other * &scale;
-///
-/// assert_eq!(3f32.sqrt() * 10f32, result.x);
-/// assert_eq!(15f32, result.y);
-/// ```
 impl <'a, 'b> Mul<&'b PixelPoint> for &'a PixelPoint {
 
   type Output = PixelPoint;
@@ -124,18 +65,6 @@ impl <'a, 'b> Mul<&'b PixelPoint> for &'a PixelPoint {
 }
 
 /// Conveniently convert a point into a pixel point
-///
-/// # Example
-///
-/// ```
-/// use hex_math::{Point, PixelPoint};
-///
-/// let point: Point = Point::new(1, 2, 5);
-/// let other: PixelPoint = PixelPoint::from(&point);
-///
-/// assert_eq!(3f32.sqrt() * 2f32, other.x);
-/// assert_eq!(3f32, other.y);
-/// ```
 impl<'a> From<&'a Point> for PixelPoint {
 
   fn from(point: &'a Point) -> PixelPoint {
@@ -150,18 +79,6 @@ impl<'a> From<&'a Point> for PixelPoint {
 }
 
 /// Conveniently convert a float point into a pixel point
-///
-/// # Example
-///
-/// ```
-/// use hex_math::{FloatPoint, PixelPoint};
-///
-/// let point: FloatPoint = FloatPoint::new_2d(1f32, 2f32);
-/// let other: PixelPoint = PixelPoint::from(&point);
-///
-/// assert_eq!(3f32.sqrt() * 2f32, other.x);
-/// assert_eq!(3f32, other.y);
-/// ```
 impl <'a> From<&'a FloatPoint> for PixelPoint {
 
   fn from(point: &'a FloatPoint) -> PixelPoint {
@@ -176,3 +93,74 @@ impl <'a> From<&'a FloatPoint> for PixelPoint {
 
 }
 
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn new() {
+    let point: PixelPoint = PixelPoint::new(1f32, 2f32);
+
+    assert!(point.x == 1f32);
+    assert!(point.y == 2f32);
+  }
+
+  #[test]
+  fn add() {
+    let point: PixelPoint = PixelPoint::new(1f32, 2f32);
+    let other: PixelPoint = PixelPoint::new(3f32, 4f32);
+    let result: PixelPoint = &point + &other;
+
+    assert!(4f32 == result.x);
+    assert!(6f32 == result.y);
+  }
+
+  #[test]
+  fn sub() {
+    let point: PixelPoint = PixelPoint::new(1f32, 2f32);
+    let other: PixelPoint = PixelPoint::new(3f32, 4f32);
+    let result: PixelPoint = &point - &other;
+
+    assert!(-2f32 == result.x);
+    assert!(-2f32 == result.y);
+  }
+
+  #[test]
+  fn mul() {
+    let point: PixelPoint = PixelPoint::new(1280f32, 720f32);
+    let other: PixelPoint = PixelPoint::new(1.5f32, 1.5f32);
+    let result: PixelPoint = &point * &other;
+
+    assert_eq!(1920f32, result.x);
+    assert_eq!(1080f32, result.y);
+  }
+
+  #[test]
+  fn mul_scale_coordinates() {
+    let point: Point = Point::new(1, 2, 5);
+    let other: PixelPoint = PixelPoint::from(&point);
+    let scale: PixelPoint = PixelPoint::new(5f32, 5f32);
+    let result: PixelPoint = &other * &scale;
+
+    assert!(3f32.sqrt() * 10f32 == result.x);
+    assert!(15f32 == result.y);
+  }
+
+  #[test]
+  fn from_point() {
+    let point: Point = Point::new(1, 2, 5);
+    let other: PixelPoint = PixelPoint::from(&point);
+
+    assert!(3f32.sqrt() * 2f32 == other.x);
+    assert!(3f32 == other.y);
+  }
+
+  #[test]
+  fn from_float_point() {
+    let point: FloatPoint = FloatPoint::new_2d(1f32, 2f32);
+    let other: PixelPoint = PixelPoint::from(&point);
+
+    assert!(3f32.sqrt() * 2f32 == other.x);
+    assert!(3f32 == other.y);
+  }
+}
