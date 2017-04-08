@@ -25,22 +25,6 @@ impl<T, U> IsPointMap<T, U> for HashMap<T, U>
   where T: HasValues + Eq + Hash + From<(i32, i32, i32)>, U: HasWalls {
 
   /// Check for a wall on the map
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use std::collections::HashMap;
-  /// use hex_math::{Direction, IsPointMap, HasValues, Point, Prism};
-  ///
-  /// let mut map: HashMap<Point, Prism> = HashMap::new();
-  ///
-  /// let p0: Point = Point::new(1, 2, 5);
-  /// let pr0: Prism = Prism::new(p0.values().into(), 1, 0, 0, 0);
-  ///
-  /// map.insert(p0.values().into(), pr0);
-  ///
-  /// assert!(map.has_wall(&p0, &Direction::East));
-  /// ```
   fn has_wall(&self, p0: &T, dir: &Direction) -> bool {
     match self.get(p0) {
       Some(p) => p.has_wall(dir),
@@ -49,28 +33,6 @@ impl<T, U> IsPointMap<T, U> for HashMap<T, U>
   }
 
   /// Check for a wall between two points on the map
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use std::collections::HashMap;
-  /// use hex_math::{IsPointMap, HasValues, Point, Prism};
-  ///
-  /// let mut map: HashMap<Point, Prism> = HashMap::new();
-  ///
-  /// let p0: Point = Point::new(0, 2, 5);
-  /// let p1: Point = Point::new(1, 2, 5);
-  /// let p2: Point = Point::new(2, 2, 5);
-  ///
-  /// let pr0: Prism = Prism::new(p0.values().into(), 1, 0, 0, 0);
-  /// let pr1: Prism = Prism::new(p1.values().into(), 1, 0, 0, 0);
-  ///
-  /// map.insert(p0.values().into(), pr0);
-  /// map.insert(p1.values().into(), pr1);
-  ///
-  /// assert!(map.has_wall_between(&p1, &p2));
-  /// assert!(map.has_wall_between(&p1, &p0));
-  /// ```
   fn has_wall_between(
     &self,
     p0: &T,
@@ -89,27 +51,6 @@ impl<T, U> IsPointMap<T, U> for HashMap<T, U>
   }
 
   /// Insert a new walled point
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use std::collections::HashMap;
-  /// use hex_math::{Point, Prism, IsPointMap, HasValues, HasWalls};
-  ///
-  /// let mut map: HashMap<Point, Prism> = HashMap::new();
-  ///
-  /// let p0: Point = Point::new(1, 2, 5);
-  /// let pr0: Prism = Prism::new(p0.values().into(), 1, 1, 1, 1);
-  ///
-  /// map.insert_walled_point(pr0);
-  ///
-  /// assert!(map.contains_key(&p0));
-  ///
-  /// let pr0: &Prism = map.get(&p0).unwrap();
-  ///
-  /// assert_eq!((1, 2, 5), pr0.values());
-  /// assert_eq!((1, 1, 1, 1), pr0.walls());
-  /// ```
   fn insert_walled_point(
     &mut self,
     prism: U,
@@ -124,3 +65,55 @@ impl<T, U> IsPointMap<T, U> for HashMap<T, U>
 
 }
 
+#[cfg(test)]
+mod tests {
+  use super::*;
+  use structs::{Point, Prism};
+
+  #[test]
+  fn has_wall() {
+    let mut map: HashMap<Point, Prism> = HashMap::new();
+
+    let p0: Point = Point::new(1, 2, 5);
+    let pr0: Prism = Prism::new(p0.values().into(), 1, 0, 0, 0);
+
+    map.insert(p0.values().into(), pr0);
+
+    assert!(map.has_wall(&p0, &Direction::East));
+  }
+
+  #[test]
+  fn has_wall_between() {
+    let mut map: HashMap<Point, Prism> = HashMap::new();
+
+    let p0: Point = Point::new(0, 2, 5);
+    let p1: Point = Point::new(1, 2, 5);
+    let p2: Point = Point::new(2, 2, 5);
+
+    let pr0: Prism = Prism::new(p0.values().into(), 1, 0, 0, 0);
+    let pr1: Prism = Prism::new(p1.values().into(), 1, 0, 0, 0);
+
+    map.insert(p0.values().into(), pr0);
+    map.insert(p1.values().into(), pr1);
+
+    assert!(map.has_wall_between(&p1, &p2));
+    assert!(map.has_wall_between(&p1, &p0));
+  }
+
+  #[test]
+  fn insert_walled_point() {
+    let mut map: HashMap<Point, Prism> = HashMap::new();
+
+    let p0: Point = Point::new(1, 2, 5);
+    let pr0: Prism = Prism::new(p0.values().into(), 1, 1, 1, 1);
+
+    map.insert_walled_point(pr0);
+
+    assert!(map.contains_key(&p0));
+
+    let pr1: &Prism = map.get(&p0).unwrap();
+
+    assert!((1, 2, 5) == pr1.values());
+    assert!((1, 1, 1, 1) == pr1.walls());
+  }
+}
