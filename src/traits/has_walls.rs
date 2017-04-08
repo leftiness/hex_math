@@ -18,18 +18,6 @@ pub trait HasWalls: HasValues {
   ///
   /// If the direction is not one of the four directions, false will always
   /// be returned.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use hex_math::{Direction, Point, Prism, HasWalls};
-  ///
-  /// let point: Point = Point::new(1, 2, 5);
-  /// let prism: Prism = Prism::new(point, 1, 0, 0, 0);
-  ///
-  /// assert_eq!(true, prism.has_wall(&Direction::East));
-  /// assert_eq!(false, prism.has_wall(&Direction::Southeast));
-  /// ```
   fn has_wall(&self, direction: &Direction) -> bool {
 
     let (e, se, sw, d) = self.walls();
@@ -46,4 +34,19 @@ pub trait HasWalls: HasValues {
 
   }
 
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  use structs::{Point, Prism};
+
+  #[test]
+  fn has_wall() {
+    let point: Point = Point::new(1, 2, 5);
+    let prism: Prism = Prism::new(point, 1, 0, 0, 0);
+
+    assert!(prism.has_wall(&Direction::East));
+    assert!(!prism.has_wall(&Direction::Southeast));
+  }
 }

@@ -4,30 +4,6 @@ use structs::{Point, Prism};
 use traits::{HasValues, HasWalls};
 
 /// Find the points in a line between the current point and the one provided
-///
-/// # Example
-///
-/// ```
-/// use std::collections::HashSet;
-///
-/// use hex_math::{line, Point};
-///
-/// let point: Point = Point::new(1, 2, 5);
-/// let other: Point = Point::new(3, 4, 10);
-/// let set: HashSet<Point> = line(&point, &other);
-///
-/// assert!(set.contains(&Point::new(1, 2, 5)));
-/// assert!(set.contains(&Point::new(1, 2, 6)));
-/// assert!(set.contains(&Point::new(2, 2, 6)));
-/// assert!(set.contains(&Point::new(2, 2, 7)));
-/// assert!(set.contains(&Point::new(2, 2, 8)));
-/// assert!(set.contains(&Point::new(2, 3, 8)));
-/// assert!(set.contains(&Point::new(2, 3, 9)));
-/// assert!(set.contains(&Point::new(3, 3, 9)));
-/// assert!(set.contains(&Point::new(3, 3, 10)));
-/// assert!(set.contains(&Point::new(3, 4, 10)));
-/// assert_eq!(set.len(), 10);
-/// ```
 pub fn line<T: HasValues>(
   point: &T,
   other: &T
@@ -36,24 +12,6 @@ pub fn line<T: HasValues>(
 }
 
 /// Find the points within range in a line through two points
-///
-/// # Example
-///
-/// ```
-/// use std::collections::HashSet;
-///
-/// use hex_math::{line_through, Point};
-///
-/// let point: Point = Point::new(1, 2, 5);
-/// let other: Point = Point::new(2, 2, 6);
-/// let set: HashSet<Point> = line_through(&point, &other, 3);
-///
-/// assert!(set.contains(&Point::new(1, 2, 5)));
-/// assert!(set.contains(&Point::new(1, 2, 6)));
-/// assert!(set.contains(&Point::new(2, 2, 6)));
-/// assert!(set.contains(&Point::new(2, 2, 7)));
-/// assert_eq!(set.len(), 4);
-/// ```
 pub fn line_through<T: HasValues>(
   point: &T,
   other: &T,
@@ -63,35 +21,6 @@ pub fn line_through<T: HasValues>(
 }
 
 /// Find unblocked points in a line between two points
-///
-/// # Example
-///
-/// ```
-/// use std::collections::{HashSet, HashMap};
-///
-/// use hex_math::{HasValues, ray, Point, Prism};
-///
-/// let point: Point = Point::new(1, 2, 5);
-/// let other: Point = Point::new(3, 4, 10);
-/// let mut map: HashMap<Point, Prism> = HashMap::new();
-///
-/// let wall: Point = Point::new(3, 3, 10);
-/// let prism: Prism = Prism::new(Point::from(wall.values()), 0, 0, 0, 1);
-///
-/// map.insert(wall, prism);
-///
-/// let set: HashSet<Point> = ray(&point, &other, &map);
-///
-/// assert!(set.contains(&Point::new(1, 2, 5)));
-/// assert!(set.contains(&Point::new(1, 2, 6)));
-/// assert!(set.contains(&Point::new(2, 2, 6)));
-/// assert!(set.contains(&Point::new(2, 2, 7)));
-/// assert!(set.contains(&Point::new(2, 2, 8)));
-/// assert!(set.contains(&Point::new(2, 3, 8)));
-/// assert!(set.contains(&Point::new(2, 3, 9)));
-/// assert!(set.contains(&Point::new(3, 3, 9)));
-/// assert_eq!(set.len(), 8);
-/// ```
 pub fn ray<T: HasValues, U: HasWalls>(
   point: &T,
   other: &T,
@@ -101,30 +30,6 @@ pub fn ray<T: HasValues, U: HasWalls>(
 }
 
 /// Find unblocked points within range in a line through two points
-///
-/// # Example
-///
-/// ```
-/// use std::collections::{HashSet, HashMap};
-///
-/// use hex_math::{HasValues, ray_through, Point, Prism};
-///
-/// let point: Point = Point::new(1, 2, 5);
-/// let other: Point = Point::new(2, 2, 6);
-/// let mut map: HashMap<Point, Prism> = HashMap::new();
-///
-/// let wall: Point = Point::new(2, 2, 7);
-/// let prism: Prism = Prism::new(Point::from(wall.values()), 0, 0, 0, 1);
-///
-/// map.insert(wall, prism);
-///
-/// let set: HashSet<Point> = ray_through(&point, &other, 3, &map);
-///
-/// assert!(set.contains(&Point::new(1, 2, 5)));
-/// assert!(set.contains(&Point::new(1, 2, 6)));
-/// assert!(set.contains(&Point::new(2, 2, 6)));
-/// assert_eq!(set.len(), 3);
-/// ```
 pub fn ray_through<T: HasValues, U: HasWalls>(
   point: &T,
   other: &T,
@@ -237,21 +142,26 @@ mod util {
 
 #[cfg(test)]
 mod tests {
-  use std::collections::{HashSet, HashMap};
-
-  use structs::{Point, Prism};
+  use super::*;
   use structs::FloatPoint;
-  use traits::HasValues;
-
-  use super::util;
 
   #[test]
-  fn step_size() {
+  fn line() {
     let point: Point = Point::new(1, 2, 5);
-    let other: Point = Point::new(1, 12, 5);
-    let size: FloatPoint = util::step_size(&point, &other);
+    let other: Point = Point::new(3, 4, 10);
+    let set: HashSet<Point> = super::line(&point, &other);
 
-    assert_eq!((1e-6, 1f32 + 1e-6, 1e-6), size.values());
+    assert!(set.contains(&Point::new(1, 2, 5)));
+    assert!(set.contains(&Point::new(1, 2, 6)));
+    assert!(set.contains(&Point::new(2, 2, 6)));
+    assert!(set.contains(&Point::new(2, 2, 7)));
+    assert!(set.contains(&Point::new(2, 2, 8)));
+    assert!(set.contains(&Point::new(2, 3, 8)));
+    assert!(set.contains(&Point::new(2, 3, 9)));
+    assert!(set.contains(&Point::new(3, 3, 9)));
+    assert!(set.contains(&Point::new(3, 3, 10)));
+    assert!(set.contains(&Point::new(3, 4, 10)));
+    assert!(set.len() == 10);
   }
 
   #[test]
@@ -269,8 +179,72 @@ mod tests {
     assert!(line.contains(&Point::new(1, 2, 5)));
     assert!(line.contains(&Point::new(1, 2, 6)));
     assert!(line.contains(&Point::new(1, 2, 7)));
-    assert_eq!(line.len(), 3);
+    assert!(line.len() == 3);
   }
 
-}
+  #[test]
+  fn line_through() {
+    let point: Point = Point::new(1, 2, 5);
+    let other: Point = Point::new(2, 2, 6);
+    let set: HashSet<Point> = super::line_through(&point, &other, 3);
 
+    assert!(set.contains(&Point::new(1, 2, 5)));
+    assert!(set.contains(&Point::new(1, 2, 6)));
+    assert!(set.contains(&Point::new(2, 2, 6)));
+    assert!(set.contains(&Point::new(2, 2, 7)));
+    assert!(set.len() == 4);
+  }
+
+  #[test]
+  fn ray() {
+    let point: Point = Point::new(1, 2, 5);
+    let other: Point = Point::new(3, 4, 10);
+    let mut map: HashMap<Point, Prism> = HashMap::new();
+
+    let wall: Point = Point::new(3, 3, 10);
+    let prism: Prism = Prism::new(Point::from(wall.values()), 0, 0, 0, 1);
+
+    map.insert(wall, prism);
+
+    let set: HashSet<Point> = super::ray(&point, &other, &map);
+
+    assert!(set.contains(&Point::new(1, 2, 5)));
+    assert!(set.contains(&Point::new(1, 2, 6)));
+    assert!(set.contains(&Point::new(2, 2, 6)));
+    assert!(set.contains(&Point::new(2, 2, 7)));
+    assert!(set.contains(&Point::new(2, 2, 8)));
+    assert!(set.contains(&Point::new(2, 3, 8)));
+    assert!(set.contains(&Point::new(2, 3, 9)));
+    assert!(set.contains(&Point::new(3, 3, 9)));
+    assert!(set.len() == 8);
+  }
+
+  #[test]
+  fn ray_through() {
+    let point: Point = Point::new(1, 2, 5);
+    let other: Point = Point::new(2, 2, 6);
+    let mut map: HashMap<Point, Prism> = HashMap::new();
+
+    let wall: Point = Point::new(2, 2, 7);
+    let prism: Prism = Prism::new(Point::from(wall.values()), 0, 0, 0, 1);
+
+    map.insert(wall, prism);
+
+    let set: HashSet<Point> = super::ray_through(&point, &other, 3, &map);
+
+    assert!(set.contains(&Point::new(1, 2, 5)));
+    assert!(set.contains(&Point::new(1, 2, 6)));
+    assert!(set.contains(&Point::new(2, 2, 6)));
+    assert!(set.len() == 3);
+  }
+
+
+  #[test]
+  fn step_size() {
+    let point: Point = Point::new(1, 2, 5);
+    let other: Point = Point::new(1, 12, 5);
+    let size: FloatPoint = util::step_size(&point, &other);
+
+    assert!((1e-6, 1f32 + 1e-6, 1e-6) == size.values());
+  }
+}

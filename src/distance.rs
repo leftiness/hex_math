@@ -4,26 +4,6 @@ use traits::HasValues;
 /// Calculate the manhattan distance between two points
 ///
 /// Distance is rounded up to the next integer.
-///
-/// # Example
-///
-/// ```
-/// use hex_math::{distance, Point};
-///
-/// let point: Point = Point::new_2d(1, 2);
-/// let other: Point = Point::new_2d(3, 4);
-///
-/// assert_eq!(4, distance(&point, &other));
-/// ```
-///
-/// ```
-/// use hex_math::{distance, Point};
-///
-/// let point: Point = Point::new(1, 2, 5);
-/// let other: Point = Point::new(3, 4, 10);
-///
-/// assert_eq!(9, distance(&point, &other));
-/// ```
 pub fn distance<T: HasValues>(point: &T, other: &T) -> i32 {
 
   let base = distance_2d(point, other);
@@ -40,17 +20,6 @@ pub fn distance<T: HasValues>(point: &T, other: &T) -> i32 {
 /// Calculate the manhattan distance between two points ignoring height
 ///
 /// Distance is rounded up to the next integer.
-///
-/// # Example
-///
-/// ```
-/// use hex_math::{distance_2d, Point};
-///
-/// let point: Point = Point::new(1, 2, 5);
-/// let other: Point = Point::new(3, 4, 10);
-///
-/// assert_eq!(4, distance_2d(&point, &other));
-/// ```
 pub fn distance_2d<T: HasValues>(point: &T, other: &T) -> i32 {
 
   let point: Point = Point::from(point.values());
@@ -63,3 +32,23 @@ pub fn distance_2d<T: HasValues>(point: &T, other: &T) -> i32 {
 
 }
 
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn distance() {
+    let point: Point = Point::new(1, 2, 5);
+    let other: Point = Point::new(3, 4, 10);
+
+    assert!(9 == super::distance(&point, &other));
+  }
+
+  #[test]
+  fn distance_2d() {
+    let point: Point = Point::new(1, 2, 5);
+    let other: Point = Point::new(3, 4, 10);
+
+    assert!(4 == super::distance_2d(&point, &other));
+  }
+}

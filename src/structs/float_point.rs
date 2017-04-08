@@ -22,43 +22,16 @@ pub struct FloatPoint {
 impl FloatPoint {
 
   /// Factory function for making new points
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use hex_math::FloatPoint;
-  ///
-  /// let point: FloatPoint = FloatPoint::new(1f32, 2f32, 5f32);
-  /// ```
   pub fn new(q: f32, r: f32, t: f32) -> FloatPoint {
     FloatPoint {q: q, r: r, t: t}
   }
 
   /// Convenience function for making two-dimensional points
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use hex_math::FloatPoint;
-  ///
-  /// let point: FloatPoint = FloatPoint::new_2d(1f32, 2f32);
-  /// ```
   pub fn new_2d(q: f32, r: f32) -> FloatPoint {
     FloatPoint::new(q, r, 0f32)
   }
 
   /// Round a float point back to a standard point
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use hex_math::{Point, FloatPoint};
-  ///
-  /// let float: FloatPoint = FloatPoint::new(1.6f32, 1.6f32, 2.5f32);
-  /// let point: Point = float.round();
-  ///
-  /// assert_eq!(point, Point::new(2, 1, 3));
-  /// ```
   pub fn round(&self) -> Point {
 
     let (q, r, s, t) = self.values_cube();
@@ -88,18 +61,6 @@ impl FloatPoint {
 }
 
 /// Add one point to another
-///
-/// # Example
-///
-/// ```
-/// use hex_math::{FloatPoint, HasValues};
-///
-/// let point: FloatPoint = FloatPoint::new(1f32, 2f32, 5f32);
-/// let other: FloatPoint = FloatPoint::new(3f32, 4f32, 10f32);
-/// let result: FloatPoint = &point + &other;
-///
-/// assert_eq!((4f32, 6f32, 15f32), result.values());
-/// ```
 impl<'a, 'b> Add<&'b FloatPoint> for &'a FloatPoint {
 
   type Output = FloatPoint;
@@ -111,18 +72,6 @@ impl<'a, 'b> Add<&'b FloatPoint> for &'a FloatPoint {
 }
 
 /// Subtract one point from another
-///
-/// # Example
-///
-/// ```
-/// use hex_math::{FloatPoint, HasValues};
-///
-/// let point: FloatPoint = FloatPoint::new(1f32, 2f32, 5f32);
-/// let other: FloatPoint = FloatPoint::new(3f32, 4f32, 10f32);
-/// let result: FloatPoint = &point - &other;
-///
-/// assert_eq!((-2f32, -2f32, -5f32), result.values());
-/// ```
 impl<'a, 'b> Sub<&'b FloatPoint> for &'a FloatPoint {
 
   type Output = FloatPoint;
@@ -134,16 +83,6 @@ impl<'a, 'b> Sub<&'b FloatPoint> for &'a FloatPoint {
 }
 
 /// Access the point's coordinate values
-///
-/// # Example
-///
-/// ```
-/// use hex_math::{FloatPoint, HasValues};
-///
-/// let point: FloatPoint = FloatPoint::new(1f32, 2f32, 5f32);
-///
-/// assert_eq!((1f32, 2f32, 5f32), point.values());
-/// ```
 impl HasValues<f32> for FloatPoint {
 
   fn values(&self) -> (f32, f32, f32) {
@@ -153,17 +92,6 @@ impl HasValues<f32> for FloatPoint {
 }
 
 /// Conveniently convert a values tuple into a point
-///
-/// # Example
-///
-/// ```
-/// use hex_math::{FloatPoint, HasValues};
-///
-/// let point: FloatPoint = FloatPoint::new(1f32, 2f32, 5f32);
-/// let other: FloatPoint = FloatPoint::from(point.values());
-///
-/// assert_eq!((1f32, 2f32, 5f32), other.values());
-/// ```
 impl From<(f32, f32, f32)> for FloatPoint {
 
   fn from((q, r, t): (f32, f32, f32)) -> FloatPoint {
@@ -173,17 +101,6 @@ impl From<(f32, f32, f32)> for FloatPoint {
 }
 
 /// Conveniently convert a values tuple into a point
-///
-/// # Example
-///
-/// ```
-/// use hex_math::{Point, FloatPoint, HasValues};
-///
-/// let point: Point = Point::new(1, 2, 5);
-/// let other: FloatPoint = FloatPoint::from(point.values());
-///
-/// assert_eq!((1f32, 2f32, 5f32), other.values());
-/// ```
 impl From<(i32, i32, i32)> for FloatPoint {
 
   fn from((q, r, t): (i32, i32, i32)) -> FloatPoint {
@@ -192,3 +109,83 @@ impl From<(i32, i32, i32)> for FloatPoint {
 
 }
 
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn new() {
+    let point: FloatPoint = FloatPoint::new(1f32, 2f32, 5f32);
+
+    assert!(1f32 == point.q);
+    assert!(2f32 == point.r);
+    assert!(5f32 == point.t);
+  }
+
+  #[test]
+  fn new_2d() {
+    let point: FloatPoint = FloatPoint::new_2d(1f32, 2f32);
+
+    assert!(1f32 == point.q);
+    assert!(2f32 == point.r);
+    assert!(0f32 == point.t);
+  }
+
+  #[test]
+  fn round() {
+    let point: Point= FloatPoint::new(1.6f32, 1.6f32, 2.5f32).round();
+
+    assert!(2 == point.q);
+    assert!(1 == point.r);
+    assert!(3 == point.t);
+  }
+
+  #[test]
+  fn add() {
+    let point: FloatPoint = FloatPoint::new(1f32, 2f32, 5f32);
+    let other: FloatPoint = FloatPoint::new(3f32, 4f32, 10f32);
+    let result: FloatPoint = &point + &other;
+
+    assert!(4f32 == result.q);
+    assert!(6f32 == result.r);
+    assert!(15f32 == result.t);
+  }
+
+  #[test]
+  fn sub() {
+    let point: FloatPoint = FloatPoint::new(1f32, 2f32, 5f32);
+    let other: FloatPoint = FloatPoint::new(3f32, 4f32, 10f32);
+    let result: FloatPoint = &point - &other;
+
+    assert!(-2f32 == result.q);
+    assert!(-2f32 == result.r);
+    assert!(-5f32 == result.t);
+  }
+
+  #[test]
+  fn values() {
+    let (q, r, t) = FloatPoint::new(1f32, 2f32, 5f32).values();
+
+    assert!(1f32 == q);
+    assert!(2f32 == r);
+    assert!(5f32 == t);
+  }
+
+  #[test]
+  fn from_f32_tuple() {
+    let point: FloatPoint = FloatPoint::from((1f32, 2f32, 5f32));
+
+    assert!(1f32 == point.q);
+    assert!(2f32 == point.r);
+    assert!(5f32 == point.t);
+  }
+
+  #[test]
+  fn from_i32_tuple() {
+    let point: FloatPoint = FloatPoint::from((1, 2, 5));
+
+    assert!(1f32 == point.q);
+    assert!(2f32 == point.r);
+    assert!(5f32 == point.t);
+  }
+}

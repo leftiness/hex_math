@@ -24,27 +24,11 @@ pub struct Point {
 impl Point {
 
   /// Factory function for making new points
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use hex_math::Point;
-  ///
-  /// let point: Point = Point::new(1, 2, 5);
-  /// ```
   pub fn new(q: i32, r: i32, t: i32) -> Point {
     Point {q: q, r: r, t: t}
   }
 
   /// Convenience function for making two-dimensional points
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use hex_math::Point;
-  ///
-  /// let point: Point = Point::new_2d(1, 2);
-  /// ```
   pub fn new_2d(q: i32, r: i32) -> Point {
     Point::new(q, r, 0)
   }
@@ -52,18 +36,6 @@ impl Point {
 }
 
 /// Add one point to another
-///
-/// # Example
-///
-/// ```
-/// use hex_math::{Point, HasValues};
-///
-/// let point: Point = Point::new(1, 2, 5);
-/// let other: Point = Point::new(3, 4, 10);
-/// let result: Point = &point + &other;
-///
-/// assert_eq!((4, 6, 15), result.values());
-/// ```
 impl<'a, 'b> Add<&'b Point> for &'a Point {
 
   type Output = Point;
@@ -75,18 +47,6 @@ impl<'a, 'b> Add<&'b Point> for &'a Point {
 }
 
 /// Subtract one point from another
-///
-/// # Example
-///
-/// ```
-/// use hex_math::{Point, HasValues};
-///
-/// let point: Point = Point::new(1, 2, 5);
-/// let other: Point = Point::new(3, 4, 10);
-/// let result: Point = &point - &other;
-///
-/// assert_eq!((-2, -2, -5), result.values());
-/// ```
 impl<'a, 'b> Sub<&'b Point> for &'a Point {
 
   type Output = Point;
@@ -98,16 +58,6 @@ impl<'a, 'b> Sub<&'b Point> for &'a Point {
 }
 
 /// Access the point's coordinate values
-///
-/// # Example
-///
-/// ```
-/// use hex_math::{Point, HasValues};
-///
-/// let point: Point = Point::new(1, 2, 5);
-///
-/// assert_eq!((1, 2, 5), point.values());
-/// ```
 impl HasValues for Point {
 
   fn values(&self) -> (i32, i32, i32) {
@@ -117,17 +67,6 @@ impl HasValues for Point {
 }
 
 /// Conveniently convert a values tuple into a point
-///
-/// # Example
-///
-/// ```
-/// use hex_math::{Point, HasValues};
-///
-/// let point: Point = Point::new(1, 2, 5);
-/// let other: Point = Point::from(point.values());
-///
-/// assert_eq!((1, 2, 5), other.values());
-/// ```
 impl From<(i32, i32, i32)> for Point {
 
   fn from((q, r, t): (i32, i32, i32)) -> Point {
@@ -136,3 +75,65 @@ impl From<(i32, i32, i32)> for Point {
 
 }
 
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn new() {
+    let point: Point = Point::new(1, 2, 5);
+
+    assert!(1 == point.q);
+    assert!(2 == point.r);
+    assert!(5 == point.t);
+  }
+
+  #[test]
+  fn new_2d() {
+    let point: Point = Point::new_2d(1, 2);
+
+    assert!(1 == point.q);
+    assert!(2 == point.r);
+    assert!(0 == point.t);
+  }
+
+  #[test]
+  fn add() {
+    let point: Point = Point::new(1, 2, 5);
+    let other: Point = Point::new(3, 4, 10);
+    let result: Point = &point + &other;
+
+    assert!(4 == result.q);
+    assert!(6 == result.r);
+    assert!(15 == result.t);
+  }
+
+  #[test]
+  fn sub() {
+    let point: Point = Point::new(1, 2, 5);
+    let other: Point = Point::new(3, 4, 10);
+    let result: Point = &point - &other;
+
+    assert!(-2 == result.q);
+    assert!(-2 == result.r);
+    assert!(-5 == result.t);
+  }
+
+  #[test]
+  fn values() {
+    let (q, r, t) = Point::new(1, 2, 5).values();
+
+    assert!(1 == q);
+    assert!(2 == r);
+    assert!(5 == t);
+  }
+
+  #[test]
+  fn from() {
+    let point: Point = Point::from((1, 2, 5));
+
+    assert!(1 == point.q);
+    assert!(2 == point.r);
+    assert!(5 == point.t);
+  }
+}

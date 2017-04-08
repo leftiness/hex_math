@@ -7,28 +7,6 @@ use traits::{HasValues, HasWalls};
 use travel::travel;
 
 /// Find the points within the provided manhattan distance
-///
-/// # Example
-///
-/// ```
-/// use std::collections::HashSet;
-///
-/// use hex_math::{Point,range};
-///
-/// let point: Point = Point::new(1, 2, 5);
-/// let set: HashSet<Point> = range(&point, 1);
-///
-/// assert!(set.contains(&Point::new(1, 2, 5)));
-/// assert!(set.contains(&Point::new(2, 2, 5)));
-/// assert!(set.contains(&Point::new(1, 3, 5)));
-/// assert!(set.contains(&Point::new(0, 3, 5)));
-/// assert!(set.contains(&Point::new(0, 2, 5)));
-/// assert!(set.contains(&Point::new(1, 1, 5)));
-/// assert!(set.contains(&Point::new(2, 1, 5)));
-/// assert!(set.contains(&Point::new(1, 2, 4)));
-/// assert!(set.contains(&Point::new(1, 2, 6)));
-/// assert_eq!(set.len(), 9);
-/// ```
 pub fn range<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
   let mut set: HashSet<Point> = range_2d(point, range);
 
@@ -47,26 +25,6 @@ pub fn range<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
 }
 
 /// Find the points at the same height within the provided manhattan distance
-///
-/// # Example
-///
-/// ```
-/// use std::collections::HashSet;
-///
-/// use hex_math::{Point, range_2d};
-///
-/// let point: Point = Point::new(1, 2, 5);
-/// let set: HashSet<Point> = range_2d(&point, 1);
-///
-/// assert!(set.contains(&Point::new(1, 2, 5)));
-/// assert!(set.contains(&Point::new(2, 2, 5)));
-/// assert!(set.contains(&Point::new(1, 3, 5)));
-/// assert!(set.contains(&Point::new(0, 3, 5)));
-/// assert!(set.contains(&Point::new(0, 2, 5)));
-/// assert!(set.contains(&Point::new(1, 1, 5)));
-/// assert!(set.contains(&Point::new(2, 1, 5)));
-/// assert_eq!(set.len(), 7);
-/// ```
 pub fn range_2d<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
   let mut set: HashSet<Point> = HashSet::new();
   let point: Point = Point::from(point.values());
@@ -91,51 +49,6 @@ pub fn range_2d<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
 ///
 /// A point may be within range while being unreachable if the path to that
 /// point is blocked by an invalid point.
-///
-/// # Example
-///
-/// ```
-/// use std::collections::{HashMap, HashSet};
-///
-/// use hex_math::{
-///   flood,
-///   Point,
-///   Prism,
-///   HasValues,
-///   travel,
-///   IsPointMap,
-///   Direction
-/// };
-///
-/// let mut map: HashMap<Point, Prism> = HashMap::new();
-///
-/// let start: Point = Point::new(1, 2, 2);
-///
-/// map.insert_walled_point(Prism::new(start.values().into(), 1, 1, 1, 1));
-///
-/// let west: Point = travel(&start, &Direction::West, 1);
-/// map.insert_walled_point(Prism::new(west, 0, 1, 0, 0));
-///
-/// let northwest: Point = travel(&start, &Direction::Northwest, 1);
-/// map.insert_walled_point(Prism::new(northwest, 0, 1, 1, 0));
-///
-/// let northeast: Point = travel(&start, &Direction::Northeast, 1);
-/// map.insert_walled_point(Prism::new(northeast, 0, 0, 1, 0));
-///
-/// let up: Point = travel(&start, &Direction::Up, 1);
-/// map.insert_walled_point(Prism::new(up, 0, 0, 0, 1));
-///
-/// let result: HashSet<Point> = flood(&start, 2, &map);
-///
-/// assert!(result.contains(&start));
-/// assert!(result.contains(&Point::new( 0, 2, 2)));
-/// assert!(result.contains(&Point::new( 0, 1, 2)));
-/// assert!(result.contains(&Point::new(-1, 2, 2)));
-/// assert!(result.contains(&Point::new(-1, 3, 2)));
-/// assert!(result.contains(&Point::new( 0, 2, 1)));
-/// assert!(result.contains(&Point::new( 0, 2, 3)));
-/// assert_eq!(result.len(), 7);
-/// ```
 pub fn flood<T: HasValues, U: HasWalls>(
   point: &T,
   range: i32,
@@ -148,46 +61,6 @@ pub fn flood<T: HasValues, U: HasWalls>(
 ///
 /// A point may be within range while being unreachable if the path to that
 /// point is blocked by an invalid point.
-///
-/// # Example
-///
-/// ```
-/// use std::collections::{HashMap, HashSet};
-///
-/// use hex_math::{
-///   flood_2d,
-///   Point,
-///   Prism,
-///   HasValues,
-///   travel,
-///   IsPointMap,
-///   Direction
-/// };
-///
-/// let mut map: HashMap<Point, Prism> = HashMap::new();
-///
-/// let start: Point = Point::new_2d(1, 2);
-///
-/// map.insert_walled_point(Prism::new(start.values().into(), 1, 1, 1, 0));
-///
-/// let west: Point = travel(&start, &Direction::West, 1);
-/// map.insert_walled_point(Prism::new(west, 0, 1, 0, 0));
-///
-/// let northwest: Point = travel(&start, &Direction::Northwest, 1);
-/// map.insert_walled_point(Prism::new(northwest, 0, 1, 1, 0));
-///
-/// let northeast: Point = travel(&start, &Direction::Northeast, 1);
-/// map.insert_walled_point(Prism::new(northeast, 0, 0, 1, 0));
-///
-/// let result: HashSet<Point> = flood_2d(&start, 2, &map);
-///
-/// assert!(result.contains(&start));
-/// assert!(result.contains(&Point::new_2d(0, 2)));
-/// assert!(result.contains(&Point::new_2d(0, 1)));
-/// assert!(result.contains(&Point::new_2d(-1, 2)));
-/// assert!(result.contains(&Point::new_2d(-1, 3)));
-/// assert_eq!(result.len(), 5);
-/// ```
 pub fn flood_2d<T: HasValues, U: HasWalls>(
   point: &T,
   range: i32,
@@ -250,17 +123,103 @@ mod util {
 
 #[cfg(test)]
 mod tests {
-  use enums::Direction;
-  use structs::{Point, Prism};
-  use traits::HasValues;
-  use travel::travel;
+  use super::*;
+  use structs::Prism;
+  use traits::IsPointMap;
 
-  use super::util;
+  #[test]
+  fn range() {
+    let point: Point = Point::new(1, 2, 5);
+    let set: HashSet<Point> = super::range(&point, 1);
 
-  use std::collections::{HashMap, HashSet};
+    assert!(set.contains(&Point::new(1, 2, 5)));
+    assert!(set.contains(&Point::new(2, 2, 5)));
+    assert!(set.contains(&Point::new(1, 3, 5)));
+    assert!(set.contains(&Point::new(0, 3, 5)));
+    assert!(set.contains(&Point::new(0, 2, 5)));
+    assert!(set.contains(&Point::new(1, 1, 5)));
+    assert!(set.contains(&Point::new(2, 1, 5)));
+    assert!(set.contains(&Point::new(1, 2, 4)));
+    assert!(set.contains(&Point::new(1, 2, 6)));
+    assert!(set.len() == 9);
+  }
+
+  #[test]
+  fn range_2d() {
+    let point: Point = Point::new(1, 2, 5);
+    let set: HashSet<Point> = super::range_2d(&point, 1);
+
+    assert!(set.contains(&Point::new(1, 2, 5)));
+    assert!(set.contains(&Point::new(2, 2, 5)));
+    assert!(set.contains(&Point::new(1, 3, 5)));
+    assert!(set.contains(&Point::new(0, 3, 5)));
+    assert!(set.contains(&Point::new(0, 2, 5)));
+    assert!(set.contains(&Point::new(1, 1, 5)));
+    assert!(set.contains(&Point::new(2, 1, 5)));
+    assert!(set.len() == 7);
+  }
 
   #[test]
   fn flood() {
+    let mut map: HashMap<Point, Prism> = HashMap::new();
+
+    let start: Point = Point::new(1, 2, 2);
+
+    map.insert_walled_point(Prism::new(start.values().into(), 1, 1, 1, 1));
+
+    let west: Point = travel(&start, &Direction::West, 1);
+    map.insert_walled_point(Prism::new(west, 0, 1, 0, 0));
+
+    let northwest: Point = travel(&start, &Direction::Northwest, 1);
+    map.insert_walled_point(Prism::new(northwest, 0, 1, 1, 0));
+
+    let northeast: Point = travel(&start, &Direction::Northeast, 1);
+    map.insert_walled_point(Prism::new(northeast, 0, 0, 1, 0));
+
+    let up: Point = travel(&start, &Direction::Up, 1);
+    map.insert_walled_point(Prism::new(up, 0, 0, 0, 1));
+
+    let result: HashSet<Point> = super::flood(&start, 2, &map);
+
+    assert!(result.contains(&start));
+    assert!(result.contains(&Point::new( 0, 2, 2)));
+    assert!(result.contains(&Point::new( 0, 1, 2)));
+    assert!(result.contains(&Point::new(-1, 2, 2)));
+    assert!(result.contains(&Point::new(-1, 3, 2)));
+    assert!(result.contains(&Point::new( 0, 2, 1)));
+    assert!(result.contains(&Point::new( 0, 2, 3)));
+    assert!(result.len() == 7);
+  }
+
+  #[test]
+  fn flood_2d() {
+    let mut map: HashMap<Point, Prism> = HashMap::new();
+
+    let start: Point = Point::new_2d(1, 2);
+
+    map.insert_walled_point(Prism::new(start.values().into(), 1, 1, 1, 0));
+
+    let west: Point = travel(&start, &Direction::West, 1);
+    map.insert_walled_point(Prism::new(west, 0, 1, 0, 0));
+
+    let northwest: Point = travel(&start, &Direction::Northwest, 1);
+    map.insert_walled_point(Prism::new(northwest, 0, 1, 1, 0));
+
+    let northeast: Point = travel(&start, &Direction::Northeast, 1);
+    map.insert_walled_point(Prism::new(northeast, 0, 0, 1, 0));
+
+    let result: HashSet<Point> = super::flood_2d(&start, 2, &map);
+
+    assert!(result.contains(&start));
+    assert!(result.contains(&Point::new_2d(0, 2)));
+    assert!(result.contains(&Point::new_2d(0, 1)));
+    assert!(result.contains(&Point::new_2d(-1, 2)));
+    assert!(result.contains(&Point::new_2d(-1, 3)));
+    assert!(result.len() == 5);
+  }
+
+  #[test]
+  fn flood_util() {
 
     let start: Point = Point::new(0, 0, 0);
     let wall: Point = Point::new(0, 0, 2);
@@ -288,8 +247,6 @@ mod tests {
     assert!(result.contains(&Point::new(0, 0, 1)));
     assert!(result.contains(&Point::new(0, 0, -1)));
     assert!(result.contains(&Point::new(0, 0, -2)));
-    assert_eq!(result.len(), 4);
-
+    assert!(result.len() == 4);
   }
-
 }

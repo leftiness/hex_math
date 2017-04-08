@@ -1,25 +1,9 @@
 use enums::Direction;
+use enums::Direction::*;
 use structs::Point;
 use traits::HasValues;
 
 /// Create a point in the specified direction a specified number of units
-///
-/// # Example
-///
-/// ```
-/// use hex_math::{Direction, Point, travel};
-///
-/// let point: Point = Point::new(1, 2, 5);
-///
-/// assert_eq!(travel(&point, &Direction::East     , 2), Point::new( 3, 2, 5));
-/// assert_eq!(travel(&point, &Direction::Southeast, 2), Point::new( 1, 4, 5));
-/// assert_eq!(travel(&point, &Direction::Southwest, 2), Point::new(-1, 4, 5));
-/// assert_eq!(travel(&point, &Direction::West     , 2), Point::new(-1, 2, 5));
-/// assert_eq!(travel(&point, &Direction::Northwest, 2), Point::new( 1, 0, 5));
-/// assert_eq!(travel(&point, &Direction::Northeast, 2), Point::new( 3, 0, 5));
-/// assert_eq!(travel(&point, &Direction::Up       , 2), Point::new( 1, 2, 7));
-/// assert_eq!(travel(&point, &Direction::Down     , 2), Point::new( 1, 2, 3));
-/// ```
 pub fn travel<T: HasValues>(
   point: &T,
   direction: &Direction,
@@ -28,14 +12,34 @@ pub fn travel<T: HasValues>(
   let (q, r, t) = point.values();
 
   return match direction {
-    &Direction::East      => Point::new(q + units, r        , t        ),
-    &Direction::Southeast => Point::new(q        , r + units, t        ),
-    &Direction::Southwest => Point::new(q - units, r + units, t        ),
-    &Direction::West      => Point::new(q - units, r        , t        ),
-    &Direction::Northwest => Point::new(q        , r - units, t        ),
-    &Direction::Northeast => Point::new(q + units, r - units, t        ),
-    &Direction::Up        => Point::new(q        , r        , t + units),
-    &Direction::Down      => Point::new(q        , r        , t - units),
+    &East      => Point::new(q + units, r        , t        ),
+    &Southeast => Point::new(q        , r + units, t        ),
+    &Southwest => Point::new(q - units, r + units, t        ),
+    &West      => Point::new(q - units, r        , t        ),
+    &Northwest => Point::new(q        , r - units, t        ),
+    &Northeast => Point::new(q + units, r - units, t        ),
+    &Up        => Point::new(q        , r        , t + units),
+    &Down      => Point::new(q        , r        , t - units),
+  }
+
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn travel() {
+    let point: Point = Point::new(1, 2, 5);
+
+    assert!(Point::new( 3, 2, 5) == super::travel(&point, &East     , 2));
+    assert!(Point::new( 1, 4, 5) == super::travel(&point, &Southeast, 2));
+    assert!(Point::new(-1, 4, 5) == super::travel(&point, &Southwest, 2));
+    assert!(Point::new(-1, 2, 5) == super::travel(&point, &West     , 2));
+    assert!(Point::new( 1, 0, 5) == super::travel(&point, &Northwest, 2));
+    assert!(Point::new( 3, 0, 5) == super::travel(&point, &Northeast, 2));
+    assert!(Point::new( 1, 2, 7) == super::travel(&point, &Up       , 2));
+    assert!(Point::new( 1, 2, 3) == super::travel(&point, &Down     , 2));
   }
 
 }

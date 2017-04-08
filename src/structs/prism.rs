@@ -25,15 +25,6 @@ pub struct Prism {
 impl Prism {
 
   /// Factory function for making new prisms
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use hex_math::{Point, Prism};
-  ///
-  /// let point: Point = Point::new(1, 2, 5);
-  /// let prism: Prism = Prism::new(point, 1, 1, 1, 1);
-  /// ```
   pub fn new(
     point: Point,
     east: i32,
@@ -53,17 +44,6 @@ impl Prism {
 }
 
 /// Access the prism's coordinate values
-///
-/// # Example
-///
-/// ```
-/// use hex_math::{Point, Prism, HasValues};
-///
-/// let point: Point = Point::new(1, 2, 5);
-/// let prism: Prism = Prism::new(point, 1, 1, 1, 1);
-///
-/// assert_eq!((1, 2, 5), prism.values());
-/// ```
 impl HasValues for Prism {
 
   fn values(&self) -> (i32, i32, i32) {
@@ -73,17 +53,6 @@ impl HasValues for Prism {
 }
 
 /// Access the prism's wall strength values
-///
-/// # Example
-///
-/// ```
-/// use hex_math::{Point, Prism, HasWalls};
-///
-/// let point: Point = Point::new(1, 2, 5);
-/// let prism: Prism = Prism::new(point, 1, 1, 1, 1);
-///
-/// assert_eq!((1, 1, 1, 1), prism.walls());
-/// ```
 impl HasWalls for Prism {
 
   fn walls(&self) -> (i32, i32, i32, i32) {
@@ -93,18 +62,6 @@ impl HasWalls for Prism {
 }
 
 /// Convert from a point to a prism with zero walls
-///
-/// # Example
-///
-/// ```
-/// use hex_math::{Point, Prism, HasValues, HasWalls};
-///
-/// let point: Point = Point::new(1, 2, 5);
-/// let prism: Prism = Prism::from(&point);
-///
-/// assert_eq!((1, 2, 5), prism.values());
-/// assert_eq!((0, 0, 0, 0), prism.walls());
-/// ```
 impl<'a> From<&'a Point> for Prism {
 
   fn from(point: &'a Point) -> Prism {
@@ -114,20 +71,6 @@ impl<'a> From<&'a Point> for Prism {
 }
 
 /// Convert from tuples of values and wall strengths
-///
-/// # Example
-///
-/// ```
-/// use hex_math::{Point, Prism, HasValues, HasWalls};
-///
-/// let point: Point = Point::new(1, 2, 5);
-/// let values: (i32, i32, i32) = point.values();
-/// let prism: Prism = Prism::new(point, 1, 1, 1, 1);
-/// let other: Prism = Prism::from((values, prism.walls()));
-///
-/// assert_eq!((1, 2, 5), other.values());
-/// assert_eq!((1, 1, 1, 1), other.walls());
-/// ```
 impl From<((i32, i32, i32), (i32, i32, i32, i32))> for Prism {
 
   fn from(
@@ -136,4 +79,71 @@ impl From<((i32, i32, i32), (i32, i32, i32, i32))> for Prism {
     Prism::new(Point::from(values), e, se, sw, d)
   }
 
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn new() {
+    let point: Point = Point::new(1, 2, 5);
+    let prism: Prism = Prism::new(point, 1, 1, 1, 1);
+
+    assert!(1 == prism.point.q);
+    assert!(2 == prism.point.r);
+    assert!(5 == prism.point.t);
+    assert!(1 == prism.east);
+    assert!(1 == prism.southeast);
+    assert!(1 == prism.southwest);
+    assert!(1 == prism.down);
+  }
+
+  #[test]
+  fn values() {
+    let point: Point = Point::new(1, 2, 5);
+    let (q, r, t) = Prism::new(point, 1, 1, 1, 1).values();
+
+    assert!(1 == q);
+    assert!(2 == r);
+    assert!(5 == t);
+  }
+
+  #[test]
+  fn walls() {
+    let point: Point = Point::new(1, 2, 5);
+    let (s, se, sw, d) = Prism::new(point, 1, 1, 1, 1).walls();
+
+    assert!(1 == s);
+    assert!(1 == se);
+    assert!(1 == sw);
+    assert!(1 == d);
+  }
+
+  #[test]
+  fn from_point() {
+    let point: Point = Point::new(1, 2, 5);
+    let prism: Prism = Prism::from(&point);
+
+    assert!(1 == prism.point.q);
+    assert!(2 == prism.point.r);
+    assert!(5 == prism.point.t);
+    assert!(0 == prism.east);
+    assert!(0 == prism.southeast);
+    assert!(0 == prism.southwest);
+    assert!(0 == prism.down);
+  }
+
+  #[test]
+  fn from_i32_tuples() {
+    let prism: Prism = Prism::from(((1, 2, 5), (1, 1, 1, 1)));
+
+    assert!(1 == prism.point.q);
+    assert!(2 == prism.point.r);
+    assert!(5 == prism.point.t);
+    assert!(1 == prism.east);
+    assert!(1 == prism.southeast);
+    assert!(1 == prism.southwest);
+    assert!(1 == prism.down);
+  }
 }
