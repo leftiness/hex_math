@@ -87,12 +87,13 @@ mod tests {
 
   #[test]
   fn new() {
-    let point: Point = Point::new(1, 2, 5);
+    let point: Point = Point(1, 2, 5);
     let prism: Prism = Prism::new(point, 1, 1, 1, 1);
+    let &Point(q, r, t) = &prism.point;
 
-    assert!(1 == prism.point.q);
-    assert!(2 == prism.point.r);
-    assert!(5 == prism.point.t);
+    assert!(1 == q);
+    assert!(2 == r);
+    assert!(5 == t);
     assert!(1 == prism.east);
     assert!(1 == prism.southeast);
     assert!(1 == prism.southwest);
@@ -101,7 +102,7 @@ mod tests {
 
   #[test]
   fn values() {
-    let point: Point = Point::new(1, 2, 5);
+    let point: Point = Point(1, 2, 5);
     let (q, r, t) = Prism::new(point, 1, 1, 1, 1).values();
 
     assert!(1 == q);
@@ -111,7 +112,7 @@ mod tests {
 
   #[test]
   fn walls() {
-    let point: Point = Point::new(1, 2, 5);
+    let point: Point = Point(1, 2, 5);
     let (s, se, sw, d) = Prism::new(point, 1, 1, 1, 1).walls();
 
     assert!(1 == s);
@@ -122,12 +123,13 @@ mod tests {
 
   #[test]
   fn from_point() {
-    let point: Point = Point::new(1, 2, 5);
+    let point: Point = Point(1, 2, 5);
     let prism: Prism = Prism::from(&point);
+    let &Point(q, r, t) = &prism.point;
 
-    assert!(1 == prism.point.q);
-    assert!(2 == prism.point.r);
-    assert!(5 == prism.point.t);
+    assert!(1 == q);
+    assert!(2 == r);
+    assert!(5 == t);
     assert!(0 == prism.east);
     assert!(0 == prism.southeast);
     assert!(0 == prism.southwest);
@@ -137,10 +139,11 @@ mod tests {
   #[test]
   fn from_i32_tuples() {
     let prism: Prism = Prism::from(((1, 2, 5), (1, 1, 1, 1)));
+    let &Point(q, r, t) = &prism.point;
 
-    assert!(1 == prism.point.q);
-    assert!(2 == prism.point.r);
-    assert!(5 == prism.point.t);
+    assert!(1 == q);
+    assert!(2 == r);
+    assert!(5 == t);
     assert!(1 == prism.east);
     assert!(1 == prism.southeast);
     assert!(1 == prism.southwest);

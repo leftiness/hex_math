@@ -33,7 +33,6 @@ impl FloatPoint {
 
   /// Round a float point back to a standard point
   pub fn round(&self) -> Point {
-
     let (q, r, s, t) = self.values_cube();
 
     let mut rq = q.round();
@@ -52,10 +51,9 @@ impl FloatPoint {
       rr = -rq - rs;
     }
 
-    let point: Point = Point::new(rq as i32, rr as i32, rt as i32);
+    let point: Point = Point(rq as i32, rr as i32, rt as i32);
 
     point
-
   }
 
 }
@@ -133,11 +131,11 @@ mod tests {
 
   #[test]
   fn round() {
-    let point: Point= FloatPoint::new(1.6f32, 1.6f32, 2.5f32).round();
+    let Point(q, r, t) = FloatPoint::new(1.6f32, 1.6f32, 2.5f32).round();
 
-    assert!(2 == point.q);
-    assert!(1 == point.r);
-    assert!(3 == point.t);
+    assert!(2 == q);
+    assert!(1 == r);
+    assert!(3 == t);
   }
 
   #[test]

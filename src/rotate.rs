@@ -5,8 +5,11 @@ use structs::Point;
 ///
 /// Positive rotations are clockwise. Six rotations bring a point back to the
 /// starting position.
-pub fn rotate_2d<T: HasValues>(point: &T, center: &T, mut times: i32) -> Point {
-
+pub fn rotate_2d<T: HasValues>(
+  point: &T,
+  center: &T,
+  mut times: i32,
+) -> Point {
   let point: Point = Point::from(point.values());
   let center: Point = Point::from(center.values());
 
@@ -25,18 +28,17 @@ pub fn rotate_2d<T: HasValues>(point: &T, center: &T, mut times: i32) -> Point {
 
   let rotated_point: Point = match times {
     0 => relative_point,
-    1 => Point::new(-r, -s, t),
-    2 => Point::new(s, q, t),
-    3 => Point::new(-q, -r, t),
-    4 => Point::new(r, s, t),
-    5 => Point::new(-s, -q, t),
+    1 => Point(-r, -s, t),
+    2 => Point( s,  q, t),
+    3 => Point(-q, -r, t),
+    4 => Point( r,  s, t),
+    5 => Point(-s, -q, t),
     _ => panic!(),
   };
 
   let result: Point = &rotated_point + &center;
 
   result
-
 }
 
 #[cfg(test)]
@@ -45,9 +47,9 @@ mod tests {
 
   #[test]
   fn rotate_2d() {
-    let point: Point = Point::new(1, 2, 5);
-    let center: Point = Point::new(1, 1, 5);
+    let point: Point = Point(1, 2, 5);
+    let center: Point = Point(1, 1, 5);
 
-    assert!(Point::new(0, 1, 5) == super::rotate_2d(&point, &center, 2));
+    assert!(Point(0, 1, 5) == super::rotate_2d(&point, &center, 2));
   }
 }

@@ -137,7 +137,7 @@ mod tests {
 
   #[test]
   fn mul_scale_coordinates() {
-    let point: Point = Point::new(1, 2, 5);
+    let point: Point = Point(1, 2, 5);
     let other: PixelPoint = PixelPoint::from(&point);
     let scale: PixelPoint = PixelPoint::new(5f32, 5f32);
     let result: PixelPoint = &other * &scale;
@@ -148,7 +148,7 @@ mod tests {
 
   #[test]
   fn from_point() {
-    let point: Point = Point::new(1, 2, 5);
+    let point: Point = Point(1, 2, 5);
     let other: PixelPoint = PixelPoint::from(&point);
 
     assert!(3f32.sqrt() * 2f32 == other.x);

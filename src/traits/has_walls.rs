@@ -43,7 +43,7 @@ mod tests {
 
   #[test]
   fn has_wall() {
-    let point: Point = Point::new(1, 2, 5);
+    let point: Point = Point(1, 2, 5);
     let prism: Prism = Prism::new(point, 1, 0, 0, 0);
 
     assert!(prism.has_wall(&Direction::East));
