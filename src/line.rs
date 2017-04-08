@@ -62,12 +62,7 @@ mod util {
     let lerp = |x: i32, y: i32| 1e-6 + (y - x) as f32 * step;
     let (qa, ra, ta) = a.values();
     let (qb, rb, tb) = b.values();
-
-    let result = FloatPoint::new(
-      lerp(qa, qb),
-      lerp(ra, rb),
-      lerp(ta, tb),
-    );
+    let result = FloatPoint(lerp(qa, qb), lerp(ra, rb), lerp(ta, tb));
 
     result
 

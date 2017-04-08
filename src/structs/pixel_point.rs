@@ -82,13 +82,12 @@ impl<'a> From<&'a Point> for PixelPoint {
 impl <'a> From<&'a FloatPoint> for PixelPoint {
 
   fn from(point: &'a FloatPoint) -> PixelPoint {
-
-    let x: f32 = 3f32.sqrt() * (point.q + (point.r / 2f32));
-    let y: f32 = 1.5f32 * point.r;
+    let &FloatPoint(q, r, _) = point;
+    let x: f32 = 3f32.sqrt() * (q + (r / 2f32));
+    let y: f32 = 1.5f32 * r;
     let result: PixelPoint = PixelPoint::new(x, y);
 
     result
-
   }
 
 }
@@ -157,7 +156,7 @@ mod tests {
 
   #[test]
   fn from_float_point() {
-    let point: FloatPoint = FloatPoint::new_2d(1f32, 2f32);
+    let point: FloatPoint = FloatPoint(1f32, 2f32, 0f32);
     let other: PixelPoint = PixelPoint::from(&point);
 
     assert!(3f32.sqrt() * 2f32 == other.x);
