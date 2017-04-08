@@ -245,6 +245,6 @@ mod tests {
     let other: Point = Point::new(1, 12, 5);
     let size: FloatPoint = util::step_size(&point, &other);
 
-    assert_eq!((1e-6, 1f32 + 1e-6, 1e-6), size.values());
+    assert!((1e-6, 1f32 + 1e-6, 1e-6) == size.values());
   }
 }

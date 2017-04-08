@@ -131,8 +131,8 @@ mod tests {
     let other: PixelPoint = PixelPoint::new(1.5f32, 1.5f32);
     let result: PixelPoint = &point * &other;
 
-    assert_eq!(1920f32, result.x);
-    assert_eq!(1080f32, result.y);
+    assert!(1920f32 == result.x);
+    assert!(1080f32 == result.y);
   }
 
   #[test]
