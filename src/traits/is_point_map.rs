@@ -75,7 +75,7 @@ mod tests {
     let mut map: HashMap<Point, Prism> = HashMap::new();
 
     let p0: Point = Point(1, 2, 5);
-    let pr0: Prism = Prism::new(p0.values().into(), 1, 0, 0, 0);
+    let pr0: Prism = Prism(p0.values().into(), 1, 0, 0, 0);
 
     map.insert(p0.values().into(), pr0);
 
@@ -90,8 +90,8 @@ mod tests {
     let p1: Point = Point(1, 2, 5);
     let p2: Point = Point(2, 2, 5);
 
-    let pr0: Prism = Prism::new(p0.values().into(), 1, 0, 0, 0);
-    let pr1: Prism = Prism::new(p1.values().into(), 1, 0, 0, 0);
+    let pr0: Prism = Prism(p0.values().into(), 1, 0, 0, 0);
+    let pr1: Prism = Prism(p1.values().into(), 1, 0, 0, 0);
 
     map.insert(p0.values().into(), pr0);
     map.insert(p1.values().into(), pr1);
@@ -105,7 +105,7 @@ mod tests {
     let mut map: HashMap<Point, Prism> = HashMap::new();
 
     let p0: Point = Point(1, 2, 5);
-    let pr0: Prism = Prism::new(p0.values().into(), 1, 1, 1, 1);
+    let pr0: Prism = Prism(p0.values().into(), 1, 1, 1, 1);
 
     map.insert_walled_point(pr0);
 

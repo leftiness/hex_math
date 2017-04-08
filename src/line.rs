@@ -190,7 +190,7 @@ mod tests {
     let mut map: HashMap<Point, Prism> = HashMap::new();
 
     let wall: Point = Point(3, 3, 10);
-    let prism: Prism = Prism::new(Point::from(wall.values()), 0, 0, 0, 1);
+    let prism: Prism = Prism(wall.values().into(), 0, 0, 0, 1);
 
     map.insert(wall, prism);
 
@@ -214,7 +214,7 @@ mod tests {
     let mut map: HashMap<Point, Prism> = HashMap::new();
 
     let wall: Point = Point(2, 2, 7);
-    let prism: Prism = Prism::new(Point::from(wall.values()), 0, 0, 0, 1);
+    let prism: Prism = Prism(wall.values().into(), 0, 0, 0, 1);
 
     map.insert(wall, prism);
 

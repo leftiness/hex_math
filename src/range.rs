@@ -164,19 +164,19 @@ mod tests {
 
     let start: Point = Point(1, 2, 2);
 
-    map.insert_walled_point(Prism::new(start.values().into(), 1, 1, 1, 1));
+    map.insert_walled_point(Prism(start.values().into(), 1, 1, 1, 1));
 
     let west: Point = travel(&start, &Direction::West, 1);
-    map.insert_walled_point(Prism::new(west, 0, 1, 0, 0));
+    map.insert_walled_point(Prism(west, 0, 1, 0, 0));
 
     let northwest: Point = travel(&start, &Direction::Northwest, 1);
-    map.insert_walled_point(Prism::new(northwest, 0, 1, 1, 0));
+    map.insert_walled_point(Prism(northwest, 0, 1, 1, 0));
 
     let northeast: Point = travel(&start, &Direction::Northeast, 1);
-    map.insert_walled_point(Prism::new(northeast, 0, 0, 1, 0));
+    map.insert_walled_point(Prism(northeast, 0, 0, 1, 0));
 
     let up: Point = travel(&start, &Direction::Up, 1);
-    map.insert_walled_point(Prism::new(up, 0, 0, 0, 1));
+    map.insert_walled_point(Prism(up, 0, 0, 0, 1));
 
     let result: HashSet<Point> = super::flood(&start, 2, &map);
 
@@ -196,16 +196,16 @@ mod tests {
 
     let start: Point = Point(1, 2, 0);
 
-    map.insert_walled_point(Prism::new(start.values().into(), 1, 1, 1, 0));
+    map.insert_walled_point(Prism(start.values().into(), 1, 1, 1, 0));
 
     let west: Point = travel(&start, &Direction::West, 1);
-    map.insert_walled_point(Prism::new(west, 0, 1, 0, 0));
+    map.insert_walled_point(Prism(west, 0, 1, 0, 0));
 
     let northwest: Point = travel(&start, &Direction::Northwest, 1);
-    map.insert_walled_point(Prism::new(northwest, 0, 1, 1, 0));
+    map.insert_walled_point(Prism(northwest, 0, 1, 1, 0));
 
     let northeast: Point = travel(&start, &Direction::Northeast, 1);
-    map.insert_walled_point(Prism::new(northeast, 0, 0, 1, 0));
+    map.insert_walled_point(Prism(northeast, 0, 0, 1, 0));
 
     let result: HashSet<Point> = super::flood_2d(&start, 2, &map);
 
@@ -225,7 +225,7 @@ mod tests {
 
     let mut map: HashMap<Point, Prism> = HashMap::new();
 
-    map.insert(wall.values().into(), Prism::new(wall, 0, 0, 0, 1));
+    map.insert(wall.values().into(), Prism(wall, 0, 0, 0, 1));
 
     fn range_1d(point: &Point, range: i32) -> HashSet<Point> {
 
