@@ -9,18 +9,6 @@ use std::ops::{Add, Sub};
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct Point(pub i32, pub i32, pub i32);
 
-impl Point {
-  /// Calculate the S coordinate.
-  ///
-  /// S represents the Y axis on a cube.
-  pub fn s(&self) -> i32 {
-    let &Point(q, r, _) = self;
-    let s = -q - r;
-
-    s
-  }
-}
-
 /// Add one point to another
 impl<'a, 'b> Add<&'b Point> for &'a Point {
   type Output = Point;
@@ -48,13 +36,6 @@ impl<'a, 'b> Sub<&'b Point> for &'a Point {
 #[cfg(test)]
 mod tests {
   use super::*;
-
-  #[test]
-  fn s() {
-    let point: Point = Point(1, 2, 5);
-
-    assert!(-3 == point.s())
-  }
 
   #[test]
   fn add() {

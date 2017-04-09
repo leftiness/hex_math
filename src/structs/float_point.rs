@@ -1,16 +1,15 @@
 use std::ops::{Add, Sub};
 
-use structs::Point;
+use structs::{CubePoint, Point};
 
 /// Point on a coordinate plane with floating point coordinate values
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct FloatPoint(pub f32, pub f32, pub f32);
 
 impl FloatPoint {
   /// Round a float point back to a standard point
   pub fn round(&self) -> Point {
-    let &FloatPoint(q, r, t) = self;
-    let s = self.s();
+    let CubePoint(q, r, s, t) = CubePoint::from(*self);
 
     let mut rq = q.round();
     let mut rr = r.round();
@@ -31,14 +30,6 @@ impl FloatPoint {
     let point: Point = Point(rq as i32, rr as i32, rt as i32);
 
     point
-  }
-
-  /// Calculate the S coordinate
-  pub fn s(&self) -> f32 {
-    let &FloatPoint(q, r, _) = self;
-    let s = -q - r;
-
-    s
   }
 }
 
@@ -86,13 +77,6 @@ mod tests {
     assert!(2 == q);
     assert!(1 == r);
     assert!(3 == t);
-  }
-
-  #[test]
-  fn s() {
-    let point = FloatPoint(1f32, 2f32, 5f32);
-
-    assert!(-3f32 == point.s());
   }
 
   #[test]

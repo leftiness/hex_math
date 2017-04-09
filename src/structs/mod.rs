@@ -1,8 +1,10 @@
+mod cube_point;
 mod float_point;
 mod pixel_point;
 mod point;
 mod prism;
 
+pub use self::cube_point::CubePoint;
 pub use self::float_point::FloatPoint;
 pub use self::pixel_point::PixelPoint;
 pub use self::point::Point;
