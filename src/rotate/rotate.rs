@@ -6,7 +6,7 @@ use structs::{CubePoint, Point};
 ///
 /// Positive rotations are clockwise. Six rotations bring a point back to the
 /// starting position.
-pub fn rotate_2d<T: Borrow<Point>>(
+pub fn rotate<T: Borrow<Point>>(
   point: &T,
   center: &T,
   mut times: i32,
@@ -47,10 +47,10 @@ mod tests {
   use super::*;
 
   #[test]
-  fn rotate_2d() {
+  fn rotate() {
     let point: Point = Point(1, 2, 5);
     let center: Point = Point(1, 1, 5);
 
-    assert!(Point(0, 1, 5) == super::rotate_2d(&point, &center, 2));
+    assert!(Point(0, 1, 5) == super::rotate(&point, &center, 2));
   }
 }
