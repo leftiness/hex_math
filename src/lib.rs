@@ -2,7 +2,7 @@
 
 mod travel;
 pub mod distance;
-mod line;
+pub mod line;
 mod range;
 mod rotate;
 mod ring;
@@ -12,7 +12,6 @@ mod structs;
 mod traits;
 
 pub use travel::travel;
-pub use line::{line, line_through, ray, ray_through};
 pub use range::{range, range_2d, flood, flood_2d};
 pub use rotate::rotate_2d;
 pub use ring::{ring, ring_2d};
