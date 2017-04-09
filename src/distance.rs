@@ -1,6 +1,6 @@
 use std::borrow::Borrow;
 
-use structs::Point;
+use structs::{CubePoint, Point};
 
 /// Calculate the manhattan distance between two points
 ///
@@ -20,8 +20,7 @@ pub fn distance<T: Borrow<Point>>(point: &T, other: &T) -> i32 {
 /// Distance is rounded up to the next integer.
 pub fn distance_2d<T: Borrow<Point>>(point: &T, other: &T) -> i32 {
   let diff: Point = point.borrow() - other.borrow();
-  let Point(q, r, _) = diff;
-  let s = diff.s();
+  let CubePoint(q, r, s, _) = diff.into();
   let distance = (q.abs() + r.abs() + s.abs()) / 2;
 
   distance
