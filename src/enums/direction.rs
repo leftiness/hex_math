@@ -1,12 +1,11 @@
-use std::convert::From;
+use std::borrow::Borrow;
 
 use structs::Point;
-use traits::HasValues;
 
 use Direction::*;
 
 /// Enum describing positions in relation to a point
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Direction {
   East,
   Southeast,
@@ -26,7 +25,7 @@ impl Direction {
   }
 
   /// Return the opposite direction
-    pub fn opposite(&self) -> Direction {
+  pub fn opposite(&self) -> Direction {
 
     match self {
       &East      => West,
@@ -43,24 +42,19 @@ impl Direction {
 
 }
 
-impl <'a, 'b, T> From<(&'a T, &'b T)> for Direction where T: HasValues {
+impl <'a, 'b, T> From<(&'a T, &'b T)> for Direction where T: Borrow<Point> {
 
   /// Get the direction from one point to another
   fn from((p0, p1): (&'a T, &'b T)) -> Direction {
+    let Point(q, r, t) = p1.borrow() - p0.borrow();
 
-    let p0: Point = p0.values().into();
-    let p1: Point = p1.values().into();
-    let diff: Point = &p1 - &p0;
-
-    let (dq, dr, dt) = diff.values();
-
-    match dt.signum() {
+    match t.signum() {
        1 => return Up,
       -1 => return Down,
        _ => (),
     }
 
-    return match (dq.signum(), dr.signum()) {
+    return match (q.signum(), r.signum()) {
       ( 1,  0) => East,
       ( 0,  1) => Southeast,
       (-1,  1) => Southwest,
@@ -69,7 +63,6 @@ impl <'a, 'b, T> From<(&'a T, &'b T)> for Direction where T: HasValues {
       ( 1, -1) => Northeast,
       _ => panic!(),
     }
-
   }
 
 }

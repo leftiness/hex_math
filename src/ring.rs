@@ -1,12 +1,12 @@
+use std::borrow::Borrow;
 use std::collections::HashSet;
 
 use enums::Direction;
 use structs::Point;
-use traits::HasValues;
 use travel::travel;
 
 /// Find points in a spherical ring of a provided radius
-pub fn ring<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
+pub fn ring<T: Borrow<Point>>(point: &T, range: i32) -> HashSet<Point> {
   let mut set: HashSet<Point> = ring_2d(point, range);
 
   for index in 1..range + 1 {
@@ -27,7 +27,7 @@ pub fn ring<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
 }
 
 /// Find points at the same height in a ring of a provided radius
-pub fn ring_2d<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
+pub fn ring_2d<T: Borrow<Point>>(point: &T, range: i32) -> HashSet<Point> {
   let mut set: HashSet<Point> = HashSet::new();
   let mut point: Point = travel(point, &Direction::Northwest, range);
 
@@ -35,7 +35,7 @@ pub fn ring_2d<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
     for _ in 0..range {
       let next: Point = travel(&point, direction, 1);
 
-      set.insert(point);
+      set.insert(point.into());
       point = next;
     }
   }

@@ -1,15 +1,16 @@
+use std::borrow::Borrow;
+
 use enums::Direction;
 use enums::Direction::*;
 use structs::Point;
-use traits::HasValues;
 
 /// Create a point in the specified direction a specified number of units
-pub fn travel<T: HasValues>(
+pub fn travel<T: Borrow<Point>>(
   point: &T,
   direction: &Direction,
   units: i32
 ) -> Point {
-  let (q, r, t) = point.values();
+  let &Point(q, r, t) = point.borrow();
 
   return match direction {
     &East      => Point(q + units, r        , t        ),

@@ -1,10 +1,10 @@
+use std::borrow::Borrow;
 use std::collections::{HashMap, HashSet};
 
 use structs::{Point, Prism};
-use traits::{HasValues, HasWalls};
 
 /// Find the points in a line between the current point and the one provided
-pub fn line<T: HasValues>(
+pub fn line<T: Borrow<Point>>(
   point: &T,
   other: &T
 ) -> HashSet<Point> {
@@ -12,7 +12,7 @@ pub fn line<T: HasValues>(
 }
 
 /// Find the points within range in a line through two points
-pub fn line_through<T: HasValues>(
+pub fn line_through<T: Borrow<Point>>(
   point: &T,
   other: &T,
   range: i32,
@@ -21,7 +21,7 @@ pub fn line_through<T: HasValues>(
 }
 
 /// Find unblocked points in a line between two points
-pub fn ray<T: HasValues, U: HasWalls>(
+pub fn ray<T: Borrow<Point>, U: Borrow<Prism>>(
   point: &T,
   other: &T,
   map: &HashMap<Point, U>,
@@ -30,7 +30,7 @@ pub fn ray<T: HasValues, U: HasWalls>(
 }
 
 /// Find unblocked points within range in a line through two points
-pub fn ray_through<T: HasValues, U: HasWalls>(
+pub fn ray_through<T: Borrow<Point>, U: Borrow<Prism>>(
   point: &T,
   other: &T,
   range: i32,
@@ -40,29 +40,29 @@ pub fn ray_through<T: HasValues, U: HasWalls>(
 }
 
 mod util {
-  use std::collections::{HashSet, HashMap};
+  use super::*;
 
   use distance::{distance, distance_2d};
-  use structs::{FloatPoint, Point};
-  use traits::{HasValues, HasWalls, IsPointMap};
+  use structs::FloatPoint;
+  use traits::IsPointMap;
 
   /// Return the floats one step along a line between two points
   ///
   /// The lerp is offset a small amount to prevent points from landing
   /// directly on the line between two hexes.
-  pub fn step_size<T: HasValues>(a: &T, b: &T) -> FloatPoint {
+  pub fn step_size<T: Borrow<Point>>(point: &T, other: &T) -> FloatPoint {
+    let &Point(q0, r0, t0) = point.borrow();
+    let &Point(q1, r1, t1) = other.borrow();
 
-    let distance = if a.values_2d() == b.values_2d() {
-      distance(a, b)
+    let distance = if (q0, r0) == (q1, r1) {
+      (t0 - t1).abs()
     } else {
-      distance_2d(a, b)
+      distance_2d(point, other)
     };
 
     let step = (distance as f32).recip();
     let lerp = |x: i32, y: i32| 1e-6 + (y - x) as f32 * step;
-    let (qa, ra, ta) = a.values();
-    let (qb, rb, tb) = b.values();
-    let result = FloatPoint(lerp(qa, qb), lerp(ra, rb), lerp(ta, tb));
+    let result = FloatPoint(lerp(q0, q1), lerp(r0, r1), lerp(t0, t1));
 
     result
 
@@ -73,7 +73,7 @@ mod util {
   /// Optionally provide a range. The line will end at that range.
   ///
   /// Optionally provide a map with walls which are impassable.
-  pub fn line<T: HasValues, U: HasWalls>(
+  pub fn line<T: Borrow<Point>, U: Borrow<Prism>>(
     point: &T,
     other: &T,
     range: Option<i32>,
@@ -81,9 +81,12 @@ mod util {
   ) -> HashSet<Point> {
     let mut set: HashSet<Point> = HashSet::new();
 
-    set.insert(Point::from(point.values()));
+    let point = *point.borrow();
+    let other = *other.borrow();
 
-    if point.values() == other.values() {
+    set.insert(point);
+
+    if point == other {
       return set;
     }
 
@@ -92,13 +95,13 @@ mod util {
       None => false,
     };
 
-    let mut round: Point = point.values().into();
-    let mut step: FloatPoint = point.values().into();
-    let mut last: Point = point.values().into();
+    let mut round: Point = point;
+    let mut step: FloatPoint = point.into();
+    let mut last: Point = point;
 
-    let distance: i32 = distance(point, other);
+    let distance: i32 = distance(&point, &other);
     let range: i32 = range.unwrap_or(distance);
-    let size: FloatPoint = step_size(point, other);
+    let size: FloatPoint = step_size(&point, &other);
 
     for _ in 0 .. range {
       if &round == &last {
@@ -112,14 +115,14 @@ mod util {
       let current: Point = if need_vertical_step {
         &last + &Point(0, 0, tdiff.signum())
       } else {
-        round.values().into()
+        round
       };
 
       if has_wall_between(&last, &current) {
         break;
       }
 
-      last = current.values().into();
+      last = current;
       set.insert(current);
     }
 
@@ -190,7 +193,7 @@ mod tests {
     let mut map: HashMap<Point, Prism> = HashMap::new();
 
     let wall: Point = Point(3, 3, 10);
-    let prism: Prism = Prism(wall.values().into(), 0, 0, 0, 1);
+    let prism: Prism = Prism(wall, 0, 0, 0, 1);
 
     map.insert(wall, prism);
 
@@ -214,7 +217,7 @@ mod tests {
     let mut map: HashMap<Point, Prism> = HashMap::new();
 
     let wall: Point = Point(2, 2, 7);
-    let prism: Prism = Prism(wall.values().into(), 0, 0, 0, 1);
+    let prism: Prism = Prism(wall, 0, 0, 0, 1);
 
     map.insert(wall, prism);
 
@@ -231,8 +234,10 @@ mod tests {
   fn step_size() {
     let point: Point = Point(1, 2, 5);
     let other: Point = Point(1, 12, 5);
-    let size: FloatPoint = util::step_size(&point, &other);
+    let FloatPoint(q, r, t) = util::step_size(&point, &other);
 
-    assert!((1e-6, 1f32 + 1e-6, 1e-6) == size.values());
+    assert!(1e-6 == q);
+    assert!(1f32 + 1e-6 == r);
+    assert!(1e-6 == t);
   }
 }

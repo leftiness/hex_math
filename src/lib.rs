@@ -20,5 +20,5 @@ pub use ring::{ring, ring_2d};
 
 pub use enums::Direction;
 pub use structs::{FloatPoint, PixelPoint, Point, Prism};
-pub use traits::{HasValues, HasWalls, IsPointMap};
+pub use traits::IsPointMap;
 
