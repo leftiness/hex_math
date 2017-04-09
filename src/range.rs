@@ -1,13 +1,13 @@
+use std::borrow::Borrow;
 use std::collections::{HashMap, HashSet};
 use std::cmp::{max, min};
 
 use enums::Direction;
-use structs::Point;
-use traits::{HasValues, HasWalls};
+use structs::{Point, Prism};
 use travel::travel;
 
 /// Find the points within the provided manhattan distance
-pub fn range<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
+pub fn range<T: Borrow<Point>>(point: &T, range: i32) -> HashSet<Point> {
   let mut set: HashSet<Point> = range_2d(point, range);
 
   for index in 1..range + 1 {
@@ -25,9 +25,8 @@ pub fn range<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
 }
 
 /// Find the points at the same height within the provided manhattan distance
-pub fn range_2d<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
+pub fn range_2d<T: Borrow<Point>>(point: &T, range: i32) -> HashSet<Point> {
   let mut set: HashSet<Point> = HashSet::new();
-  let point: Point = Point::from(point.values());
 
   for dq in -range..range + 1 {
     let lower: i32 = max(-range, -dq - range);
@@ -35,7 +34,7 @@ pub fn range_2d<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
 
     for ds in lower..upper + 1 {
       let dr: i32 = -dq - ds;
-      let found = &point + &Point(dq, dr, 0);
+      let found = point.borrow() + &Point(dq, dr, 0);
 
       set.insert(found);
     }
@@ -48,7 +47,7 @@ pub fn range_2d<T: HasValues>(point: &T, range: i32) -> HashSet<Point> {
 ///
 /// A point may be within range while being unreachable if the path to that
 /// point is blocked by an invalid point.
-pub fn flood<T: HasValues, U: HasWalls>(
+pub fn flood<T: Borrow<Point>, U: Borrow<Prism>>(
   point: &T,
   range: i32,
   map: &HashMap<Point, U>,
@@ -60,7 +59,7 @@ pub fn flood<T: HasValues, U: HasWalls>(
 ///
 /// A point may be within range while being unreachable if the path to that
 /// point is blocked by an invalid point.
-pub fn flood_2d<T: HasValues, U: HasWalls>(
+pub fn flood_2d<T: Borrow<Point>, U: Borrow<Prism>>(
   point: &T,
   range: i32,
   map: &HashMap<Point, U>,
@@ -69,13 +68,12 @@ pub fn flood_2d<T: HasValues, U: HasWalls>(
 }
 
 mod util {
-  use std::collections::{HashMap, HashSet};
+  use super::*;
 
-  use traits::{HasValues, HasWalls, IsPointMap};
-  use structs::Point;
+  use traits::IsPointMap;
 
   /// Find reachable points within a specified range with a provided function
-  pub fn flood<T: HasValues, U: HasWalls>(
+  pub fn flood<T: Borrow<Point>, U: Borrow<Prism>>(
     start: &T,
     range: i32,
     range_fn: fn(&Point, i32) -> HashSet<Point>,
@@ -84,38 +82,29 @@ mod util {
 
     let mut visited: HashSet<Point> = HashSet::new();
     let mut fringes: Vec<Point> = Vec::new();
+    let mut found: Vec<Point> = Vec::new();
 
-    let start: Point = Point::from(start.values());
-
-    fringes.push(start);
+    fringes.push(*start.borrow());
 
     for _ in 0 .. range {
-
-      let mut found = vec![];
-
       for point in &fringes {
-        for neighbor in range_fn(point, 1) {
-
-          if visited.contains(&neighbor) {
+        for neighbor in &range_fn(point, 1) {
+          if visited.contains(neighbor) {
             continue;
+          } else if !map.has_wall_between(point, neighbor) {
+            found.push(*neighbor);
           }
-
-          if !map.has_wall_between(&point, &neighbor) {
-            found.push(neighbor);
-          }
-
         }
       }
 
       visited.extend(fringes);
       fringes = found;
-
+      found = Vec::new();
     }
 
     visited.extend(fringes);
 
     visited
-
   }
 
 }
@@ -162,21 +151,17 @@ mod tests {
   fn flood() {
     let mut map: HashMap<Point, Prism> = HashMap::new();
 
-    let start: Point = Point(1, 2, 2);
-
-    map.insert_walled_point(Prism(start.values().into(), 1, 1, 1, 1));
-
-    let west: Point = travel(&start, &Direction::West, 1);
-    map.insert_walled_point(Prism(west, 0, 1, 0, 0));
-
+    let start:     Point = Point(1, 2, 2);
+    let west:      Point = travel(&start, &Direction::West,      1);
     let northwest: Point = travel(&start, &Direction::Northwest, 1);
-    map.insert_walled_point(Prism(northwest, 0, 1, 1, 0));
-
     let northeast: Point = travel(&start, &Direction::Northeast, 1);
-    map.insert_walled_point(Prism(northeast, 0, 0, 1, 0));
+    let up:        Point = travel(&start, &Direction::Up,        1);
 
-    let up: Point = travel(&start, &Direction::Up, 1);
-    map.insert_walled_point(Prism(up, 0, 0, 0, 1));
+    map.insert_walled_point(Prism(west,      0, 1, 0, 0));
+    map.insert_walled_point(Prism(northwest, 0, 1, 1, 0));
+    map.insert_walled_point(Prism(northeast, 0, 0, 1, 0));
+    map.insert_walled_point(Prism(up,        0, 0, 0, 1));
+    map.insert_walled_point(Prism(start,     1, 1, 1, 1));
 
     let result: HashSet<Point> = super::flood(&start, 2, &map);
 
@@ -194,18 +179,15 @@ mod tests {
   fn flood_2d() {
     let mut map: HashMap<Point, Prism> = HashMap::new();
 
-    let start: Point = Point(1, 2, 0);
-
-    map.insert_walled_point(Prism(start.values().into(), 1, 1, 1, 0));
-
-    let west: Point = travel(&start, &Direction::West, 1);
-    map.insert_walled_point(Prism(west, 0, 1, 0, 0));
-
+    let start:     Point = Point(1, 2, 0);
+    let west:      Point = travel(&start, &Direction::West,      1);
     let northwest: Point = travel(&start, &Direction::Northwest, 1);
-    map.insert_walled_point(Prism(northwest, 0, 1, 1, 0));
-
     let northeast: Point = travel(&start, &Direction::Northeast, 1);
+
+    map.insert_walled_point(Prism(west,      0, 1, 0, 0));
+    map.insert_walled_point(Prism(northwest, 0, 1, 1, 0));
     map.insert_walled_point(Prism(northeast, 0, 0, 1, 0));
+    map.insert_walled_point(Prism(start,     1, 1, 1, 0));
 
     let result: HashSet<Point> = super::flood_2d(&start, 2, &map);
 
@@ -225,7 +207,7 @@ mod tests {
 
     let mut map: HashMap<Point, Prism> = HashMap::new();
 
-    map.insert(wall.values().into(), Prism(wall, 0, 0, 0, 1));
+    map.insert(wall, Prism(wall, 0, 0, 0, 1));
 
     fn range_1d(point: &Point, range: i32) -> HashSet<Point> {
 

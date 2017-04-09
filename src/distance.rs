@@ -1,13 +1,14 @@
+use std::borrow::Borrow;
+
 use structs::Point;
-use traits::HasValues;
 
 /// Calculate the manhattan distance between two points
 ///
 /// Distance is rounded up to the next integer.
-pub fn distance<T: HasValues>(point: &T, other: &T) -> i32 {
+pub fn distance<T: Borrow<Point>>(point: &T, other: &T) -> i32 {
   let base = distance_2d(point, other);
-  let (_, _, t0) = point.values();
-  let (_, _, t1) = other.values();
+  let &Point(_, _, t0) = point.borrow();
+  let &Point(_, _, t1) = other.borrow();
   let height = (t0 - t1).abs();
   let distance = base + height;
 
@@ -17,11 +18,10 @@ pub fn distance<T: HasValues>(point: &T, other: &T) -> i32 {
 /// Calculate the manhattan distance between two points ignoring height
 ///
 /// Distance is rounded up to the next integer.
-pub fn distance_2d<T: HasValues>(point: &T, other: &T) -> i32 {
-  let point: Point = Point::from(point.values());
-  let other: Point = Point::from(other.values());
-  let diff: Point = &point - &other;
-  let (q, r, s) = diff.values_cube_2d();
+pub fn distance_2d<T: Borrow<Point>>(point: &T, other: &T) -> i32 {
+  let diff: Point = point.borrow() - other.borrow();
+  let Point(q, r, _) = diff;
+  let s = diff.s();
   let distance = (q.abs() + r.abs() + s.abs()) / 2;
 
   distance

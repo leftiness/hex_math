@@ -1,24 +1,26 @@
-use traits::HasValues;
+use std::borrow::Borrow;
+
 use structs::Point;
 
 /// Rotate the point around a provided center, keeping the same height
 ///
 /// Positive rotations are clockwise. Six rotations bring a point back to the
 /// starting position.
-pub fn rotate_2d<T: HasValues>(
+pub fn rotate_2d<T: Borrow<Point>>(
   point: &T,
   center: &T,
   mut times: i32,
 ) -> Point {
-  let point: Point = Point::from(point.values());
-  let center: Point = Point::from(center.values());
+  let point = point.borrow();
+  let center = center.borrow();
 
-  if &point == &center {
-    return point;
+  if point == center {
+    return *point;
   }
 
-  let relative_point: Point = &point - &center;
-  let (q, r, s, t) = relative_point.values_cube();
+  let relative_point: Point = point - center;
+  let Point(q, r, t) = relative_point;
+  let s = relative_point.s();
 
   times %= 6;
 

@@ -1,7 +1,4 @@
-use std::convert::From;
 use std::ops::{Add, Sub};
-
-use traits::HasValues;
 
 /// Basic point on a coordinate plane
 ///
@@ -9,8 +6,20 @@ use traits::HasValues;
 /// two dimensions and a third T to describe its third dimension.
 ///
 /// Q can also be considered X on a cube, and R is Z.
-#[derive(Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct Point(pub i32, pub i32, pub i32);
+
+impl Point {
+  /// Calculate the S coordinate.
+  ///
+  /// S represents the Y axis on a cube.
+  pub fn s(&self) -> i32 {
+    let &Point(q, r, _) = self;
+    let s = -q - r;
+
+    s
+  }
+}
 
 /// Add one point to another
 impl<'a, 'b> Add<&'b Point> for &'a Point {
@@ -36,33 +45,15 @@ impl<'a, 'b> Sub<&'b Point> for &'a Point {
   }
 }
 
-/// Access the point's coordinate values
-impl HasValues for Point {
-  fn values(&self) -> (i32, i32, i32) {
-    let &Point(q, r, t) = self;
-
-    (q, r, t)
-  }
-}
-
-/// Conveniently convert a values tuple into a point
-impl From<(i32, i32, i32)> for Point {
-  fn from((q, r, t): (i32, i32, i32)) -> Point {
-    Point(q, r, t)
-  }
-}
-
 #[cfg(test)]
 mod tests {
   use super::*;
 
   #[test]
-  fn new() {
-    let Point(q, r, t) = Point(1, 2, 5);
+  fn s() {
+    let point: Point = Point(1, 2, 5);
 
-    assert!(1 == q);
-    assert!(2 == r);
-    assert!(5 == t);
+    assert!(-3 == point.s())
   }
 
   #[test]
@@ -85,23 +76,5 @@ mod tests {
     assert!(-2 == q);
     assert!(-2 == r);
     assert!(-5 == t);
-  }
-
-  #[test]
-  fn values() {
-    let (q, r, t) = Point(1, 2, 5).values();
-
-    assert!(1 == q);
-    assert!(2 == r);
-    assert!(5 == t);
-  }
-
-  #[test]
-  fn from() {
-    let Point(q, r, t) = Point::from((1, 2, 5));
-
-    assert!(1 == q);
-    assert!(2 == r);
-    assert!(5 == t);
   }
 }
