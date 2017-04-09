@@ -24,7 +24,6 @@ fn step_size<T: Borrow<Point>>(point: &T, other: &T) -> FloatPoint {
   let result = FloatPoint(lerp(q0, q1), lerp(r0, r1), lerp(t0, t1));
 
   result
-
 }
 
 /// Find the points in a line between two points

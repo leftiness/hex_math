@@ -22,7 +22,6 @@ pub fn travel<T: Borrow<Point>>(
     &Up        => Point(q        , r        , t + units),
     &Down      => Point(q        , r        , t - units),
   }
-
 }
 
 #[cfg(test)]
@@ -42,5 +41,4 @@ mod tests {
     assert!(Point( 1, 2, 7) == super::travel(&point, &Up       , 2));
     assert!(Point( 1, 2, 3) == super::travel(&point, &Down     , 2));
   }
-
 }
