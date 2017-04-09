@@ -42,7 +42,7 @@ pub fn ray_through<T: Borrow<Point>, U: Borrow<Prism>>(
 mod util {
   use super::*;
 
-  use distance::{distance, distance_2d};
+  use distance;
   use structs::FloatPoint;
   use traits::IsPointMap;
 
@@ -55,9 +55,9 @@ mod util {
     let &Point(q1, r1, t1) = other.borrow();
 
     let distance = if (q0, r0) == (q1, r1) {
-      (t0 - t1).abs()
+      distance::height(point, other)
     } else {
-      distance_2d(point, other)
+      distance::base(point, other)
     };
 
     let step = (distance as f32).recip();
@@ -99,7 +99,7 @@ mod util {
     let mut step: FloatPoint = point.into();
     let mut last: Point = point;
 
-    let distance: i32 = distance(&point, &other);
+    let distance: i32 = distance::with_height(&point, &other);
     let range: i32 = range.unwrap_or(distance);
     let size: FloatPoint = step_size(&point, &other);
 
