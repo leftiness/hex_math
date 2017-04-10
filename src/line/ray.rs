@@ -1,16 +1,22 @@
 use std::borrow::Borrow;
 use std::collections::{HashMap, HashSet};
 
+use distance;
 use line;
+use line::predicate::{Range, Walls};
 use structs::{Point, Prism};
 
 /// Find unblocked points in a line between two points
 pub fn ray<T: Borrow<Point>, U: Borrow<Prism>>(
   point: &T,
   other: &T,
-  map: &HashMap<Point, U>,
+  walls: &HashMap<Point, U>,
 ) -> HashSet<Point> {
-  line::generic(point, other, None, Some(map))
+  line::generic(
+    point,
+    other,
+    (Walls(walls), Range(distance::with_height(point, other)))
+  )
 }
 
 #[cfg(test)]
