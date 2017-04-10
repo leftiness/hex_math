@@ -1,8 +1,9 @@
 use std::borrow::Borrow;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
 use line;
-use structs::{Point, Prism};
+use line::predicate::Range;
+use structs::Point;
 
 /// Find the points within range in a line through two points
 pub fn through<T: Borrow<Point>>(
@@ -10,7 +11,7 @@ pub fn through<T: Borrow<Point>>(
   other: &T,
   range: i32,
 ) -> HashSet<Point> {
-  line::generic(point, other, Some(range), None::<&HashMap<Point, Prism>>)
+  line::generic(point, other, Range(range))
 }
 
 #[cfg(test)]

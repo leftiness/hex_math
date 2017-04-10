@@ -1,9 +1,9 @@
 use std::borrow::Borrow;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
 use distance;
-use structs::{FloatPoint, Point, Prism};
-use traits::IsPointMap;
+use structs::{FloatPoint, Point};
+use traits::Predicate;
 
 /// Return the floats one step along a line between two points
 ///
@@ -28,14 +28,13 @@ fn step_size<T: Borrow<Point>>(point: &T, other: &T) -> FloatPoint {
 
 /// Find the points in a line between two points
 ///
-/// Optionally provide a range. The line will end at that range.
-///
-/// Optionally provide a map with walls which are impassable.
-pub fn generic<T: Borrow<Point>, U: Borrow<Prism>>(
+/// Be careful with the infinite loop. If you provide a predicate which
+/// always returns false, he'll keep following the line until he panics about
+/// running out of 32-bit integers.
+pub fn generic<T: Borrow<Point>, U: Predicate<(i32, Point, Point)>>(
   point: &T,
   other: &T,
-  range: Option<i32>,
-  map: Option<&HashMap<Point, U>>,
+  stop_condition: U,
 ) -> HashSet<Point> {
   let mut set: HashSet<Point> = HashSet::new();
 
@@ -48,40 +47,31 @@ pub fn generic<T: Borrow<Point>, U: Borrow<Prism>>(
     return set;
   }
 
-  let has_wall_between = |p0: &Point, p1: &Point| match map {
-    Some(map) => map.has_wall_between(p0, p1),
-    None => false,
-  };
-
   let mut round: Point = point;
   let mut step: FloatPoint = point.into();
-  let mut last: Point = point;
+  let mut current: Point = point;
+  let mut index = 0;
 
-  let distance: i32 = distance::with_height(&point, &other);
-  let range: i32 = range.unwrap_or(distance);
   let size: FloatPoint = step_size(&point, &other);
 
-  for _ in 0 .. range {
-    if &round == &last {
+  loop {
+    if &round == &current {
       step = &step + &size;
       round = step.round();
     }
 
-    let Point(_, _, tdiff) = &round - &last;
-    let need_vertical_step = tdiff != 0;
-
-    let current: Point = if need_vertical_step {
-      &last + &Point(0, 0, tdiff.signum())
-    } else {
-      round
+    let next: Point = match distance::height(&round, &current) {
+      0 => round,
+      height => &current + &Point(0, 0, height.signum())
     };
 
-    if has_wall_between(&last, &current) {
+    if stop_condition.apply(&(index, current, next)) {
       break;
     }
 
-    last = current;
-    set.insert(current);
+    current = next;
+    set.insert(next);
+    index += 1;
   }
 
   set

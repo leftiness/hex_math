@@ -1,3 +1,5 @@
+pub mod predicate;
+
 mod generic;
 mod of;
 mod ray;

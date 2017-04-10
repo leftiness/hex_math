@@ -2,6 +2,7 @@ use std::borrow::Borrow;
 use std::collections::{HashMap, HashSet};
 
 use line;
+use line::predicate::{Range, Walls};
 use structs::{Point, Prism};
 
 /// Find unblocked points within range in a line through two points
@@ -9,9 +10,9 @@ pub fn ray_through<T: Borrow<Point>, U: Borrow<Prism>>(
   point: &T,
   other: &T,
   range: i32,
-  map: &HashMap<Point, U>,
+  walls: &HashMap<Point, U>,
 ) -> HashSet<Point> {
-  line::generic(point, other, Some(range), Some(map))
+  line::generic(point, other, (Walls(walls), Range(range)))
 }
 
 #[cfg(test)]
