@@ -1,8 +1,8 @@
 use std::borrow::Borrow;
 use std::collections::{HashMap, HashSet};
 
-use distance;
-use line;
+use distance::with_height;
+use line::{denumerate, Iterator};
 use line::predicate::{Range, Walls};
 use structs::{Point, Prism};
 
@@ -12,11 +12,12 @@ pub fn ray<T: Borrow<Point>, U: Borrow<Prism>>(
   other: &T,
   walls: &HashMap<Point, U>,
 ) -> HashSet<Point> {
-  line::generic(
-    point,
-    other,
-    (Walls(walls), Range(distance::with_height(point, other)))
-  )
+  Iterator::new(point, other)
+    .scan(Walls(walls, *point.borrow()), Walls::apply)
+    .enumerate()
+    .scan(Range(with_height(point, other) as usize), Range::apply)
+    .map(denumerate)
+    .collect()
 }
 
 #[cfg(test)]

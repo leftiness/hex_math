@@ -1,7 +1,7 @@
 use std::borrow::Borrow;
 use std::collections::{HashMap, HashSet};
 
-use line;
+use line::{denumerate, Iterator};
 use line::predicate::{Range, Walls};
 use structs::{Point, Prism};
 
@@ -12,7 +12,12 @@ pub fn ray_through<T: Borrow<Point>, U: Borrow<Prism>>(
   range: i32,
   walls: &HashMap<Point, U>,
 ) -> HashSet<Point> {
-  line::generic(point, other, (Walls(walls), Range(range)))
+  Iterator::new(point, other)
+    .scan(Walls(walls, *point.borrow()), Walls::apply)
+    .enumerate()
+    .scan(Range(range as usize), Range::apply)
+    .map(denumerate)
+    .collect()
 }
 
 #[cfg(test)]
