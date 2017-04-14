@@ -12,6 +12,6 @@ mod structs;
 mod traits;
 
 pub use enums::Direction;
-pub use structs::{FloatPoint, PixelPoint, Point, Prism};
+pub use structs::{PixelPoint, Point, Prism};
 pub use traits::IsPointMap;
 

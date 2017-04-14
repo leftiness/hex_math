@@ -2,15 +2,15 @@ use std::borrow::Borrow;
 use std::iter;
 
 use distance;
-use structs::{FloatPoint, Point};
+use structs::Point;
 
 /// A line iterator returns points along a line through two points
 pub struct Iterator {
   start: Point,
   current: Point,
   round_target: Point,
-  target: FloatPoint,
-  step_size: FloatPoint,
+  target: Point<f32>,
+  step_size: Point<f32>,
   going_nowhere: bool,
   returned_start: bool,
 }
@@ -36,7 +36,7 @@ impl Iterator {
   ///
   /// The lerp is offset a small amount to prevent points from landing
   /// directly on the line between two hexes.
-  fn step_size(start: &Point, end: &Point) -> FloatPoint {
+  fn step_size(start: &Point, end: &Point) -> Point<f32> {
     let &Point(q0, r0, t0) = start;
     let &Point(q1, r1, t1) = end;
 
@@ -48,9 +48,8 @@ impl Iterator {
 
     let step = (distance as f32).recip();
     let lerp = |x: i32, y: i32| 1e-6 + (y - x) as f32 * step;
-    let result = FloatPoint(lerp(q0, q1), lerp(r0, r1), lerp(t0, t1));
 
-    result
+    Point(lerp(q0, q1), lerp(r0, r1), lerp(t0, t1))
   }
 
 }
@@ -119,7 +118,7 @@ mod tests {
 
   #[test]
   fn step_size() {
-    let FloatPoint(q, r, t) = Iterator::step_size(START, END);
+    let Point(q, r, t) = Iterator::step_size(START, END);
 
     assert!(1e-6 == q);
     assert!(1f32 + 1e-6 == r);
@@ -128,7 +127,7 @@ mod tests {
 
   #[test]
   fn step_size_vertical() {
-    let FloatPoint(q, r, t) = Iterator::step_size(START, &Point(1, 2, 10));
+    let Point(q, r, t) = Iterator::step_size(START, &Point(1, 2, 10));
 
     assert!(1e-6 == q);
     assert!(1e-6 == r);

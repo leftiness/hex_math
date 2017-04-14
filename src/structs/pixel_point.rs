@@ -1,6 +1,6 @@
 use std::ops::{Add, Sub, Mul};
 
-use structs::{FloatPoint, Point};
+use structs::Point;
 
 /// Translate 2D QRS coordinates to XY coordinates on a screen
 #[derive(Debug, PartialEq)]
@@ -48,17 +48,10 @@ impl <'a, 'b> Mul<&'b PixelPoint> for &'a PixelPoint {
   }
 }
 
-/// Conveniently convert a point into a pixel point
-impl From<Point> for PixelPoint {
-  fn from(point: Point) -> PixelPoint {
-    FloatPoint::from(point).into()
-  }
-}
-
 /// Conveniently convert a float point into a pixel point
-impl From<FloatPoint> for PixelPoint {
-  fn from(point: FloatPoint) -> PixelPoint {
-    let FloatPoint(q, r, _) = point;
+impl From<Point<f32>> for PixelPoint {
+  fn from(point: Point<f32>) -> PixelPoint {
+    let Point(q, r, _) = point;
     let x: f32 = 3f32.sqrt() * (q + (r / 2f32));
     let y: f32 = 1.5f32 * r;
 
@@ -102,8 +95,8 @@ mod tests {
 
   #[test]
   fn mul_scale_coordinates() {
-    let point: Point = Point(1, 2, 5);
-    let other: PixelPoint = point.into();
+    let point: Point<f32> = Point(1f32, 2f32, 5f32);
+    let other: PixelPoint = PixelPoint::from(point);
     let scale: PixelPoint = PixelPoint(5f32, 5f32);
     let PixelPoint(x, y) = &other * &scale;
 
@@ -113,16 +106,7 @@ mod tests {
 
   #[test]
   fn from_point() {
-    let point: Point = Point(1, 2, 5);
-    let PixelPoint(x, y) = point.into();
-
-    assert!(3f32.sqrt() * 2f32 == x);
-    assert!(3f32 == y);
-  }
-
-  #[test]
-  fn from_float_point() {
-    let point: FloatPoint = FloatPoint(1f32, 2f32, 0f32);
+    let point: Point<f32> = Point(1f32, 2f32, 0f32);
     let PixelPoint(x, y) = point.into();
 
     assert!(3f32.sqrt() * 2f32 == x);

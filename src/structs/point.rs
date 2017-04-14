@@ -1,5 +1,7 @@
 use std::ops::{Add, Sub};
 
+use structs::CubePoint;
+
 /// Basic point on a coordinate plane
 ///
 /// The point contains two coordinates QR to describe its position in
@@ -37,6 +39,41 @@ impl<'a, 'b, T> Sub<&'b Point<T>> for &'a Point<T>
   }
 }
 
+/// Convert to a float point
+impl From<Point> for Point<f32> {
+  fn from(point: Point) -> Point<f32> {
+    let Point(q, r, t) = point;
+
+    Point(q as f32, r as f32, t as f32)
+  }
+}
+
+impl Point<f32> {
+  /// Round a float point back to a standard point
+  pub fn round(&self) -> Point {
+    let CubePoint(q, r, s, t) = CubePoint::from(*self);
+
+    let mut rq = q.round();
+    let mut rr = r.round();
+
+    let rs = s.round();
+    let rt = t.round();
+
+    let dq = (rq - q).abs();
+    let dr = (rr - r).abs();
+    let ds = (rs - s).abs();
+
+    if (dq > ds) && (dq > dr) {
+      rq = -rs - rr;
+    } else if ds < dr {
+      rr = -rq - rs;
+    }
+
+    Point(rq as i32, rr as i32, rt as i32)
+  }
+
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
@@ -61,5 +98,24 @@ mod tests {
     assert!(-2 == q);
     assert!(-2 == r);
     assert!(-5 == t);
+  }
+
+  #[test]
+  fn from_point() {
+    let point = Point(1, 2, 5);
+    let Point::<f32>(q, r, t) = point.into();
+
+    assert!(1f32 == q);
+    assert!(2f32 == r);
+    assert!(5f32 == t);
+  }
+
+  #[test]
+  fn round() {
+    let Point(q, r, t) = Point(1.6f32, 1.6f32, 2.5f32).round();
+
+    assert!(2 == q);
+    assert!(1 == r);
+    assert!(3 == t);
   }
 }

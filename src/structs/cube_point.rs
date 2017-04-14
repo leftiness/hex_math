@@ -1,6 +1,6 @@
 use std::ops::{Neg, Sub};
 
-use structs::{Point, FloatPoint};
+use structs::Point;
 
 /// Point on a coordinate plane including calculated S coordinate
 ///
@@ -17,10 +17,10 @@ impl From<Point> for CubePoint<i32> {
   }
 }
 
-impl From<FloatPoint> for CubePoint<f32> {
-  /// Convert from a FloatPoint to a CubePoint
-  fn from(point: FloatPoint) -> Self {
-    let FloatPoint(q, r, t) = point;
+impl From<Point<f32>> for CubePoint<f32> {
+  /// Convert from a float point to a CubePoint
+  fn from(point: Point<f32>) -> Self {
+    let Point(q, r, t) = point;
 
     CubePoint(q, r, -q - r, t)
   }
@@ -43,7 +43,7 @@ mod tests {
 
   #[test]
   fn from_float_point() {
-    let point = FloatPoint(1f32, 2f32, 5f32);
+    let point = Point(1f32, 2f32, 5f32);
     let CubePoint(q, r, s, t) = point.into();
 
     assert!( 1f32 == q);
