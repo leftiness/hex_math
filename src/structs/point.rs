@@ -7,27 +7,31 @@ use std::ops::{Add, Sub};
 ///
 /// Q can also be considered X on a cube, and R is Z.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
-pub struct Point(pub i32, pub i32, pub i32);
+pub struct Point<T = i32>(pub T, pub T, pub T);
 
 /// Add one point to another
-impl<'a, 'b> Add<&'b Point> for &'a Point {
-  type Output = Point;
+impl<'a, 'b, T> Add<&'b Point<T>> for &'a Point<T>
+  where &'a T: Add<&'b T, Output = T> {
 
-  fn add(self, other: &'b Point) -> Point {
-    let &Point(q0, r0, t0) = self;
-    let &Point(q1, r1, t1) = other;
+  type Output = Point<T>;
+
+  fn add(self, other: &'b Point<T>) -> Point<T> {
+    let &Point(ref q0, ref r0, ref t0) = self;
+    let &Point(ref q1, ref r1, ref t1) = other;
 
     Point(q0 + q1, r0 + r1, t0 + t1)
   }
 }
 
 /// Subtract one point from another
-impl<'a, 'b> Sub<&'b Point> for &'a Point {
-  type Output = Point;
+impl<'a, 'b, T> Sub<&'b Point<T>> for &'a Point<T>
+  where &'a T: Sub<&'b T, Output = T> {
 
-  fn sub(self, other: &'b Point) -> Point {
-    let &Point(q0, r0, t0) = self;
-    let &Point(q1, r1, t1) = other;
+  type Output = Point<T>;
+
+  fn sub(self, other: &'b Point<T>) -> Point<T> {
+    let &Point(ref q0, ref r0, ref t0) = self;
+    let &Point(ref q1, ref r1, ref t1) = other;
 
     Point(q0 - q1, r0 - r1, t0 - t1)
   }
