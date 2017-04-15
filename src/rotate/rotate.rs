@@ -1,6 +1,6 @@
 use std::borrow::Borrow;
 
-use structs::{CubePoint, Point};
+use structs::Point;
 
 /// Rotate the point around a provided center, keeping the same height
 ///
@@ -9,7 +9,7 @@ use structs::{CubePoint, Point};
 pub fn rotate<T: Borrow<Point>>(
   point: &T,
   center: &T,
-  mut times: i32,
+  times: i32,
 ) -> Point {
   let point = point.borrow();
   let center = center.borrow();
@@ -18,17 +18,18 @@ pub fn rotate<T: Borrow<Point>>(
     return *point;
   }
 
-  let relative_point: Point = point - center;
-  let CubePoint(q, r, s, t) = relative_point.into();
+  let relative_point = point - center;
+  let Point(q, r, t) = relative_point;
+  let s = relative_point.s();
 
-  times %= 6;
+  let mut times = times % 6;
 
   if times < 0 {
     times += 6;
   }
 
   let rotated_point: Point = match times {
-    0 => relative_point,
+    0 => Point( q,  r, t),
     1 => Point(-r, -s, t),
     2 => Point( s,  q, t),
     3 => Point(-q, -r, t),
