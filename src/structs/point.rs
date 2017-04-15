@@ -1,15 +1,45 @@
-use std::ops::{Add, Sub};
-
-use structs::CubePoint;
+use std::ops::{Add, Sub, Neg};
 
 /// Basic point on a coordinate plane
-///
-/// The point contains two coordinates QR to describe its position in
-/// two dimensions and a third T to describe its third dimension.
-///
-/// Q can also be considered X on a cube, and R is Z.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct Point<T = i32>(pub T, pub T, pub T);
+
+impl <T> Point<T> {
+  /// Get Q coordinate
+  ///
+  /// Positive Q is east on a hexagon plane. Q represents X on a cube.
+  pub fn q(&self) -> &T {
+    &self.0
+  }
+
+  /// Get R coordinate
+  ///
+  /// Positive R is southeast on a hexagon plane. R represents Z on a cube.
+  pub fn r(&self) -> &T {
+    &self.1
+  }
+
+  /// Get T coordinate
+  ///
+  /// Positive T is up.
+  pub fn t(&self) -> &T {
+    &self.2
+  }
+}
+
+impl <'a, T> Point<T>
+  where &'a T: Neg<Output = T>, T: Sub<&'a T, Output = T> + 'a {
+
+  /// Calculate S coordinate
+  ///
+  /// Positive S is northwest on a hexagon plane. It represents Y on a cube.
+  ///
+  /// S is not stored with the other coordinates because he can be calculated
+  /// for his uncommon use.
+  pub fn s(&'a self) -> T {
+    -self.q() - self.r()
+  }
+}
 
 /// Add one point to another
 impl<'a, 'b, T> Add<&'b Point<T>> for &'a Point<T>
@@ -51,7 +81,8 @@ impl From<Point> for Point<f32> {
 impl Point<f32> {
   /// Round a float point back to a standard point
   pub fn round(&self) -> Point {
-    let CubePoint(q, r, s, t) = CubePoint::from(*self);
+    let &Point(q, r, t) = self;
+    let s = self.s();
 
     let mut rq = q.round();
     let mut rr = r.round();
@@ -78,11 +109,12 @@ impl Point<f32> {
 mod tests {
   use super::*;
 
+  const POINT: &'static Point = &Point(1, 2, 5);
+  const OTHER: &'static Point = &Point(3, 4, 10);
+
   #[test]
   fn add() {
-    let point: Point = Point(1, 2, 5);
-    let other: Point = Point(3, 4, 10);
-    let Point(q, r, t) = &point + &other;
+    let Point(q, r, t) = POINT + OTHER;
 
     assert!(4 == q);
     assert!(6 == r);
@@ -91,9 +123,7 @@ mod tests {
 
   #[test]
   fn sub() {
-    let point: Point = Point(1, 2, 5);
-    let other: Point = Point(3, 4, 10);
-    let Point(q, r, t)= &point - &other;
+    let Point(q, r, t)= POINT - OTHER;
 
     assert!(-2 == q);
     assert!(-2 == r);
@@ -102,8 +132,7 @@ mod tests {
 
   #[test]
   fn from_point() {
-    let point = Point(1, 2, 5);
-    let Point::<f32>(q, r, t) = point.into();
+    let Point::<f32>(q, r, t) = Point::from(*POINT);
 
     assert!(1f32 == q);
     assert!(2f32 == r);
@@ -117,5 +146,25 @@ mod tests {
     assert!(2 == q);
     assert!(1 == r);
     assert!(3 == t);
+  }
+
+  #[test]
+  fn q() {
+    assert!(1 == *POINT.q());
+  }
+
+  #[test]
+  fn r() {
+    assert!(2 == *POINT.r());
+  }
+
+  #[test]
+  fn t() {
+    assert!(5 == *POINT.t());
+  }
+
+  #[test]
+  fn s() {
+    assert!(-3 == POINT.s());
   }
 }
