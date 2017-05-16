@@ -1,10 +1,10 @@
 use std::borrow::Borrow;
 use std::collections::{HashMap, HashSet};
 
-use distance::with_height;
 use line::{denumerate, Iterator};
 use line::predicate::{Range, Walls};
 use structs::{Point, Prism};
+use traits::distance::Distance;
 
 /// Find unblocked points in a line between two points
 pub fn ray<T: Borrow<Point>, U: Borrow<Prism>>(
@@ -15,7 +15,7 @@ pub fn ray<T: Borrow<Point>, U: Borrow<Prism>>(
   Iterator::new(point, other)
     .scan(Walls(walls, *point.borrow()), Walls::apply)
     .enumerate()
-    .scan(Range(with_height(point, other) as usize), Range::apply)
+    .scan(Range(point.distance(other) as usize), Range::apply)
     .map(denumerate)
     .collect()
 }

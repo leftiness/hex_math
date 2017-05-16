@@ -1,16 +1,16 @@
 use std::borrow::Borrow;
 use std::collections::HashSet;
 
-use distance::with_height;
 use line::{denumerate, Iterator};
 use line::predicate::Range;
 use structs::Point;
+use traits::distance::Distance;
 
 /// Find the points in a line between the current point and the one provided
 pub fn of<T: Borrow<Point>>(point: &T, other: &T) -> HashSet<Point> {
   Iterator::new(point, other)
     .enumerate()
-    .scan(Range(with_height(point, other) as usize), Range::apply)
+    .scan(Range(point.distance(other) as usize), Range::apply)
     .map(denumerate)
     .collect()
 }

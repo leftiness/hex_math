@@ -1,8 +1,8 @@
 use std::borrow::Borrow;
 use std::iter;
 
-use distance;
 use structs::Point;
+use traits::distance::{Base, Height};
 
 /// A line iterator returns points along a line through two points
 pub struct Iterator {
@@ -41,9 +41,9 @@ impl Iterator {
     let &Point(q1, r1, t1) = end;
 
     let distance = if (q0, r0) == (q1, r1) {
-      distance::height(start, end)
+      start.height(end)
     } else {
-      distance::base(start, end)
+      start.base_distance(end)
     };
 
     let step = (distance as f32).recip();
@@ -74,7 +74,7 @@ impl iter::Iterator for Iterator {
       self.round_target = self.target.round();
     }
 
-    self.current = match distance::height(&self.round_target, &self.current) {
+    self.current = match self.round_target.height(&self.current) {
       0 => self.round_target,
       height => &self.current + &Point(0, 0, height.signum())
     };
