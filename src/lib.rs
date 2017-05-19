@@ -1,7 +1,6 @@
 //! Useful stuff for working with a bunch of hexagons
 
 pub mod line;
-pub mod range;
 pub mod traits;
 
 mod enums;

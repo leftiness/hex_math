@@ -1,19 +1,30 @@
 use std::borrow::Borrow;
 use std::collections::{HashMap, HashSet};
 
-use range;
 use structs::{Point, Prism};
+use traits::range::Range;
 
-/// Find reachable points within a specified range
-///
-/// A point may be within range while being unreachable if the path to that
-/// point is blocked by an invalid point.
-pub fn flood<T: Borrow<Point>, U: Borrow<Prism>>(
-  point: &T,
-  range: i32,
-  map: &HashMap<Point, U>,
-) -> HashSet<Point> {
-  range::flood_generic(point, range, range::of, map)
+/// Trait wrapping flood implementation
+pub trait Flood: Borrow<Point> {
+  /// Find reachable points within a specified range
+  ///
+  /// A point may be within range while being unreachable if the path to that
+  /// point is blocked by an invalid point.
+  fn flood<U: Borrow<Prism>>(
+    &self,
+    range: i32,
+    map: &HashMap<Point, U>,
+  ) -> HashSet<Point>;
+}
+
+impl<T> Flood for T where T: Borrow<Point> {
+  fn flood<U: Borrow<Prism>>(
+    &self,
+    range: i32,
+    map: &Hashmap<Point, U>
+  ) -> HashSet<Point> {
+    point.flood_generic(range, point::range, map)
+  }
 }
 
 #[cfg(test)]
@@ -40,7 +51,7 @@ mod tests {
     map.insert_walled_point(Prism(up,        0, 0, 0, 1));
     map.insert_walled_point(Prism(start,     1, 1, 1, 1));
 
-    let result: HashSet<Point> = super::flood(&start, 2, &map);
+    let result: HashSet<Point> = start.flood(2, &map);
 
     assert!(result.contains(&start));
     assert!(result.contains(&Point( 0, 2, 2)));
