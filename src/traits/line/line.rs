@@ -1,18 +1,26 @@
 use std::borrow::Borrow;
 use std::collections::HashSet;
 
-use line::{denumerate, Iterator};
-use line::predicate::Range;
+use fns::line::denumerate;
 use structs::Point;
+use structs::line::Iterator;
+use structs::line::predicate::Range;
 use traits::distance::Distance;
 
-/// Find the points in a line between the current point and the one provided
-pub fn of<T: Borrow<Point>>(point: &T, other: &T) -> HashSet<Point> {
-  Iterator::new(point, other)
-    .enumerate()
-    .scan(Range(point.distance(other) as usize), Range::apply)
-    .map(denumerate)
-    .collect()
+/// Trait wrapping line implementation
+pub trait Line: Borrow<Point> {
+  /// Find the points in a line between the current point and the one provided
+  fn line<T: Borrow<Point>>(&self, other: &T) -> HashSet<Point>;
+}
+
+impl<T> Line for T where T: Borrow<Point> {
+  fn line<U: Borrow<Point>>(&self, other: &U) -> HashSet<Point> {
+    Iterator::new(self, other)
+      .enumerate()
+      .scan(Range(self.distance(other) as usize), Range::apply)
+      .map(denumerate)
+      .collect()
+  }
 }
 
 #[cfg(test)]
@@ -20,10 +28,10 @@ mod tests {
   use super::*;
 
   #[test]
-  fn of() {
+  fn line() {
     let point: Point = Point(1, 2, 5);
     let other: Point = Point(3, 4, 10);
-    let set: HashSet<Point> = super::of(&point, &other);
+    let set: HashSet<Point> = point.line(&other);
 
     assert!(set.contains(&Point(1, 2, 5)));
     assert!(set.contains(&Point(1, 2, 6)));
@@ -39,10 +47,10 @@ mod tests {
   }
 
   #[test]
-  fn of_vertical() {
+  fn line_vertical() {
     let point: Point = Point(1, 2, 5);
     let other: Point = Point(1, 2, 7);
-    let line: HashSet<Point> = super::of(&point, &other);
+    let line: HashSet<Point> = point.line(&other);
 
     assert!(line.contains(&Point(1, 2, 5)));
     assert!(line.contains(&Point(1, 2, 6)));

@@ -1,23 +1,35 @@
 use std::borrow::Borrow;
 use std::collections::{HashMap, HashSet};
 
-use line::{denumerate, Iterator};
-use line::predicate::{Range, Walls};
+use fns::line::denumerate;
 use structs::{Point, Prism};
+use structs::line::Iterator;
 use traits::distance::Distance;
+use structs::line::predicate::{Range, Walls};
 
-/// Find unblocked points in a line between two points
-pub fn ray<T: Borrow<Point>, U: Borrow<Prism>>(
-  point: &T,
-  other: &T,
-  walls: &HashMap<Point, U>,
-) -> HashSet<Point> {
-  Iterator::new(point, other)
-    .scan(Walls(walls, *point.borrow()), Walls::apply)
-    .enumerate()
-    .scan(Range(point.distance(other) as usize), Range::apply)
-    .map(denumerate)
-    .collect()
+/// Trait wrapping ray implementation
+pub trait Ray: Borrow<Point> {
+  /// Find unblocked points in a line between two points
+  fn ray<T: Borrow<Point>, U: Borrow<Prism>>(
+    &self,
+    other: &T,
+    walls: &HashMap<Point, U>,
+  ) -> HashSet<Point>;
+}
+
+impl<T> Ray for T where T: Borrow<Point> {
+  fn ray<U: Borrow<Point>, V: Borrow<Prism>>(
+    &self,
+    other: &U,
+    walls: &HashMap<Point, V>,
+  ) -> HashSet<Point> {
+    Iterator::new(self, other)
+      .scan(Walls(walls, *self.borrow()), Walls::apply)
+      .enumerate()
+      .scan(Range(self.distance(other) as usize), Range::apply)
+      .map(denumerate)
+      .collect()
+  }
 }
 
 #[cfg(test)]
@@ -35,7 +47,7 @@ mod tests {
 
     map.insert(wall, prism);
 
-    let set: HashSet<Point> = super::ray(&point, &other, &map);
+    let set: HashSet<Point> = point.ray(&other, &map);
 
     assert!(set.contains(&Point(1, 2, 5)));
     assert!(set.contains(&Point(1, 2, 6)));

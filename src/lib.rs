@@ -1,6 +1,6 @@
 //! Useful stuff for working with a bunch of hexagons
 
-pub mod line;
+pub mod fns;
 pub mod traits;
 
 mod enums;

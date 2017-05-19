@@ -1,3 +1,5 @@
+pub mod line;
+
 mod pixel_point;
 mod point;
 mod prism;

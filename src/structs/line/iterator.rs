@@ -17,7 +17,10 @@ pub struct Iterator {
 
 impl Iterator {
   /// Create a new line iterator
-  pub fn new<T: Borrow<Point>>(start: &T, end: &T) -> Iterator {
+  pub fn new<T: Borrow<Point>, U: Borrow<Point>>(
+    start: &T,
+    end: &U,
+  ) -> Iterator {
     let start = *start.borrow();
     let end = *end.borrow();
 
