@@ -4,7 +4,7 @@ use std::collections::HashSet;
 use enums::Direction;
 use structs::Point;
 use traits::ring::Base;
-use travel::travel;
+use traits::travel::Travel;
 
 /// Trait wrapping ring implementation
 pub trait Ring: Borrow<Point> {
@@ -18,17 +18,13 @@ impl<T> Ring for T where T: Borrow<Point> {
 
     for index in 1..range + 1 {
       let diff = range - index;
-      let up: Point = travel(self, &Direction::Up, index);
-      let down: Point = travel(self, &Direction::Down, index);
-      let up_ring: HashSet<Point> = up.base_ring(diff);
-      let down_ring: HashSet<Point> = down.base_ring(diff);
 
-      set.extend(up_ring);
-      set.extend(down_ring);
+      set.extend(self.travel(&Direction::Up, index).base_ring(diff));
+      set.extend(self.travel(&Direction::Down, index).base_ring(diff));
     }
 
-    set.insert(travel(self, &Direction::Up, range));
-    set.insert(travel(self, &Direction::Down, range));
+    set.insert(self.travel(&Direction::Up, range));
+    set.insert(self.travel(&Direction::Down, range));
 
     set
   }

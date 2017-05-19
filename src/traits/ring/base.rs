@@ -3,7 +3,7 @@ use std::collections::HashSet;
 
 use enums::Direction;
 use structs::Point;
-use travel::travel;
+use traits::travel::Travel;
 
 /// Trait wrapping base ring implementation
 pub trait Base: Borrow<Point> {
@@ -14,14 +14,12 @@ pub trait Base: Borrow<Point> {
 impl<T> Base for T where T: Borrow<Point> {
   fn base_ring(&self, range: i32) -> HashSet<Point> {
     let mut set: HashSet<Point> = HashSet::new();
-    let mut point: Point = travel(self, &Direction::Northwest, range);
+    let mut point: Point = self.travel(&Direction::Northwest, range);
 
     for direction in Direction::to_vec().iter().take(6) {
       for _ in 0..range {
-        let next: Point = travel(&point, direction, 1);
-
         set.insert(point);
-        point = next;
+        point = point.travel(direction, 1);
       }
     }
 

@@ -3,7 +3,6 @@
 pub mod line;
 pub mod range;
 pub mod traits;
-pub mod travel;
 
 mod enums;
 mod structs;

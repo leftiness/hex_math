@@ -19,20 +19,20 @@ pub fn flood<T: Borrow<Point>, U: Borrow<Prism>>(
 #[cfg(test)]
 mod tests {
   use super::*;
-  use enums::Direction;
+  use enums::Direction::*;
   use structs::Prism;
   use traits::IsPointMap;
-  use travel::travel;
+  use traits::travel::Travel;
 
   #[test]
   fn flood() {
     let mut map: HashMap<Point, Prism> = HashMap::new();
 
     let start:     Point = Point(1, 2, 2);
-    let west:      Point = travel(&start, &Direction::West,      1);
-    let northwest: Point = travel(&start, &Direction::Northwest, 1);
-    let northeast: Point = travel(&start, &Direction::Northeast, 1);
-    let up:        Point = travel(&start, &Direction::Up,        1);
+    let west:      Point = start.travel(&West,      1);
+    let northwest: Point = start.travel(&Northwest, 1);
+    let northeast: Point = start.travel(&Northeast, 1);
+    let up:        Point = start.travel(&Up,        1);
 
     map.insert_walled_point(Prism(west,      0, 1, 0, 0));
     map.insert_walled_point(Prism(northwest, 0, 1, 1, 0));

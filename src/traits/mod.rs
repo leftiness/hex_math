@@ -1,6 +1,7 @@
 pub mod distance;
 pub mod ring;
 pub mod rotate;
+pub mod travel;
 
 mod is_point_map;
 

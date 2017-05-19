@@ -41,9 +41,9 @@ pub fn flood_generic<T: Borrow<Point>, U: Borrow<Prism>>(
 #[cfg(test)]
 mod tests {
   use super::*;
-  use enums::Direction;
+  use enums::Direction::*;
   use structs::Prism;
-  use travel::travel;
+  use traits::travel::Travel;
 
   #[test]
   fn flood_generic() {
@@ -58,8 +58,8 @@ mod tests {
     fn range_1d(point: &Point, range: i32) -> HashSet<Point> {
 
       let mut set: HashSet<Point> = HashSet::new();
-      let up: Point = travel(point, &Direction::Up, range);
-      let down: Point = travel(point, &Direction::Down, range);
+      let up: Point = point.travel(&Up, range);
+      let down: Point = point.travel(&Down, range);
 
       set.insert(up);
       set.insert(down);

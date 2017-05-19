@@ -4,7 +4,7 @@ use std::collections::HashSet;
 use enums::Direction;
 use range;
 use structs::Point;
-use travel::travel;
+use traits::travel::Travel;
 
 /// Find the points within the provided manhattan distance
 pub fn of<T: Borrow<Point>>(point: &T, range: i32) -> HashSet<Point> {
@@ -12,8 +12,8 @@ pub fn of<T: Borrow<Point>>(point: &T, range: i32) -> HashSet<Point> {
 
   for index in 1..range + 1 {
     let diff = range - index;
-    let up: Point = travel(point, &Direction::Up, index);
-    let down: Point = travel(point, &Direction::Down, index);
+    let up: Point = point.travel(&Direction::Up, index);
+    let down: Point = point.travel(&Direction::Down, index);
     let up_range: HashSet<Point> = range::base(&up, diff);
     let down_range: HashSet<Point> = range::base(&down, diff);
 
