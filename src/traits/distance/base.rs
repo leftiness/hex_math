@@ -7,7 +7,7 @@ pub trait Base: Borrow<Point> {
   /// Calculate the manhattan distance between two points ignoring height
   ///
   /// Distance is rounded to the nearest integer.
-  fn base_distance<T: Borrow<Point>>(&self, other: &T) -> i32;
+  fn base_distance<U: Borrow<Point>>(&self, other: &U) -> i32;
 }
 
 impl<T> Base for T where T: Borrow<Point> {

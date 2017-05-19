@@ -9,11 +9,11 @@ use structs::line::predicate::{Range, Walls};
 /// Trait wrapping ray through implementation
 pub trait RayThrough: Borrow<Point> {
   /// Find unblocked points within range in a line through two points
-  fn ray_through<T: Borrow<Point>, U: Borrow<Prism>>(
+  fn ray_through<U: Borrow<Point>, V: Borrow<Prism>>(
     &self,
-    other: &T,
+    other: &U,
     range: i32,
-    walls: &HashMap<Point, U>,
+    walls: &HashMap<Point, V>,
   ) -> HashSet<Point>;
 }
 

@@ -10,7 +10,7 @@ use traits::distance::Distance;
 /// Trait wrapping line implementation
 pub trait Line: Borrow<Point> {
   /// Find the points in a line between the current point and the one provided
-  fn line<T: Borrow<Point>>(&self, other: &T) -> HashSet<Point>;
+  fn line<U: Borrow<Point>>(&self, other: &U) -> HashSet<Point>;
 }
 
 impl<T> Line for T where T: Borrow<Point> {

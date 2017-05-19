@@ -5,7 +5,7 @@ use structs::Point;
 /// Trait wrapping height distance implementation
 pub trait Height: Borrow<Point> {
   /// Calculate the height distance between two points.
-  fn height<T: Borrow<Point>>(&self, other: &T) -> i32;
+  fn height<U: Borrow<Point>>(&self, other: &U) -> i32;
 }
 
 impl<T> Height for T where T: Borrow<Point> {

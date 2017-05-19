@@ -10,10 +10,10 @@ use structs::line::predicate::{Range, Walls};
 /// Trait wrapping ray implementation
 pub trait Ray: Borrow<Point> {
   /// Find unblocked points in a line between two points
-  fn ray<T: Borrow<Point>, U: Borrow<Prism>>(
+  fn ray<U: Borrow<Point>, V: Borrow<Prism>>(
     &self,
-    other: &T,
-    walls: &HashMap<Point, U>,
+    other: &U,
+    walls: &HashMap<Point, V>,
   ) -> HashSet<Point>;
 }
 

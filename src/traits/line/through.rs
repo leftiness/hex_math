@@ -8,9 +8,9 @@ use structs::line::predicate::Range;
 
 pub trait Through: Borrow<Point> {
   /// Find the points within range in a line through two points
-  fn line_through<T: Borrow<Point>>(
+  fn line_through<U: Borrow<Point>>(
     &self,
-    other: &T,
+    other: &U,
     range: i32,
   ) -> HashSet<Point>;
 }

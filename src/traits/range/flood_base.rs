@@ -10,7 +10,7 @@ pub trait BaseFlood: Borrow<Point> {
   ///
   /// A point may be within range while being unreachable if the path to that
   /// point is blocked by an invalid point.
-  fn base_flood<T: Borrow<Prism>>(
+  fn base_flood<U: Borrow<Prism>>(
     &self,
     range: i32,
     map: &HashMap<Point, U>,

@@ -8,7 +8,7 @@ pub trait Rotate: Borrow<Point> {
   ///
   /// Positive rotations are clockwise. Six rotations bring a point back to the
   /// starting position.
-  fn rotate<T: Borrow<Point>>(&self, center: &T, times: i32) -> Point;
+  fn rotate<U: Borrow<Point>>(&self, center: &U, times: i32) -> Point;
 }
 
 impl<T> Rotate for T where T: Borrow<Point> {
