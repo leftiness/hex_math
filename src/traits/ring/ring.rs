@@ -2,29 +2,36 @@ use std::borrow::Borrow;
 use std::collections::HashSet;
 
 use enums::Direction;
-use ring;
 use structs::Point;
+use traits::ring::Base;
 use travel::travel;
 
-/// Find points in a spherical ring of a provided radius
-pub fn of<T: Borrow<Point>>(point: &T, range: i32) -> HashSet<Point> {
-  let mut set: HashSet<Point> = ring::base(point, range);
+/// Trait wrapping ring implementation
+pub trait Ring: Borrow<Point> {
+  /// Find points in a spherical ring of a provided radius
+  fn ring(&self, range: i32) -> HashSet<Point>;
+}
 
-  for index in 1..range + 1 {
-    let diff = range - index;
-    let up: Point = travel(point, &Direction::Up, index);
-    let down: Point = travel(point, &Direction::Down, index);
-    let up_ring: HashSet<Point> = ring::base(&up, diff);
-    let down_ring: HashSet<Point> = ring::base(&down, diff);
+impl<T> Ring for T where T: Borrow<Point> {
+  fn ring(&self, range: i32) -> HashSet<Point> {
+    let mut set: HashSet<Point> = self.base_ring(range);
 
-    set.extend(up_ring);
-    set.extend(down_ring);
+    for index in 1..range + 1 {
+      let diff = range - index;
+      let up: Point = travel(self, &Direction::Up, index);
+      let down: Point = travel(self, &Direction::Down, index);
+      let up_ring: HashSet<Point> = up.base_ring(diff);
+      let down_ring: HashSet<Point> = down.base_ring(diff);
+
+      set.extend(up_ring);
+      set.extend(down_ring);
+    }
+
+    set.insert(travel(self, &Direction::Up, range));
+    set.insert(travel(self, &Direction::Down, range));
+
+    set
   }
-
-  set.insert(travel(point, &Direction::Up, range));
-  set.insert(travel(point, &Direction::Down, range));
-
-  set
 }
 
 #[cfg(test)]
@@ -32,9 +39,9 @@ mod tests {
   use super::*;
 
   #[test]
-  fn of() {
+  fn ring() {
     let point: Point = Point(1, 2, 5);
-    let set: HashSet<Point> = super::of(&point, 2);
+    let set: HashSet<Point> = point.ring(2);
 
     assert!(set.contains(&Point(1, 0, 5)));
     assert!(set.contains(&Point(2, 0, 5)));

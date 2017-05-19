@@ -2,7 +2,6 @@
 
 pub mod line;
 pub mod range;
-pub mod ring;
 pub mod rotate;
 pub mod traits;
 pub mod travel;
