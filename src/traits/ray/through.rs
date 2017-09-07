@@ -7,7 +7,7 @@ use structs::line::Iterator;
 use structs::line::predicate::{Range, Walls};
 
 /// Trait wrapping ray through implementation
-pub trait RayThrough: Borrow<Point> {
+pub trait Through: Borrow<Point> {
   /// Find unblocked points within range in a line through two points
   fn ray_through<U: Borrow<Point>, V: Borrow<Prism>>(
     &self,
@@ -17,7 +17,7 @@ pub trait RayThrough: Borrow<Point> {
   ) -> HashSet<Point>;
 }
 
-impl<T> RayThrough for T where T: Borrow<Point> {
+impl<T> Through for T where T: Borrow<Point> {
   fn ray_through<U: Borrow<Point>, V: Borrow<Prism>>(
     &self,
     other: &U,
