@@ -1,5 +1,5 @@
-mod line;
+mod ray;
 mod through;
 
-pub use self::line::Line;
+pub use self::ray::Ray;
 pub use self::through::Through;
